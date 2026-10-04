@@ -244,11 +244,15 @@
               </div>
             </div>
 
-            <div class="w-full sm:w-auto flex items-center gap-3">
+            <div class="w-full sm:w-auto flex flex-wrap items-center gap-3">
+              <button type="button" onclick="openManualModal('spatial')" class="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-750 border border-indigo-500/40 hover:border-indigo-400 text-indigo-300 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg">
+                <span>🔥</span>
+                <span>題型實例與解題熱身</span>
+              </button>
               <button id="errorSprintBtn" onclick="startErrorSprint()" class="hidden px-5 py-3 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 border border-rose-500/40 text-rose-300 font-bold text-xs transition flex items-center gap-2">
                 <span>🎯 啟動「歷史錯題專攻」</span>
               </button>
-              <button onclick="startApp()" class="w-full sm:w-auto px-10 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 transition transform active:scale-95 flex items-center justify-center gap-2">
+              <button onclick="startApp()" class="w-full sm:w-auto px-9 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 transition transform active:scale-95 flex items-center justify-center gap-2">
                 <span>開始挑戰</span>
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -466,6 +470,10 @@
 
         <!-- Controls: Difficulty, Mode, Timer -->
         <div class="flex flex-wrap items-center gap-2 self-stretch md:self-auto justify-between md:justify-end">
+          <button type="button" onclick="openManualModal('sudoku')" class="px-3 py-1.5 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-200 text-xs font-bold transition flex items-center gap-1.5 shadow">
+            <span>💡</span>
+            <span>數獨技巧與實例熱身</span>
+          </button>
           <div class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800">
             <button type="button" onclick="setSudokuDiff('easy')" data-sdiff="easy" class="sdiff-btn px-2.5 py-1 rounded-lg text-xs font-bold transition bg-emerald-600 text-white">入門</button>
             <button type="button" onclick="setSudokuDiff('medium')" data-sdiff="medium" class="sdiff-btn px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">中級</button>
@@ -627,42 +635,502 @@
     </div>
   </div>
 
-  <!-- Help & Strategies Modal -->
-  <div id="manualModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-extrabold text-white text-base flex items-center gap-2">
-          <span>📖</span> 外商評估中心與 Mensa 巔峰題型破題心法
-        </h3>
-        <button onclick="closeManualModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+  <!-- Help, Strategies & Interactive Warm-Up Modal -->
+  <div id="manualModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800 bg-slate-950/90">
+        <div>
+          <h3 class="font-black text-white text-base sm:text-lg flex items-center gap-2">
+            <span>📖</span> 題型心法 × 經典實例 × 互動暖身小試
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">
+            進入高壓計時前的思維暖機：各題型具體題目拆解、核心思考步驟與即時小試（不計入測驗）
+          </p>
+        </div>
+        <button onclick="closeManualModal()" class="text-slate-400 hover:text-white text-xl font-bold p-1 rounded-lg hover:bg-slate-800 transition">✕</button>
       </div>
 
-      <div class="text-xs text-slate-300 space-y-3 leading-relaxed max-h-[70vh] overflow-y-auto pr-2">
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <h4 class="font-bold text-cyan-400 text-xs mb-1">1. 機械齒輪轉向與速比心智模擬</h4>
-          <p class="text-slate-400">互咬齒輪轉向相反（順 ➔ 逆 ➔ 順）。外接皮帶（非交叉）轉向相同。齒輪齒數越少，轉速越快（速比反比於半徑/齒數）。</p>
+      <!-- Navigation Sub-Tabs -->
+      <div class="flex items-center gap-1.5 px-4 py-2.5 bg-slate-950 border-b border-slate-800 overflow-x-auto text-xs font-bold scrollbar-none" id="manualTabNav">
+        <button type="button" onclick="switchManualTab('spatial')" data-mtab="spatial" class="manual-tab-btn active-mtab px-3 py-1.5 rounded-lg whitespace-nowrap transition bg-indigo-600 text-white shadow">
+          🧩 瑞文 XOR / 3D
+        </button>
+        <button type="button" onclick="switchManualTab('mechanical')" data-mtab="mechanical" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
+          ⚙️ 機械齒輪傳動
+        </button>
+        <button type="button" onclick="switchManualTab('numerical')" data-mtab="numerical" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
+          📊 數理矩陣與天平
+        </button>
+        <button type="button" onclick="switchManualTab('verbal')" data-mtab="verbal" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
+          🔤 沃森 4-Card 證偽
+        </button>
+        <button type="button" onclick="switchManualTab('nback')" data-mtab="nback" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
+          🧠 2-Back 雙重記憶
+        </button>
+        <button type="button" onclick="switchManualTab('sudoku')" data-mtab="sudoku" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
+          🔢 專注數獨工坊
+        </button>
+        <button type="button" onclick="switchManualTab('summary')" data-mtab="summary" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
+          📜 全題型速查心法
+        </button>
+      </div>
+
+      <!-- Scrollable Tab Content Body -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-6 text-slate-300 text-xs sm:text-sm space-y-6" id="manualTabContent">
+
+        <!-- ================= PANEL 1: SPATIAL ================= -->
+        <div id="mpanel_spatial" class="manual-panel space-y-5">
+          <div class="bg-gradient-to-r from-pink-950/40 to-slate-900 border border-pink-500/30 rounded-xl p-4">
+            <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">Mensa 門薩 & 外商管顧評估經典</span>
+            <h4 class="text-base font-black text-white mt-1">🧩 3×3 瑞文九宮格（XOR 疊加相消律）與正方體展開圖</h4>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              主要檢驗頂枕葉之<strong>視知覺解構、圖形運算邏輯與三維心智空間旋轉</strong>能力。
+            </p>
+          </div>
+
+          <!-- Walkthrough 1: XOR Rule -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-pink-300 font-bold text-sm">
+              <span>💡 心法一：幾何 XOR 疊加相消律 (Exclusive OR)</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed">
+              在 3×3 九宮格中，橫行（圖1 ➔ 圖2 ➔ 圖3）或縱列往往遵守疊加相消規律：<br>
+              • <strong>線段重疊（兩圖皆有）</strong> ➔ <span class="text-rose-400 font-bold">互相抵消消失</span>！<br>
+              • <strong>線段獨立（僅其中一圖有）</strong> ➔ <span class="text-emerald-400 font-bold">被完整保留</span>！
+            </p>
+
+            <!-- Concrete Visual Walkthrough Diagram -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-around gap-2 text-center">
+              <div class="flex flex-col items-center">
+                <span class="text-[11px] text-slate-400 mb-1">【圖 1】外圓 + 豎線</span>
+                <svg width="60" height="60" viewBox="0 0 60 60" class="border border-slate-700 rounded bg-slate-950">
+                  <circle cx="30" cy="30" r="22" stroke="#ec4899" stroke-width="2.5" fill="none" />
+                  <line x1="30" y1="8" x2="30" y2="52" stroke="#ec4899" stroke-width="2.5" />
+                </svg>
+              </div>
+              <span class="text-slate-500 font-bold text-lg">＋</span>
+              <div class="flex flex-col items-center">
+                <span class="text-[11px] text-slate-400 mb-1">【圖 2】外圓 + 橫線</span>
+                <svg width="60" height="60" viewBox="0 0 60 60" class="border border-slate-700 rounded bg-slate-950">
+                  <circle cx="30" cy="30" r="22" stroke="#ec4899" stroke-width="2.5" fill="none" />
+                  <line x1="8" y1="30" x2="52" y2="30" stroke="#ec4899" stroke-width="2.5" />
+                </svg>
+              </div>
+              <span class="text-pink-400 font-bold text-sm">XOR 疊加 ➔</span>
+              <div class="flex flex-col items-center">
+                <span class="text-[11px] text-emerald-400 font-bold mb-1">【圖 3 結果】十字符號</span>
+                <svg width="60" height="60" viewBox="0 0 60 60" class="border border-emerald-500/50 rounded bg-slate-950 shadow-lg shadow-emerald-500/10">
+                  <line x1="30" y1="8" x2="30" y2="52" stroke="#10b981" stroke-width="2.5" />
+                  <line x1="8" y1="30" x2="52" y2="30" stroke="#10b981" stroke-width="2.5" />
+                </svg>
+              </div>
+            </div>
+            <div class="text-[11px] text-slate-400 italic">
+              解析：外層圓圈在圖 1 與圖 2 都有出現，因此抵消消失；豎線與橫線各自只出現一次，因此保留組合為十字！
+            </div>
+          </div>
+
+          <!-- Walkthrough 2: Cube Fold -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+            <div class="flex items-center gap-2 text-pink-300 font-bold text-sm">
+              <span>💡 心法二：立方體 6 面展開圖秒殺原則</span>
+            </div>
+            <ul class="list-disc list-inside text-slate-400 space-y-1 text-xs">
+              <li><strong>「隔一格必相對」</strong>：在同一條直排或橫排上，中間相隔一格的兩個面，摺成 3D 立方體後互為<strong>相對面</strong>（永遠不可能相鄰！）。</li>
+              <li><strong>「反向排除法」</strong>：如果題目選項將兩個「相對面」畫在相鄰的兩個可見面上，直接判定為錯誤排除！</li>
+            </ul>
+          </div>
+
+          <!-- Interactive Warm-Up Mini-Quiz -->
+          <div class="bg-indigo-950/20 border border-indigo-500/30 rounded-xl p-4 space-y-3" id="warmup_spatial">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[11px] font-bold">
+                🎮 開始前熱身小試 (不計入時間與成績)
+              </span>
+              <button id="warmup_reset_spatial" onclick="resetWarmup('spatial')" class="hidden text-xs text-indigo-400 hover:text-indigo-300 underline">
+                🔄 重新嘗試
+              </button>
+            </div>
+            <p class="font-bold text-white text-xs sm:text-sm">
+              【熱身題】圖 1 為「正方形外框 ＋ 左上對角線 ╲」，圖 2 為「正方形外框 ＋ 右上對角線 ╱」。依據 XOR 疊加相消律，圖 3 應該呈現什麼圖案？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="answerWarmup('spatial', 0)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                A. 正方形外框 ＋ 雙交叉對角線 ╳
+              </button>
+              <button type="button" onclick="answerWarmup('spatial', 1)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                B. 僅有雙交叉對角線 ╳（正方形相消）
+              </button>
+              <button type="button" onclick="answerWarmup('spatial', 2)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                C. 僅有正方形外框（對角線相消）
+              </button>
+              <button type="button" onclick="answerWarmup('spatial', 3)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                D. 完全空白無任何圖案
+              </button>
+            </div>
+            <div id="warmup_fb_spatial" class="hidden"></div>
+          </div>
         </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <h4 class="font-bold text-pink-400 text-xs mb-1">2. 3×3 瑞文九宮格：XOR 疊加相消律</h4>
-          <p class="text-slate-400">「圖一」與「圖二」疊加生成「圖三」。重複出現的線段<strong>相消消失</strong>；僅出現單次的線段<strong>保留</strong>。</p>
+
+        <!-- ================= PANEL 2: MECHANICAL ================= -->
+        <div id="mpanel_mechanical" class="manual-panel hidden space-y-5">
+          <div class="bg-gradient-to-r from-cyan-950/40 to-slate-900 border border-cyan-500/30 rounded-xl p-4">
+            <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">科技巨頭 & 工程選拔經典</span>
+            <h4 class="text-base font-black text-white mt-1">⚙️ 機械齒輪傳動：轉向判定律與速比心智模擬</h4>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              激發頂葉<strong>動態物理心智模擬 (Mental Simulation)</strong>，評估在複雜機械系統中的快速運算與推導能力。
+            </p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-cyan-300 font-bold text-sm">
+              <span>💡 心法一：齒輪轉向交替律</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-400">
+              <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                <div class="text-cyan-400 font-bold mb-1">🔄 齒輪互相直接咬合</div>
+                <p>每經過一級接觸，方向反轉一次！</p>
+                <p class="mt-1 font-mono text-[11px] text-slate-300">1 (順) ➔ 2 (逆) ➔ 3 (順) ➔ 4 (逆)</p>
+                <span class="text-[11px] text-emerald-400 font-bold">奇數號同向、偶數號反向</span>
+              </div>
+              <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                <div class="text-cyan-400 font-bold mb-1">🔗 皮帶傳動連接</div>
+                <p>• <strong>平行皮帶</strong>：兩輪旋轉方向<strong>相同</strong>。</p>
+                <p>• <strong>交叉皮帶 (8字形)</strong>：兩輪旋轉方向<strong>相反</strong>。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+            <div class="flex items-center gap-2 text-cyan-300 font-bold text-sm">
+              <span>💡 心法二：齒數與圈數速比公式</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed text-xs">
+              齒輪互相咬合傳動時，齒輪表面走過的<strong>總齒數完全守恆</strong>：<br>
+              <span class="inline-block my-1.5 px-3 py-1 bg-slate-900 border border-slate-800 rounded-lg font-mono text-cyan-300 font-bold">
+                公式：轉動圈數 × 齒輪齒數 ＝ 定值 (總位移齒數)
+              </span><br>
+              • <strong>齒數越少，轉速越快</strong>（小齒輪轉得多）；<br>
+              • <strong>齒數越多，轉速越慢</strong>（大齒輪轉得少）。
+            </p>
+          </div>
+
+          <!-- Interactive Warm-Up Mini-Quiz -->
+          <div class="bg-indigo-950/20 border border-indigo-500/30 rounded-xl p-4 space-y-3" id="warmup_mechanical">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[11px] font-bold">
+                🎮 開始前熱身小試 (不計入時間與成績)
+              </span>
+              <button id="warmup_reset_mechanical" onclick="resetWarmup('mechanical')" class="hidden text-xs text-indigo-400 hover:text-indigo-300 underline">
+                🔄 重新嘗試
+              </button>
+            </div>
+            <p class="font-bold text-white text-xs sm:text-sm">
+              【熱身題】齒輪 A（順時針旋轉，15 齒）直接咬合齒輪 B（30 齒），齒輪 B 再直接咬合齒輪 C（10 齒）。當齒輪 A 順時針轉動 2 圈時，齒輪 C 的轉向與圈數為何？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="answerWarmup('mechanical', 0)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                A. 逆時針旋轉，1 圈
+              </button>
+              <button type="button" onclick="answerWarmup('mechanical', 1)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                B. 順時針旋轉，3 圈
+              </button>
+              <button type="button" onclick="answerWarmup('mechanical', 2)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                C. 逆時針旋轉，3 圈
+              </button>
+              <button type="button" onclick="answerWarmup('mechanical', 3)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                D. 順時針旋轉，1.5 圈
+              </button>
+            </div>
+            <div id="warmup_fb_mechanical" class="hidden"></div>
+          </div>
         </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <h4 class="font-bold text-indigo-400 text-xs mb-1">3. 沃森 4-Card 證偽原則 (Modus Tollens)</h4>
-          <p class="text-slate-400">規則「若 P 則 Q」，檢驗真偽必須翻開 <strong>P（肯定前件）</strong> 與 <strong>非 Q（否定後件）</strong>。翻 Q 是確認偏誤毫無意義！</p>
+
+        <!-- ================= PANEL 3: NUMERICAL ================= -->
+        <div id="mpanel_numerical" class="manual-panel hidden space-y-5">
+          <div class="bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl p-4">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">頂尖外商投行 Quant & 管顧 Case Fast Math</span>
+            <h4 class="text-base font-black text-white mt-1">📊 數理矩陣、符號天平與商業估算速算</h4>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              鍛鍊頂內溝與短期海馬迴數理工作記憶，建立快速等價置換與百分比估算直覺。
+            </p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-emerald-300 font-bold text-sm">
+              <span>💡 心法一：天平符號代數置換</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed text-xs">
+              天平題目本質是「聯立一元一次方程式」，解法是<strong>尋找共有仲介物進行轉換</strong>：<br>
+              • 例如：已知 2 ▲ ＝ 3 ●，且 1 ● ＝ 2 ■。<br>
+              • 解法：將右邊的 3 ● 替換成 3 × 2 ■ ＝ 6 ■。因此 2 ▲ ＝ 6 ■ ➔ 1 ▲ ＝ 3 ■。
+            </p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+            <div class="flex items-center gap-2 text-emerald-300 font-bold text-sm">
+              <span>💡 心法二：九宮格函數關係</span>
+            </div>
+            <p class="text-slate-400 text-xs">
+              矩陣填空優先由第一行（左到右）找規律，通常為：<br>
+              • 運算疊加：第 1 格 × 第 2 格 ＋ 固定值 ＝ 第 3 格；<br>
+              • 守恆性：每行的總和或乘積保持不變。
+            </p>
+          </div>
+
+          <!-- Interactive Warm-Up Mini-Quiz -->
+          <div class="bg-indigo-950/20 border border-indigo-500/30 rounded-xl p-4 space-y-3" id="warmup_numerical">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[11px] font-bold">
+                🎮 開始前熱身小試 (不計入時間與成績)
+              </span>
+              <button id="warmup_reset_numerical" onclick="resetWarmup('numerical')" class="hidden text-xs text-indigo-400 hover:text-indigo-300 underline">
+                🔄 重新嘗試
+              </button>
+            </div>
+            <p class="font-bold text-white text-xs sm:text-sm">
+              【熱身題】已知天平一：「2 顆五角星 ★★ ＝ 3 個愛心 ♥♥♥」；天平二：「1 個愛心 ♥ ＝ 2 顆鑽石 ♦♦」。請問 1 顆五角星 ★ 等於幾顆鑽石 ♦？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="answerWarmup('numerical', 0)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                A. 2 顆 ♦
+              </button>
+              <button type="button" onclick="answerWarmup('numerical', 1)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                B. 3 顆 ♦
+              </button>
+              <button type="button" onclick="answerWarmup('numerical', 2)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                C. 4 顆 ♦
+              </button>
+              <button type="button" onclick="answerWarmup('numerical', 3)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                D. 6 顆 ♦
+              </button>
+            </div>
+            <div id="warmup_fb_numerical" class="hidden"></div>
+          </div>
         </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <h4 class="font-bold text-emerald-400 text-xs mb-1">4. 數獨專注破題技巧 (Sudoku Strategy)</h4>
-          <p class="text-slate-400">先尋找全盤出現次數最多的數字進行十字交叉排查；若遇困難，切換為「筆記模式」記錄某格的唯二可能候選數。</p>
+
+        <!-- ================= PANEL 4: VERBAL ================= -->
+        <div id="mpanel_verbal" class="manual-panel hidden space-y-5">
+          <div class="bg-gradient-to-r from-indigo-950/40 to-slate-900 border border-indigo-500/30 rounded-xl p-4">
+            <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">認知心理學里程碑 & GMAT 批判思維</span>
+            <h4 class="text-base font-black text-white mt-1">🔤 沃森 4-Card 選擇任務與假言邏輯證偽</h4>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              擊破人類與生俱來的<strong>「確認偏誤 (Confirmation Bias)」</strong>，建立嚴謹的「否定後件 (Modus Tollens)」反駁思維。
+            </p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-indigo-300 font-bold text-sm">
+              <span>💡 核心金律：若 P 則 Q 的破局點只有一種！</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed text-xs">
+              若給定規則：「如果 P，則 Q」（若正面是母音，背面必為偶數）。<br>
+              世界上只有一種情況能判定此規則為假：<strong class="text-rose-400">「P 出現了，但 Q 竟然沒有出現（即 P 且 非 Q）」！</strong>
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="p-3 bg-emerald-950/30 border border-emerald-500/30 rounded-lg">
+                <span class="font-bold text-emerald-400">✅ 必翻的兩張牌</span>
+                <p class="text-slate-300 mt-1">1. <strong>肯定前件 P</strong>（檢查背後是否有 Q）</p>
+                <p class="text-slate-300">2. <strong>否定後件 非 Q</strong>（檢查背後是否藏有 P！）</p>
+              </div>
+              <div class="p-3 bg-rose-950/30 border border-rose-500/30 rounded-lg">
+                <span class="font-bold text-rose-400">❌ 絕不要翻的陷阱牌</span>
+                <p class="text-slate-300 mt-1">• <strong>翻 Q（確認偏誤）</strong>：就算背後是非 P 也沒有違規！</p>
+                <p class="text-slate-300">• <strong>翻 非 P</strong>：規則根本沒限制非 P 會怎樣。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Warm-Up Mini-Quiz -->
+          <div class="bg-indigo-950/20 border border-indigo-500/30 rounded-xl p-4 space-y-3" id="warmup_verbal">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[11px] font-bold">
+                🎮 開始前熱身小試 (不計入時間與成績)
+              </span>
+              <button id="warmup_reset_verbal" onclick="resetWarmup('verbal')" class="hidden text-xs text-indigo-400 hover:text-indigo-300 underline">
+                🔄 重新嘗試
+              </button>
+            </div>
+            <p class="font-bold text-white text-xs sm:text-sm">
+              【熱身題】公司出差報銷審核規則：「如果報銷項目是出國差旅（P），則必須附上機票存根聯（Q）」。四張單據分別為：①『出國差旅單』、②『國內差旅單』、③『附有機票存根』、④『無機票存根』。請問必須檢查哪兩張單據才能確認完全合規？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="answerWarmup('verbal', 0)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                A. ① 出國差旅單 與 ③ 附有機票存根
+              </button>
+              <button type="button" onclick="answerWarmup('verbal', 1)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                B. ① 出國差旅單 與 ④ 無機票存根
+              </button>
+              <button type="button" onclick="answerWarmup('verbal', 2)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                C. ② 國內差旅單 與 ④ 無機票存根
+              </button>
+              <button type="button" onclick="answerWarmup('verbal', 3)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition">
+                D. 全部四張單據都要逐一檢查
+              </button>
+            </div>
+            <div id="warmup_fb_verbal" class="hidden"></div>
+          </div>
         </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <h4 class="font-bold text-amber-400 text-xs mb-1">5. 雙重工作記憶 2-Back</h4>
-          <p class="text-slate-400">在心中維持一條長度為 2 的滑動隊列，隨時拋棄最舊資訊，更新最新視覺刺激，刺激海馬迴與前額葉交匯區。</p>
+
+        <!-- ================= PANEL 5: NBACK ================= -->
+        <div id="mpanel_nback" class="manual-panel hidden space-y-5">
+          <div class="bg-gradient-to-r from-amber-950/40 to-slate-900 border border-amber-500/30 rounded-xl p-4">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">醫學臨床認證防失智抗老核心</span>
+            <h4 class="text-base font-black text-white mt-1">🧠 雙重工作記憶 2-Back 神經刺激</h4>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              前額葉灰質與海馬迴的高強度動態緩衝訓練。國際臨床研究證實持續進行 N-Back 訓練能有效逆轉認知功能衰退！
+            </p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-amber-300 font-bold text-sm">
+              <span>💡 心法：滑動記憶隊列 (Sliding Window of 2)</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed text-xs">
+              在心中維持一個長度為 2 的滑動佇列。當看到第 <strong>$K$</strong> 步的光點時，眼睛不要只看當前，大腦要瞬間回溯比對 <strong>第 $K-2$ 步（上上次）</strong> 的點位！<br>
+              • <strong>兩者位置相同</strong> ➔ 立即按 <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-amber-300 border border-slate-700">1</kbd> 【一致 (MATCH)】！<br>
+              • <strong>兩者位置不同</strong> ➔ 立即按 <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">2</kbd> 【不一致 (MISMATCH)】！
+            </p>
+          </div>
+
+          <!-- Interactive Warm-Up Mini-Quiz -->
+          <div class="bg-indigo-950/20 border border-indigo-500/30 rounded-xl p-4 space-y-3" id="warmup_nback">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[11px] font-bold">
+                🎮 開始前熱身小試 (不計入時間與成績)
+              </span>
+              <button id="warmup_reset_nback" onclick="resetWarmup('nback')" class="hidden text-xs text-indigo-400 hover:text-indigo-300 underline">
+                🔄 重新嘗試
+              </button>
+            </div>
+            <p class="font-bold text-white text-xs sm:text-sm">
+              【熱身題】九宮格連續閃爍點位歷史：① [左下角] ➔ ② [正上方] ➔ ③ [右下角] ➔ ④ [正上方]。請問當前第 ④ 步刺激，與其 2-Back 對應項（第 ② 步）是否一致？
+            </p>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="answerWarmup('nback', 0)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-center text-xs font-bold transition">
+                A. 一致 (MATCH)
+              </button>
+              <button type="button" onclick="answerWarmup('nback', 1)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-center text-xs font-bold transition">
+                B. 不一致 (MISMATCH)
+              </button>
+            </div>
+            <div id="warmup_fb_nback" class="hidden"></div>
+          </div>
+        </div>
+
+        <!-- ================= PANEL 6: SUDOKU ================= -->
+        <div id="mpanel_sudoku" class="manual-panel hidden space-y-5">
+          <div class="bg-gradient-to-r from-purple-950/40 to-slate-900 border border-purple-500/30 rounded-xl p-4">
+            <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">深思冥想與全盤空間掃描</span>
+            <h4 class="text-base font-black text-white mt-1">🔢 專注數獨工坊：破題實戰技法與快捷鍵</h4>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              遠離倒數計時的高壓環境，沉浸於九宮格中進行嚴謹的交叉排除與候選數刪除。
+            </p>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-purple-300 font-bold text-sm">
+              <span>💡 三大經典數獨解法技巧</span>
+            </div>
+            <div class="space-y-2 text-xs text-slate-400">
+              <p>• <strong class="text-purple-300">唯一數法 (Naked Single)</strong>：某單元格所在行、列、3×3 宮已包含其餘 8 個不同數字，該格必填唯一的剩餘數。</p>
+              <p>• <strong class="text-purple-300">排除法 (Hidden Single)</strong>：透過相鄰行列的同數字產生「射線阻擋」，在某 3×3 宮內該數字只能填入唯一步驟。</p>
+              <p>• <strong class="text-purple-300">鉛筆草稿模式 (<kbd>N</kbd> 鍵)</strong>：卡關時切換為筆記模式，標記可能數對，減輕工作記憶負荷。</p>
+            </div>
+          </div>
+
+          <!-- Interactive Warm-Up Mini-Quiz -->
+          <div class="bg-indigo-950/20 border border-indigo-500/30 rounded-xl p-4 space-y-3" id="warmup_sudoku">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[11px] font-bold">
+                🎮 開始前熱身小試 (不計入時間與成績)
+              </span>
+              <button id="warmup_reset_sudoku" onclick="resetWarmup('sudoku')" class="hidden text-xs text-indigo-400 hover:text-indigo-300 underline">
+                🔄 重新嘗試
+              </button>
+            </div>
+            <p class="font-bold text-white text-xs sm:text-sm">
+              【熱身題】在標準 9×9 數獨中，某一直列中已經填入了 [1, 2, 3, 5, 6, 7, 8, 9]，其中第 4 格是空格。依據數獨行、列、宮不可重複 1～9 的規則，該格必填多少？
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              <button type="button" onclick="answerWarmup('sudoku', 0)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-center text-xs font-bold transition">
+                A. 4
+              </button>
+              <button type="button" onclick="answerWarmup('sudoku', 1)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-center text-xs font-bold transition">
+                B. 0
+              </button>
+              <button type="button" onclick="answerWarmup('sudoku', 2)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-center text-xs font-bold transition">
+                C. 6
+              </button>
+              <button type="button" onclick="answerWarmup('sudoku', 3)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-center text-xs font-bold transition">
+                D. 無法確定
+              </button>
+            </div>
+            <div id="warmup_fb_sudoku" class="hidden"></div>
+          </div>
+        </div>
+
+        <!-- ================= PANEL 7: SUMMARY ================= -->
+        <div id="mpanel_summary" class="manual-panel hidden space-y-4">
+          <div class="bg-gradient-to-r from-slate-900 to-indigo-950/50 border border-slate-700 rounded-xl p-4">
+            <h4 class="text-base font-black text-white">📜 全題型破題速查金律與快捷鍵</h4>
+            <p class="text-xs text-slate-400 mt-1">
+              將所有關鍵直覺烙印在潛意識中，在高壓情境下迅速調用。
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-pink-400">🧩 3×3 瑞文與展開圖</span>
+              <p class="text-slate-400 mt-1">重複線相消、單一線保留；展開圖隔一格必為相對面永不相鄰。</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-cyan-400">⚙️ 機械齒輪傳動</span>
+              <p class="text-slate-400 mt-1">互咬方向必反轉（奇數同、偶數反）；轉速反比於齒數 (圈數×齒數=定值)。</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-emerald-400">📊 數理天平矩陣</span>
+              <p class="text-slate-400 mt-1">尋找共同仲介符號代入；15% = 10% + 5% 快速心算拆解。</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-indigo-400">🔤 沃森 4-Card 證偽</span>
+              <p class="text-slate-400 mt-1">翻「肯定前件 P」與「否定後件 非 Q」；絕不翻 Q（避免確認偏誤）。</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-amber-400">🧠 2-Back 工作記憶</span>
+              <p class="text-slate-400 mt-1">跳過前一題，精確比對「上上次」出現的位置；維護長度為 2 的心智隊列。</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-purple-400">🔢 專注數獨工坊</span>
+              <p class="text-slate-400 mt-1">行/列/宮唯一數法；按 <kbd class="px-1 py-0.5 rounded bg-slate-800 text-purple-300">N</kbd> 標註草稿，點數字同數全盤發光。</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="stepManualTab(-1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition">
+            ⬅ 上一個題型
+          </button>
+          <button type="button" onclick="stepManualTab(1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition">
+            下一個題型 ➡
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeManualModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition">
+            關閉說明
+          </button>
+          <button type="button" onclick="closeManualModal(); if(currentMainTab==='stress') startApp();" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-bold transition shadow-lg shadow-indigo-600/20">
+            🔥 熱身完畢，開始挑戰！
+          </button>
         </div>
       </div>
 
-      <div class="pt-2 text-right">
-        <button onclick="closeManualModal()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition">掌握心法，開始挑戰</button>
-      </div>
     </div>
   </div>
 
@@ -2193,11 +2661,174 @@
       document.getElementById('setupView').classList.remove('hidden');
     }
 
-    function openManualModal() {
+    const manualTabOrder = ['spatial', 'mechanical', 'numerical', 'verbal', 'nback', 'sudoku', 'summary'];
+    let currentManualTab = 'spatial';
+
+    function openManualModal(defaultTab = 'spatial') {
       document.getElementById('manualModal').classList.remove('hidden');
+      switchManualTab(defaultTab);
     }
+
     function closeManualModal() {
       document.getElementById('manualModal').classList.add('hidden');
+    }
+
+    function switchManualTab(tabKey) {
+      if (!manualTabOrder.includes(tabKey)) tabKey = 'spatial';
+      currentManualTab = tabKey;
+
+      // Update nav buttons
+      document.querySelectorAll('.manual-tab-btn').forEach(btn => {
+        const isTarget = btn.getAttribute('data-mtab') === tabKey;
+        btn.className = isTarget
+          ? "manual-tab-btn active-mtab px-3 py-1.5 rounded-lg whitespace-nowrap transition bg-indigo-600 text-white shadow font-bold text-xs"
+          : "manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800 font-bold text-xs";
+      });
+
+      // Update panels
+      document.querySelectorAll('.manual-panel').forEach(panel => {
+        panel.classList.add('hidden');
+      });
+      const targetPanel = document.getElementById(`mpanel_${tabKey}`);
+      if (targetPanel) {
+        targetPanel.classList.remove('hidden');
+      }
+
+      // Scroll to top
+      const contentBody = document.getElementById('manualTabContent');
+      if (contentBody) contentBody.scrollTop = 0;
+    }
+
+    function stepManualTab(delta) {
+      let idx = manualTabOrder.indexOf(currentManualTab);
+      if (idx === -1) idx = 0;
+      idx = (idx + delta + manualTabOrder.length) % manualTabOrder.length;
+      switchManualTab(manualTabOrder[idx]);
+    }
+
+    // Warm-Up Quizzes logic
+    const warmupQuizzes = {
+      spatial: {
+        answered: false,
+        selected: null,
+        correct: 1, // B
+        explanation: "正方形外框在圖 1 與圖 2 均出現（重複），因此在圖 3 互相抵消消失；而兩條對角線 ╲ 與 ╱ 各自只出現一次（單獨存在），因此在圖 3 被保留，組合成雙交叉線 ╳！"
+      },
+      mechanical: {
+        answered: false,
+        selected: null,
+        correct: 1, // B
+        explanation: "① 旋轉方向：A(順) ➔ B(逆) ➔ C(順)，奇數個齒輪轉向與首個一致，故 C 為順時針；② 圈數計算：接觸齒數位移量 = 15 齒 × 2 圈 = 30 齒。C 齒數為 10，故轉動圈數 = 30 ÷ 10 = 3 圈！"
+      },
+      numerical: {
+        answered: false,
+        selected: null,
+        correct: 1, // B
+        explanation: "由天平二可知 1 個 ♥ = 2 顆 ♦，代入天平一的 3 個 ♥ 得到 6 顆 ♦。因此 2 顆 ★ = 6 顆 ♦ ➔ 1 顆 ★ = 3 顆 ♦！"
+      },
+      verbal: {
+        answered: false,
+        selected: null,
+        correct: 1, // B
+        explanation: "① 檢查『出國差旅單』（肯定前件 P）是否附了機票（若沒附就違規）；④ 檢查『無機票存根』（否定後件 非 Q）背後是否違規報銷了出國差旅（若無機票卻報出國差旅立刻抓到違規！）。翻『附有機票』無法推翻規則，因為國內差旅附機票並不違法！"
+      },
+      nback: {
+        answered: false,
+        selected: null,
+        correct: 0, // A
+        explanation: "當前第 ④ 步閃爍位置為 [正上方]，回溯 2 步前的第 ② 步也是 [正上方]，兩者位置完全相符，屬於【一致 (MATCH)】！"
+      },
+      sudoku: {
+        answered: false,
+        selected: null,
+        correct: 0, // A
+        explanation: "在同一列中，必須恰好填滿數字 1 到 9 且不得重複。已出現 [1, 2, 3, 5, 6, 7, 8, 9]，唯一缺失的數字正是 4，這正是數獨中基礎且強大的『唯一數法 (Naked Single)』！"
+      }
+    };
+
+    function answerWarmup(qKey, optIdx) {
+      const q = warmupQuizzes[qKey];
+      if (!q) return;
+      q.answered = true;
+      q.selected = optIdx;
+
+      const container = document.getElementById(`warmup_${qKey}`);
+      if (!container) return;
+
+      const buttons = container.querySelectorAll('.warmup-opt-btn');
+      buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === q.correct) {
+          btn.className = "warmup-opt-btn w-full p-2.5 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between border-emerald-500 bg-emerald-500/20 text-emerald-300 shadow";
+          btn.innerHTML += ' <span class="text-emerald-400 font-bold">✓ 正確</span>';
+        } else if (idx === optIdx && optIdx !== q.correct) {
+          btn.className = "warmup-opt-btn w-full p-2.5 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between border-rose-500 bg-rose-500/20 text-rose-300 shadow";
+          btn.innerHTML += ' <span class="text-rose-400 font-bold">✕ 答錯</span>';
+        } else {
+          btn.className = "warmup-opt-btn w-full p-2.5 rounded-xl border text-left text-xs font-medium text-slate-500 border-slate-800 bg-slate-950/40 opacity-50";
+        }
+      });
+
+      const feedbackEl = document.getElementById(`warmup_fb_${qKey}`);
+      if (feedbackEl) {
+        feedbackEl.classList.remove('hidden');
+        if (optIdx === q.correct) {
+          feedbackEl.className = "mt-3 p-3 rounded-xl border border-emerald-500/40 bg-emerald-950/30 text-emerald-200 text-xs leading-relaxed space-y-1";
+          feedbackEl.innerHTML = `
+            <div class="font-bold flex items-center gap-1.5 text-emerald-400">
+              <span>🎯 熱身答對！思維已就位</span>
+            </div>
+            <p>${q.explanation}</p>
+          `;
+          playTone(587.33, 'triangle', 0.15, 0.2);
+        } else {
+          feedbackEl.className = "mt-3 p-3 rounded-xl border border-rose-500/40 bg-rose-950/30 text-rose-200 text-xs leading-relaxed space-y-1";
+          feedbackEl.innerHTML = `
+            <div class="font-bold flex items-center gap-1.5 text-rose-400">
+              <span>💡 思考盲點提醒</span>
+            </div>
+            <p>${q.explanation}</p>
+          `;
+          playTone(220, 'sawtooth', 0.2, 0.2);
+        }
+      }
+
+      const resetBtn = document.getElementById(`warmup_reset_${qKey}`);
+      if (resetBtn) resetBtn.classList.remove('hidden');
+    }
+
+    function resetWarmup(qKey) {
+      const q = warmupQuizzes[qKey];
+      if (!q) return;
+      q.answered = false;
+      q.selected = null;
+
+      const container = document.getElementById(`warmup_${qKey}`);
+      if (!container) return;
+
+      const labels = {
+        spatial: ['A. 正方形外框 ＋ 雙交叉對角線 ╳', 'B. 僅有雙交叉對角線 ╳（正方形相消）', 'C. 僅有正方形外框（對角線相消）', 'D. 完全空白無任何圖案'],
+        mechanical: ['A. 逆時針旋轉，1 圈', 'B. 順時針旋轉，3 圈', 'C. 逆時針旋轉，3 圈', 'D. 順時針旋轉，1.5 圈'],
+        numerical: ['A. 2 顆 ♦', 'B. 3 顆 ♦', 'C. 4 顆 ♦', 'D. 6 顆 ♦'],
+        verbal: ['A. ① 出國差旅單 與 ③ 附有機票存根', 'B. ① 出國差旅單 與 ④ 無機票存根', 'C. ② 國內差旅單 與 ④ 無機票存根', 'D. 全部四張單據都要逐一檢查'],
+        nback: ['A. 一致 (MATCH)', 'B. 不一致 (MISMATCH)'],
+        sudoku: ['A. 4', 'B. 0', 'C. 6', 'D. 無法確定']
+      };
+
+      const buttons = container.querySelectorAll('.warmup-opt-btn');
+      buttons.forEach((btn, idx) => {
+        btn.disabled = false;
+        btn.className = "warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-indigo-500 hover:bg-indigo-950/30 text-slate-300 text-left text-xs font-medium transition";
+        if (labels[qKey] && labels[qKey][idx]) {
+          btn.innerText = labels[qKey][idx];
+        }
+      });
+
+      const feedbackEl = document.getElementById(`warmup_fb_${qKey}`);
+      if (feedbackEl) feedbackEl.classList.add('hidden');
+
+      const resetBtn = document.getElementById(`warmup_reset_${qKey}`);
+      if (resetBtn) resetBtn.classList.add('hidden');
     }
 
     function openHistoryModal() {
