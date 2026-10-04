@@ -1156,8 +1156,20 @@
     </div>
   </div>
 
-  <footer class="border-t border-slate-800/60 py-3 text-center text-xs text-slate-500">
-    CogniStress &amp; Sudoku Master &bull; 專業外商抗壓與全腦神經活化系統
+  <footer class="border-t border-slate-800/60 py-4 text-center text-xs text-slate-500 space-y-1.5">
+    <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-slate-400 font-medium">
+      <span>CogniStress &amp; Sudoku Master</span>
+      <span class="text-slate-600">&bull;</span>
+      <span>專業外商抗壓與全腦神經活化系統</span>
+      <span class="text-slate-600">&bull;</span>
+      <span class="text-indigo-400 font-mono inline-flex items-center gap-1.5 bg-slate-900/80 px-2.5 py-0.5 rounded-full border border-slate-800 text-[11px]">
+        <span>📅</span>
+        <span>最後更新日期 (Updated)：<span id="footerUpdateDate">2026-10-04</span></span>
+      </span>
+    </div>
+    <div class="text-[11px] text-slate-600">
+      Zero-Dependency Pure Frontend &bull; 100% Client-Side Privacy &bull; MIT License
+    </div>
   </footer>
 
   <script>
@@ -1198,6 +1210,18 @@
       if (window.location.hash === '#sudoku') {
         switchMainTab('sudoku');
       }
+      try {
+        if (document.lastModified) {
+          const d = new Date(document.lastModified);
+          if (!isNaN(d.getTime())) {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            const el = document.getElementById('footerUpdateDate');
+            if (el) el.innerText = `${yyyy}-${mm}-${dd}`;
+          }
+        }
+      } catch (e) {}
     });
 
     /* =========================================================

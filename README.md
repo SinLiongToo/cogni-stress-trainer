@@ -3,6 +3,7 @@
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-success?logo=github)](https://sinliongtoo.github.io/cogni-stress-trainer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Last Updated](https://img.shields.io/badge/Updated-2026--10--04-brightgreen.svg)](#)
 [![Zero Dependency](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Vanilla%20JS)-purple.svg)](#技術架構)
 [![Web Audio API](https://img.shields.io/badge/Audio-Web%20Audio%20API-orange.svg)](#生體動態壓力機制)
 
@@ -124,3 +125,7 @@ cd cogni-stress-trainer
 ## 📜 授權協議 (License)
 
 本專案基於 [MIT License](LICENSE) 開源授權，歡迎自由學習、訓練、推廣與改進。
+
+---
+
+*最後更新日期 (Last Updated)：2026-10-04*
