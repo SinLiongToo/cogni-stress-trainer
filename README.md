@@ -1,5 +1,5 @@
-# 🧠 CogniStress Ultimate
-### 高壓認知決策與神經抗衰巔峰訓練器 (High-Pressure Cognitive Reaction & Anti-Dementia Trainer)
+# 🧠 CogniStress Ultimate & Sudoku Master
+### 高壓認知決策 × 專注數獨工坊 — 神經抗衰與邏輯巔峰訓練系統
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-success?logo=github)](https://sinliongtoo.github.io/cogni-stress-trainer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -8,13 +8,14 @@
 
 ---
 
-## 📌 緣起與設計宗旨 (Motivation)
+## 📌 緣起與雙核心架構 (System Architecture)
 
-在頂尖企業面試與高階選拔中（如 **McKinsey、BCG、Goldman Sachs、Morgan Stanley 等評估中心**），候選人常面臨在極限秒數內解析複雜邏輯的壓迫考驗。此時人體杏仁核會分泌皮質醇，容易陷入本能的恐慌與確認偏誤。
+現代神經科學與認知心理學指出，維持大腦神經可塑性（Neuroplasticity）與防範認知退化（防失智），需要兩種互補的思維刺激：
 
-神經科學（如劍橋大腦科學 CBS、PNAS 雙重 N-Back 研究）證實，**持續在高壓情境下進行「干擾抑制、三維心智空間旋轉、數理關聯解構與工作記憶更新」是刺激前額葉灰質突觸新生、延緩阿茲海默與腦認知衰退的最佳天然良方**。
+1. **⚡ 高壓動態反應訓練（極限面試與應變決策）**：在極短時限與生理緊迫下（如外商 McKinsey、BCG、投行及科技巨頭評估中心），調動背外側前額葉皮質（DLPFC），克服杏仁核帶來的恐慌與確認偏誤。
+2. **🧩 靜態深度專注訓練（數獨排除與邏輯推理）**：在免於計時壓迫的沉浸環境中，透過嚴謹的數理刪去法、候選數推導與全域空間檢索，深度鍛鍊頂下小葉與海馬迴的工作記憶與空間關聯。
 
-本專案打造了一個**完全免伺服器、純前端離線運行、具備動態加速心跳生物反饋與大腦年齡推算**的專業級高壓反應力訓練系統。
+本系統採用**雙核心獨立分流架構**，首頁頂部提供一鍵切換分頁，亦支援 URL Hash（`#stress` 與 `#sudoku`）直達，兩者在邏輯運算、鍵盤監聽與音效系統上**徹底分開、獨立運作**。
 
 ---
 
@@ -23,11 +24,16 @@
 🔗 **GitHub Pages 線上直接玩**：  
 👉 [https://sinliongtoo.github.io/cogni-stress-trainer/](https://sinliongtoo.github.io/cogni-stress-trainer/)
 
-*(支援桌面端全鍵盤極限手速作答，亦完美自適應手機與平板觸控)*
+* ⚡ **高壓認知訓練模組**：[https://sinliongtoo.github.io/cogni-stress-trainer/#stress](https://sinliongtoo.github.io/cogni-stress-trainer/#stress)
+* 🧩 **專注數獨工坊模組**：[https://sinliongtoo.github.io/cogni-stress-trainer/#sudoku](https://sinliongtoo.github.io/cogni-stress-trainer/#sudoku)
+
+*(完全免安裝、零外部伺服器依賴、全站純前端離線可用，支援桌面全鍵盤快捷鍵與手機/平板觸控)*
 
 ---
 
-## 🧩 五大高階認知維度 (Core Cognitive Pillars)
+## 🧩 模組一：五大高階認知維度 (CogniStress Ultimate)
+
+針對世界級管理顧問公司、外商投行及科技業高階筆試設計：
 
 | 維度 | 經典測驗機制 | 面試實戰應用 | 神經科學與防失智機制 |
 | :--- | :--- | :--- | :--- |
@@ -37,48 +43,55 @@
 | **🔤 批判推理與證偽** | 多條件假言三段論、德摩根定律否定轉換、**Wason 4-Card 證偽任務** | 對標 GMAT、Watson-Glaser 決策能力測試 | 抑制「確認偏誤 (Confirmation Bias)」，強化前額葉嚴謹邏輯 |
 | **🧠 雙重工作記憶 2-Back** | 9 格光點連續推進，動態比對滑動隊列中 2 題前的點位 | 國際醫學界唯一證實可擴充流體智力 (Fluid Intelligence) | 高強度活化背外側前額葉皮質 (DLPFC) 與工作記憶容量 |
 
----
-
-## ⚡ 生體動態壓力引擎 (Stress & Biofeedback Engine)
-
-1. **三段嚴苛秒數**：
-   - ⚡ **極限競賽 (6 秒/題)**：Mensa 級競速節奏，逼出直覺與邏輯極限。
-   - 🎯 **外商標準 (10 秒/題)**：SHL / Korn Ferry 典型高壓節奏。
-   - 🧠 **深思熟慮 (18 秒/題)**：專注於推導架構與神經突觸重建。
-2. **動態加速心跳音效 (Dynamic Accelerating Audio)**：
-   - 使用原生 **Web Audio API** 即時合成心跳聲（不依賴任何外部音訊檔）。
-   - 倒數剩餘 4 秒內，心跳頻率自動由 **80 BPM 動態加速至 150 BPM**，音頻同步拔高，伴隨螢幕四周脈動紅光，還原極限面試心跳加速的生理逆境。
-3. **電競級鍵盤快捷鍵**：
-   - 支援鍵盤數字鍵 <kbd>1</kbd>、<kbd>2</kbd>、<kbd>3</kbd>、<kbd>4</kbd> 秒速作答，毫秒級反應不浪費在游標位移上。
+### ⚡ 生體動態壓力引擎
+* **三檔極限秒數**：⚡ 極限競賽 (6s)、🎯 外商標準 (10s)、🧠 深思熟慮 (18s)。
+* **加速心跳生物反饋**：Web Audio API 原生合成。最後 4 秒心跳由 **80 BPM 飆升至 150 BPM**，螢幕伴隨脈衝紅光邊框，模擬臨場心跳加速逆境。
+* **快捷鍵秒答**：鍵盤 <kbd>1</kbd>、<kbd>2</kbd>、<kbd>3</kbd>、<kbd>4</kbd> 秒速作答。
+* **全維度診斷評估**：五軸動態 SVG 雷達圖、推算大腦神經年齡（20s 頂峰腦 ➔ 60s 疲憊腦）、本機錯題專攻庫（LocalStorage）。
 
 ---
 
-## 📈 評估診斷與數據追蹤 (Diagnostics & Tracking)
+## 🔢 模組二：專注數獨工坊 (Sudoku Master)
 
-* **推算大腦神經年齡 (Estimated Cognitive Brain Age)**：
-  - 綜合決策反應時間（精確至毫秒）、抗壓正確率與心理韌性，精準評估大腦活力層級（20s 頂峰黃金腦 ➔ 60s 疲憊腦）。
-* **五軸動態 SVG 雷達圖**：
-  - 視覺化呈現「圖形空間、機械齒輪、數理圖表、批判證偽、2-Back工作記憶」五維發展。
-* **本機錯題庫 (Weakness Error Bank)**：
-  - 整合 `localStorage`，做錯題目一鍵加入弱點庫，隨時啟動「🎯 歷史錯題專攻模式」進行針對性脫敏訓練。
-* **歷史成長趨勢記錄**：
-  - 追蹤歷史抗壓決策指數 (PDI) 與反應秒數下降趨勢，見證大腦可塑性成長。
+與高壓模組獨立分開的沉浸式數獨空間，提供世界標準的九宮格邏輯思維挑戰：
+
+### 1. 核心機制與演算法
+* **程序式保證解生成（Procedural Backtracking Generator）**：對角 3x3 九宮格獨立隨機填充，配合回溯搜索解題演算法，以挖洞法精確生成具備唯一邏輯解之謎題。
+* **四級難度梯度**：
+  - 🌱 **初階入門 (38 已知數)**：適合熱身與直觀排除法演練。
+  - 🌿 **中階進階 (30 已知數)**：需要基礎行、列、宮交錯推理。
+  - 🔥 **高階骨灰 (25 已知數)**：考驗區塊刪除法（Pointing/Claiming）與隱性數對。
+  - 👑 **專家大師 (21 已知數)**：極限骨灰級挑戰，極考驗多步驟候選數推導。
+
+### 2. 人性化輔助與電競級操作介面
+* **✏️ 鉛筆草稿模式（Pencil Notes）**：支援在單元格內標註 1～9 候選數（3x3 迷你排列），按快捷鍵 <kbd>N</kbd> 即時切換。
+* **🎯 十字聚焦與全域同數發光**：選中格自動高亮所在行、列與 3x3 宮，點擊數字時全盤相同數字同步高亮，瞬間洞察空間布局。
+* **⚠️ 行列宮衝突實時警示**：違規數字填入時即時紅字警示與震動動畫。
+* **❤️ 3 次失誤扣血機制**：防範亂猜盲填，培養嚴謹推導習慣。
+* **💡 智慧提示 (Hint) 與 ↩️ 復原 (Undo)**：卡關時一鍵揭曉正確數字，亦可隨時撤銷填入。
+* **⌨️ 完整鍵盤快捷鍵**：
+  - <kbd>1</kbd> ～ <kbd>9</kbd>：填入數字 / 標註草稿
+  - <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd>：移動聚焦格
+  - <kbd>Backspace</kbd> / <kbd>Delete</kbd>：清除單元格
+  - <kbd>N</kbd>：切換鉛筆草稿模式
+  - <kbd>H</kbd>：獲取提示
+  - <kbd>Z</kbd>：復原上一步
 
 ---
 
 ## 🛠️ 技術架構 (Tech Stack)
 
 * **架構**：單一檔案自包含 (Zero-Dependency Single-Page App)
-* **樣式**：Tailwind CSS (自適應排版、深色霓虹科技風 HUD)
-* **圖形繪製**：原生 SVG（幾何九宮格、展開立方體、動態齒輪系統、雷達圖全向量無失真）
-* **音訊合成**：Web Audio API (OscillatorNode, GainNode 物理波形生成)
-* **資料儲存**：Client-Side LocalStorage (100% 離線隱私保密，免後端伺服器)
+* **樣式**：Tailwind CSS (深色太空科技 HUD 風格，完美適配行動裝置與桌面寬螢幕)
+* **向量圖形**：原生 SVG（幾何九宮格、展開立方體、齒輪咬合物理、雷達圖全向量渲染）
+* **音訊合成**：Web Audio API (OscillatorNode, GainNode 純程式物理波形生成)
+* **狀態管理與儲存**：Client-Side LocalStorage 儲存錯題與紀錄，100% 離線隱私保障
 
 ---
 
 ## 💻 本地運行 (Local Run)
 
-無需安裝 Node.js 或任何套件管理器：
+無需安裝 Node.js、npm 或任何編譯工具：
 ```bash
 # 1. 複製專案
 git clone https://github.com/SinLiongToo/cogni-stress-trainer.git
@@ -92,4 +105,4 @@ cd cogni-stress-trainer
 
 ## 📜 授權協議 (License)
 
-本專案基於 [MIT License](LICENSE) 開源授權，歡迎學習、個人抗壓訓練與分享。
+本專案基於 [MIT License](LICENSE) 開源授權，歡迎自由學習、訓練、推廣與改進。
