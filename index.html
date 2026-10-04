@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CogniStress Ultimate - 全腦高壓反應與神經抗衰巔峰訓練系統</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes pulse-stress {
+      0%, 100% { box-shadow: inset 0 0 25px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: inset 0 0 55px rgba(239, 68, 68, 0.7); border-color: rgba(239, 68, 68, 0.95); }
+    }
+    .stress-active {
+      animation: pulse-stress 0.6s infinite;
+    }
+    @keyframes subtle-shake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-4px, 2px); }
+      40% { transform: translate(4px, -2px); }
+      60% { transform: translate(-3px, -1px); }
+      80% { transform: translate(3px, 1px); }
+    }
+    .shake-error {
+      animation: subtle-shake 0.35s ease-in-out;
+    }
+    .gear-spin-cw {
+      transform-origin: center;
+      animation: spin 6s linear infinite;
+    }
+    .gear-spin-ccw {
+      transform-origin: center;
+      animation: spin-rev 6s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes spin-rev { 100% { transform: rotate(-360deg); } }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white antialiased">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-600 to-rose-500 flex items-center justify-center shadow-lg shadow-indigo-600/30">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-black text-lg text-white tracking-wide">CogniStress <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">ULTIMATE 巔峰全配版</span></h1>
+          </div>
+          <p class="text-xs text-slate-400">McKinsey • Goldman • Mensa 規格 × 劍橋大腦科學雙重 N-Back 與神經逆齡追蹤</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="soundBtn" onclick="toggleAudio()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold border border-slate-700">
+          <span id="soundIcon">🔊</span>
+          <span id="soundText" class="hidden sm:inline">動態心跳與音效</span>
+        </button>
+        <button onclick="openHistoryModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition text-xs font-semibold border border-slate-700 flex items-center gap-1">
+          📈 <span class="hidden sm:inline">歷史雷達</span>
+        </button>
+        <button onclick="openManualModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition text-xs font-semibold border border-slate-700">
+          📖 破題心法
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Area -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+
+    <!-- Screen 1: Configuration & Dashboard -->
+    <div id="setupView" class="space-y-6">
+      
+      <!-- Top Spec Banner -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 p-6 sm:p-8 shadow-2xl">
+        <div class="absolute -right-12 -bottom-12 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-bold mb-3">
+            🧠 全腦五大認知柱 × 鍵盤極限速攻 × 大腦年齡推算
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            高階壓力認知對抗與逆齡訓練
+          </h2>
+          <p class="mt-2 text-sm text-slate-300 max-w-3xl leading-relaxed">
+            整合<strong>外商管理顧問、投資銀行筆試、Mensa 瑞文九宮格、機械齒輪傳動、商務圖表速算、沃森四卡片證偽與雙重工作記憶</strong>。結合漸進式心跳生物反饋與鍵盤數字鍵 <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-indigo-300 text-xs">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-indigo-300 text-xs">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-indigo-300 text-xs">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-indigo-300 text-xs">4</kbd> 極速作答，全方位活化前額葉突觸！
+          </p>
+
+          <!-- 5 Core Advanced Pillars -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-6">
+            <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+              <div class="flex items-center gap-1.5 text-pink-400 font-bold text-xs">
+                <span>🧩</span> 3×3 瑞文與展開圖
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1 leading-tight">
+                XOR 相消相加、正方體展開圖立體旋轉對應。
+              </p>
+            </div>
+            <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+              <div class="flex items-center gap-1.5 text-cyan-400 font-bold text-xs">
+                <span>⚙️</span> 機械齒輪與傳動
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1 leading-tight">
+                多齒輪連動咬合、轉向推演與速比心智模擬。
+              </p>
+            </div>
+            <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+              <div class="flex items-center gap-1.5 text-emerald-400 font-bold text-xs">
+                <span>📊</span> 數理矩陣與商務速算
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1 leading-tight">
+                九宮格矩陣、符號天平代數、商業損益瞬時決策。
+              </p>
+            </div>
+            <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+              <div class="flex items-center gap-1.5 text-indigo-400 font-bold text-xs">
+                <span>🔤</span> 批判推理與沃森證偽
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1 leading-tight">
+                多重三段論、德摩根定律、Wason 4-Card 排除。
+              </p>
+            </div>
+            <div class="col-span-2 sm:col-span-1 bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+              <div class="flex items-center gap-1.5 text-amber-400 font-bold text-xs">
+                <span>🧠</span> 雙重工作記憶 2-Back
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1 leading-tight">
+                前額葉高階容量擴充，世界公認防退化核心。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Card -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-7 shadow-lg space-y-6">
+        
+        <!-- Category Selection -->
+        <div>
+          <label class="block text-sm font-bold text-white mb-3 flex items-center justify-between">
+            <span class="flex items-center gap-2"><span>🎯</span> 步驟一：選擇測驗題型範圍</span>
+            <span id="errorBankBadge" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">錯題本 0 題</span>
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2.5" id="catGrid">
+            <button type="button" onclick="setMode('all')" data-cat="all" class="mode-btn active-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-indigo-500 bg-indigo-600/20 shadow-md">
+              <span class="text-2xl">🔥</span>
+              <div>
+                <div class="font-bold text-xs sm:text-sm text-white">全領域綜合</div>
+                <div class="text-[11px] text-slate-400">五大維度輪動</div>
+              </div>
+            </button>
+            <button type="button" onclick="setMode('spatial')" data-cat="spatial" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <span class="text-2xl">🧩</span>
+              <div>
+                <div class="font-bold text-xs sm:text-sm text-white">瑞文與 3D</div>
+                <div class="text-[11px] text-slate-400">XOR與展開圖</div>
+              </div>
+            </button>
+            <button type="button" onclick="setMode('mechanical')" data-cat="mechanical" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <span class="text-2xl">⚙️</span>
+              <div>
+                <div class="font-bold text-xs sm:text-sm text-white">齒輪物理</div>
+                <div class="text-[11px] text-slate-400">傳動轉向速比</div>
+              </div>
+            </button>
+            <button type="button" onclick="setMode('numerical')" data-cat="numerical" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <span class="text-2xl">📊</span>
+              <div>
+                <div class="font-bold text-xs sm:text-sm text-white">數理與圖表</div>
+                <div class="text-[11px] text-slate-400">天平與商業估算</div>
+              </div>
+            </button>
+            <button type="button" onclick="setMode('verbal')" data-cat="verbal" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <span class="text-2xl">🔤</span>
+              <div>
+                <div class="font-bold text-xs sm:text-sm text-white">批判與證偽</div>
+                <div class="text-[11px] text-slate-400">三段論與沃森卡</div>
+              </div>
+            </button>
+            <button type="button" onclick="setMode('nback')" data-cat="nback" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <span class="text-2xl">🧠</span>
+              <div>
+                <div class="font-bold text-xs sm:text-sm text-white">雙重工作記憶</div>
+                <div class="text-[11px] text-slate-400">2-Back 神經刺激</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stress Intensity Level -->
+        <div class="pt-2 border-t border-slate-800/80">
+          <label class="block text-sm font-bold text-white mb-3 flex items-center justify-between">
+            <span class="flex items-center gap-2"><span>⏱️</span> 步驟二：選擇抗壓強度 (每題秒數)</span>
+            <span class="text-xs text-amber-400">倒數末段觸發動態加速心跳音效 (80➔150 BPM)</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="diffGrid">
+            <button type="button" onclick="setDiff('hard')" data-diff="hard" class="diff-btn active-btn p-4 rounded-xl border text-left transition border-indigo-500 bg-indigo-600/20">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-indigo-400 text-sm">外商面試標準 (高壓)</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">10 秒/題</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1.5">還原頂尖投行筆試，時間壓迫感強烈，心跳加速考驗冷靜度。</p>
+            </button>
+
+            <button type="button" onclick="setDiff('extreme')" data-diff="extreme" class="diff-btn p-4 rounded-xl border text-left transition border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-rose-400 text-sm">極限競賽 (極限高壓)</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-mono">6 秒/題</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1.5">Mensa 競賽級，強大心跳音效與畫面紅光告警，逼出極限直覺。</p>
+            </button>
+
+            <button type="button" onclick="setDiff('mindful')" data-diff="mindful" class="diff-btn p-4 rounded-xl border text-left transition border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-emerald-400 text-sm">深思熟慮 (抗衰養腦)</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">18 秒/題</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1.5">充足時間仔細推導九宮格與立體空間，專注於大腦突觸架構重建。</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Question Count & Error Mode Selector -->
+        <div class="pt-2 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="w-full sm:w-auto">
+            <label class="block text-sm font-bold text-white mb-2">測驗題數規格：</label>
+            <div class="inline-flex rounded-xl bg-slate-950 p-1 border border-slate-800">
+              <button type="button" onclick="setCount(10)" data-count="10" class="count-btn px-4 py-2 rounded-lg text-xs font-bold transition">10 題</button>
+              <button type="button" onclick="setCount(15)" data-count="15" class="count-btn active-btn px-4 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white">15 題 (標準)</button>
+              <button type="button" onclick="setCount(25)" data-count="25" class="count-btn px-4 py-2 rounded-lg text-xs font-bold transition">25 題</button>
+            </div>
+          </div>
+
+          <div class="w-full sm:w-auto flex items-center gap-3">
+            <button id="errorSprintBtn" onclick="startErrorSprint()" class="hidden px-5 py-3 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 border border-rose-500/40 text-rose-300 font-bold text-xs transition flex items-center gap-2">
+              <span>🎯 啟動「歷史錯題專攻」</span>
+            </button>
+            <button onclick="startApp()" class="w-full sm:w-auto px-10 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 transition transform active:scale-95 flex items-center justify-center gap-2">
+              <span>開始挑戰</span>
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Screen 2: Test Arena (In-Game) -->
+    <div id="testView" class="hidden flex-col gap-4">
+      
+      <!-- Top HUD -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl px-5 py-3 flex flex-wrap items-center justify-between gap-4 shadow-lg">
+        <div class="flex items-center gap-4">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-400">
+            第 <span id="hudIdx" class="text-indigo-400 text-lg font-black">1</span> / <span id="hudTotal">15</span> 題
+          </div>
+          <div class="h-4 w-px bg-slate-800"></div>
+          <span id="hudDomainBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/40">
+            3×3 瑞文矩陣
+          </span>
+          <span id="hudSubtypeBadge" class="hidden sm:inline-block px-2 py-0.5 rounded text-[11px] bg-slate-800 text-slate-300 border border-slate-700">
+            幾何異或疊加 (XOR)
+          </span>
+        </div>
+
+        <div class="flex items-center gap-5">
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <span>得分</span>
+            <span id="hudScore" class="font-mono text-emerald-400 font-black text-lg">0</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <span>平均耗時</span>
+            <span id="hudAvgTime" class="font-mono text-slate-200 font-bold">0.0s</span>
+          </div>
+          <div class="hidden md:flex items-center gap-1 text-[11px] text-slate-400 bg-slate-950 px-2 py-1 rounded border border-slate-800">
+            <span>鍵盤支援:</span>
+            <kbd class="px-1 rounded bg-slate-800 text-indigo-300 font-mono">1</kbd>
+            <kbd class="px-1 rounded bg-slate-800 text-indigo-300 font-mono">2</kbd>
+            <kbd class="px-1 rounded bg-slate-800 text-indigo-300 font-mono">3</kbd>
+            <kbd class="px-1 rounded bg-slate-800 text-indigo-300 font-mono">4</kbd>
+          </div>
+          <button onclick="confirmAbort()" class="text-xs text-slate-500 hover:text-rose-400 transition underline">
+            中斷看報告
+          </button>
+        </div>
+      </div>
+
+      <!-- Time Progress Bar -->
+      <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800/80 relative">
+        <div id="hudTimerBar" class="bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 h-3 rounded-full transition-all duration-75 ease-linear w-full"></div>
+      </div>
+
+      <!-- Main Challenge Card -->
+      <div id="hudCard" class="relative bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-7 shadow-2xl flex flex-col items-center justify-between min-h-[470px] transition-all duration-300">
+        
+        <!-- Big Seconds Left Counter -->
+        <div class="w-full flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800/60 mb-2">
+          <span id="hudInstructions" class="font-semibold text-slate-300 text-xs sm:text-sm">
+            請仔細觀察規律並在時限內選出正確答案：
+          </span>
+          <div class="flex items-center gap-1 font-mono font-black text-base">
+            <span class="text-xs font-normal text-slate-400">倒數</span>
+            <span id="hudSeconds" class="text-amber-400 text-lg">10.0</span>s
+          </div>
+        </div>
+
+        <!-- Dynamic Puzzle Interactive Workspace -->
+        <div id="hudPuzzleArea" class="w-full flex-1 flex flex-col items-center justify-center p-2 sm:p-4 my-2">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Options Container -->
+        <div id="hudOptionsGrid" class="w-full grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-800/60">
+          <!-- Populated dynamically with key badges [1] [2] [3] [4] -->
+        </div>
+
+        <!-- Instant Response Banner -->
+        <div id="hudFeedback" class="hidden mt-3 w-full text-center text-xs sm:text-sm font-bold py-2.5 px-4 rounded-xl transition">
+          <!-- Live feedback -->
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Screen 3: Comprehensive Cognitive & Stress Report -->
+    <div id="reportView" class="hidden space-y-6">
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+        
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-6 border-b border-slate-800 pb-6">
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-1">評估報告 • 認知抗壓神經診斷書</div>
+            <h2 class="text-2xl sm:text-3xl font-black text-white">大腦高壓決策力評測結果</h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
+              結合「外商管理顧問心理計量學常模」與「前額葉抗退化指標」，綜合分析您在時間壓迫下的準確度、決策延遲與神經年齡。
+            </p>
+          </div>
+
+          <!-- Brain Age & PDI Highlight Box -->
+          <div class="flex items-center gap-4 bg-slate-950/80 border border-indigo-500/30 rounded-2xl px-6 py-4 shadow-xl">
+            <div class="text-center pr-4 border-r border-slate-800">
+              <div class="text-xs text-slate-400 font-bold">推算大腦年齡</div>
+              <div id="repBrainAge" class="text-3xl sm:text-4xl font-black text-emerald-400 mt-0.5">-- 歲</div>
+              <div id="repBrainAgeStatus" class="text-[11px] text-emerald-300 font-bold mt-0.5">神經活躍</div>
+            </div>
+            <div class="text-center sm:text-right">
+              <div class="text-xs text-slate-400 font-bold">抗壓決策指數 (PDI)</div>
+              <div id="repPdiScore" class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 mt-0.5">
+                --
+              </div>
+              <div id="repPercentile" class="text-[11px] text-indigo-300 font-bold mt-0.5">勝過全體常模 --%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 Dimension Detailed Performance + Radar Chart -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <!-- Left: 5 Dimension Bars -->
+          <div class="space-y-3">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-bold text-pink-400 flex items-center gap-1">🧩 3×3 瑞文與展開圖</span>
+                <span id="repSpatialPct" class="font-mono font-bold text-pink-400">--%</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="repSpatialBar" class="bg-pink-500 h-2 rounded-full w-0 transition-all duration-700"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-bold text-cyan-400 flex items-center gap-1">⚙️ 機械齒輪與傳動</span>
+                <span id="repMechPct" class="font-mono font-bold text-cyan-400">--%</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="repMechBar" class="bg-cyan-500 h-2 rounded-full w-0 transition-all duration-700"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-bold text-emerald-400 flex items-center gap-1">📊 數理矩陣與商務速算</span>
+                <span id="repNumPct" class="font-mono font-bold text-emerald-400">--%</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="repNumBar" class="bg-emerald-500 h-2 rounded-full w-0 transition-all duration-700"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-bold text-indigo-400 flex items-center gap-1">🔤 批判推理與證偽</span>
+                <span id="repVerbalPct" class="font-mono font-bold text-indigo-400">--%</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="repVerbalBar" class="bg-indigo-500 h-2 rounded-full w-0 transition-all duration-700"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-bold text-amber-400 flex items-center gap-1">🧠 雙重工作記憶 2-Back</span>
+                <span id="repNBackPct" class="font-mono font-bold text-amber-400">--%</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="repNBackBar" class="bg-amber-500 h-2 rounded-full w-0 transition-all duration-700"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Visual SVG 5-Axis Radar Chart -->
+          <div class="flex flex-col items-center justify-center p-3 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div class="text-xs font-bold text-slate-400 mb-1">大腦全維度神經潛能雷達</div>
+            <div id="radarChartContainer" class="w-56 h-56 flex items-center justify-center">
+              <!-- SVG Radar generated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Speed & Stability Analytics Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/40 p-4 rounded-xl border border-slate-800/80 text-center">
+          <div>
+            <div class="text-xs text-slate-400">平均決策延遲</div>
+            <div id="repAvgSec" class="text-lg font-black font-mono text-white mt-0.5">--s</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400">最快單題推導</div>
+            <div id="repFastestSec" class="text-lg font-black font-mono text-emerald-400 mt-0.5">--s</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400">總正確題數</div>
+            <div id="repAccuracy" class="text-lg font-black font-mono text-indigo-400 mt-0.5">-- / --</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400">抗壓韌性層級</div>
+            <div id="repResilienceGrade" class="text-lg font-black font-mono text-purple-400 mt-0.5">--</div>
+          </div>
+        </div>
+
+        <!-- Clinical Anti-Dementia & Professional Consulting Advice -->
+        <div class="bg-gradient-to-r from-indigo-950/40 via-slate-950 to-purple-950/40 border border-indigo-500/30 rounded-xl p-5">
+          <div class="font-bold text-sm text-indigo-300 flex items-center gap-2 mb-2">
+            <span>🧠</span> 認知神經元可塑性與外商面試改善策略：
+          </div>
+          <p id="repAdviceText" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            --
+          </p>
+        </div>
+
+        <!-- Detailed Question Review Accordion -->
+        <div>
+          <button onclick="toggleHistoryAccordion()" class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 rounded-xl text-xs font-bold text-slate-200 flex items-center justify-between transition">
+            <span>🔍 查看本輪全部題目破題解析與推導過程</span>
+            <span id="historyChevron">▼ 展開清單</span>
+          </button>
+          <div id="repHistoryList" class="hidden mt-3 space-y-3 max-h-80 overflow-y-auto pr-1">
+            <!-- Dynamically populated review cards -->
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <button id="saveMissedBtn" onclick="saveMissedToBank()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-rose-950/50 hover:bg-rose-900/50 border border-rose-500/40 text-rose-300 text-xs font-bold transition">
+            💾 本輪錯題存入弱點庫
+          </button>
+          <button onclick="restartTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition border border-slate-700">
+            🔄 同難度題型再戰一輪
+          </button>
+          <button onclick="goHome()" class="w-full sm:w-auto px-8 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-bold transition shadow-lg shadow-indigo-600/20">
+            ⚙️ 返回主畫面更換設定
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- History & Brain Radar Modal -->
+  <div id="historyModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-extrabold text-white text-base flex items-center gap-2">
+          <span>📈</span> 個人神經成長軌跡與歷史存檔
+        </h3>
+        <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+
+      <div class="text-xs text-slate-300 space-y-4 leading-relaxed max-h-[70vh] overflow-y-auto pr-2">
+        <div class="grid grid-cols-2 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+          <div>
+            <div class="text-slate-400">累計測驗次數</div>
+            <div id="histTotalSessions" class="text-xl font-black text-indigo-400 mt-0.5">0 次</div>
+          </div>
+          <div>
+            <div class="text-slate-400">平均抗壓決策指數 (PDI)</div>
+            <div id="histAvgPdi" class="text-xl font-black text-emerald-400 mt-0.5">-- 分</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="font-bold text-slate-200 mb-2">歷史測驗紀錄清單：</div>
+          <div id="histSessionList" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div class="text-slate-500 text-center py-4">尚無歷史紀錄，完成一次測驗後將自動保存。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 flex items-center justify-between border-t border-slate-800">
+        <button onclick="clearHistoryData()" class="text-xs text-rose-400 hover:underline">
+          清除本機歷史
+        </button>
+        <button onclick="closeHistoryModal()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help & Strategies Modal -->
+  <div id="manualModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-extrabold text-white text-base flex items-center gap-2">
+          <span>📖</span> 外商評估中心與 Mensa 巔峰題型破題心法
+        </h3>
+        <button onclick="closeManualModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+
+      <div class="text-xs text-slate-300 space-y-3 leading-relaxed max-h-[70vh] overflow-y-auto pr-2">
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-cyan-400 text-xs mb-1">1. 機械齒輪轉向與速比心智模擬</h4>
+          <p class="text-slate-400">
+            互咬齒輪轉向相反（順 ➔ 逆 ➔ 順）。外接皮帶（非交叉）轉向相同。齒輪齒數越少，轉速越快（速比反比於半徑/齒數）。
+          </p>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-pink-400 text-xs mb-1">2. 3×3 瑞文九宮格：XOR 疊加相消律</h4>
+          <p class="text-slate-400">
+            「圖一」與「圖二」疊加生成「圖三」。重複出現的線段<strong>相消消失</strong>；僅出現單次的線段<strong>保留</strong>。
+          </p>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-indigo-400 text-xs mb-1">3. 沃森 4-Card 證偽原則 (Modus Tollens)</h4>
+          <p class="text-slate-400">
+            規則「若 P 則 Q」，檢驗真偽必須翻開 <strong>P（肯定前件）</strong> 與 <strong>非 Q（否定後件）</strong>。翻 Q 是確認偏誤毫無意義！
+          </p>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-emerald-400 text-xs mb-1">4. 商務圖表與天平多元代數</h4>
+          <p class="text-slate-400">
+            柱狀圖算差距時，先用「基數歸零估算」；天平換算選定「最小公因符號」統一單位換算。
+          </p>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-amber-400 text-xs mb-1">5. 雙重工作記憶 2-Back</h4>
+          <p class="text-slate-400">
+            在心中維持一條長度為 2 的滑動隊列，隨時拋棄最舊資訊，更新最新視覺刺激，刺激海馬迴與前額葉交匯區。
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-2 text-right">
+        <button onclick="closeManualModal()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition">
+          掌握心法，開始挑戰
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="border-t border-slate-800/60 py-3 text-center text-xs text-slate-500">
+    CogniStress Ultimate &bull; 專業外商抗壓與全腦神經活化系統
+  </footer>
+
+  <script>
+    /* =========================================================
+       AUDIO SYNTHESIS ENGINE (Accelerating Biofeedback Heartbeat)
+       ========================================================= */
+    let audioContext = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioContext) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioContext = new AudioClass();
+      }
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('soundIcon').innerText = audioEnabled ? '🔊' : '🔇';
+      document.getElementById('soundText').innerText = audioEnabled ? '動態心跳與音效' : '已靜音';
+    }
+
+    function playTone(freq, type, duration, gainVal = 0.2) {
+      if (!audioEnabled) return;
+      initAudio();
+      if (!audioContext) return;
+      try {
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(gainVal, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start();
+        osc.stop(now + duration);
+      } catch (e) {}
+    }
+
+    function playDynamicHeartbeat(bpm = 90) {
+      if (!audioEnabled) return;
+      initAudio();
+      if (!audioContext) return;
+      try {
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        // Base frequency scales slightly higher with faster BPM for tension
+        const baseFreq = 55 + (bpm - 70) * 0.35;
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.5, now + 0.12);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start();
+        osc.stop(now + 0.14);
+      } catch (e) {}
+    }
+
+    function playSuccessChime() {
+      playTone(523.25, 'triangle', 0.1, 0.2); // C5
+      setTimeout(() => playTone(659.25, 'triangle', 0.25, 0.2), 80); // E5
+    }
+
+    function playErrorBuzz() {
+      playTone(130, 'sawtooth', 0.25, 0.25);
+    }
+
+    /* =========================================================
+       APPLICATION STATE & LOCAL STORAGE
+       ========================================================= */
+    const appState = {
+      mode: 'all',          // 'all', 'spatial', 'mechanical', 'numerical', 'verbal', 'nback'
+      diff: 'hard',         // 'hard' (10s), 'extreme' (6s), 'mindful' (18s)
+      totalCount: 15,
+      currentIdx: 0,
+      score: 0,
+      activeQuestion: null,
+      questionStartTime: 0,
+      timerTimer: null,
+      beatTimeout: null,
+      timePerQ: 10,
+      remainingSec: 10,
+      history: [],
+      stats: {
+        verbal: { total: 0, correct: 0, timeSum: 0 },
+        numerical: { total: 0, correct: 0, timeSum: 0 },
+        spatial: { total: 0, correct: 0, timeSum: 0 },
+        mechanical: { total: 0, correct: 0, timeSum: 0 },
+        nback: { total: 0, correct: 0, timeSum: 0 }
+      },
+      nbackStream: [],      // History for 2-Back tracking
+      isErrorSprint: false,
+      errorBank: []
+    };
+
+    // Load Error Bank & History from LocalStorage
+    function initLocalStorage() {
+      try {
+        const storedBank = localStorage.getItem('cogni_error_bank');
+        if (storedBank) {
+          appState.errorBank = JSON.parse(storedBank);
+          updateErrorBadge();
+        }
+      } catch (e) {}
+    }
+
+    function updateErrorBadge() {
+      const badge = document.getElementById('errorBankBadge');
+      const sprintBtn = document.getElementById('errorSprintBtn');
+      if (appState.errorBank && appState.errorBank.length > 0) {
+        badge.classList.remove('hidden');
+        badge.innerText = `錯題庫 ${appState.errorBank.length} 題`;
+        sprintBtn.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+        sprintBtn.classList.add('hidden');
+      }
+    }
+
+    function saveSessionToStorage(pdi, accuracy, avgTime, brainAge) {
+      try {
+        const historyData = JSON.parse(localStorage.getItem('cogni_sessions') || '[]');
+        historyData.push({
+          date: new Date().toLocaleString(),
+          mode: appState.mode,
+          diff: appState.diff,
+          pdi: pdi,
+          accuracy: accuracy,
+          avgTime: avgTime,
+          brainAge: brainAge
+        });
+        localStorage.setItem('cogni_sessions', JSON.stringify(historyData.slice(-30))); // Keep last 30
+      } catch (e) {}
+    }
+
+    function setMode(m) {
+      appState.mode = m;
+      document.querySelectorAll('#catGrid .mode-btn').forEach(btn => {
+        const isTarget = btn.getAttribute('data-cat') === m;
+        btn.className = isTarget
+          ? 'mode-btn active-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-indigo-500 bg-indigo-600/20 shadow-md'
+          : 'mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700';
+      });
+    }
+
+    function setDiff(d) {
+      appState.diff = d;
+      document.querySelectorAll('#diffGrid .diff-btn').forEach(btn => {
+        const isTarget = btn.getAttribute('data-diff') === d;
+        btn.className = isTarget
+          ? 'diff-btn active-btn p-4 rounded-xl border text-left transition border-indigo-500 bg-indigo-600/20'
+          : 'diff-btn p-4 rounded-xl border text-left transition border-slate-800 bg-slate-950/50 hover:border-slate-700';
+      });
+    }
+
+    function setCount(cnt) {
+      appState.totalCount = cnt;
+      document.querySelectorAll('.count-btn').forEach(btn => {
+        const isTarget = parseInt(btn.getAttribute('data-count')) === cnt;
+        btn.className = isTarget
+          ? 'count-btn active-btn px-4 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white'
+          : 'count-btn px-4 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
+      });
+    }
+
+    function getSecForDiff(d) {
+      switch(d) {
+        case 'extreme': return 6;
+        case 'mindful': return 18;
+        case 'hard':
+        default: return 10;
+      }
+    }
+
+    /* =========================================================
+       NEW & ADVANCED QUESTION GENERATORS
+       ========================================================= */
+
+    // 1. ⚙️ MECHANICAL & GEAR ROTATION
+    function genGearRotationQuestion() {
+      // System of 4 gears in sequence: G1 -> G2 -> G3 -> G4
+      // G1 is driven CW or CCW.
+      // Connection types: 0 = direct mesh (inverts direction), 1 = belt straight (same direction)
+      const g1Dir = Math.random() > 0.5 ? 'CW' : 'CCW'; // Clockwise or Counter-Clockwise
+      const teeth = [24, 12, 18, 12]; // Teeth counts
+      const connections = ['mesh', 'mesh', 'mesh']; // standard direct mesh
+
+      // Calculate directions:
+      // G1: g1Dir
+      // G2: opposite of G1
+      // G3: opposite of G2 (same as G1)
+      // G4: opposite of G3 (opposite of G1)
+      let curDir = g1Dir;
+      for (let i = 0; i < 3; i++) {
+        curDir = (curDir === 'CW') ? 'CCW' : 'CW';
+      }
+      const targetDir = curDir;
+      const targetDirZh = (targetDir === 'CW') ? '順時針' : '逆時針';
+
+      // Speed comparison: Speed(G4) vs Speed(G1)
+      // Speed is inversely proportional to teeth count: (Teeth G1 / Teeth G4) = 24 / 12 = 2x faster
+      const speedRatio = teeth[0] / teeth[3];
+      const speedText = speedRatio > 1 ? '轉速比齒輪 A 快 2 倍' : (speedRatio === 1 ? '轉速與齒輪 A 相同' : '轉速比齒輪 A 慢');
+      const correctAns = `${targetDirZh}，且${speedText}`;
+
+      const otherAns1 = `${(targetDir === 'CW' ? '逆時針' : '順時針')}，且${speedText}`;
+      const otherAns2 = `${targetDirZh}，但轉速比齒輪 A 慢 2 倍`;
+      const otherAns3 = `${(targetDir === 'CW' ? '逆時針' : '順時針')}，但轉速與齒輪 A 相同`;
+
+      const options = shuffleArray([correctAns, otherAns1, otherAns2, otherAns3]);
+
+      const gearSvg = `
+        <div class="flex flex-col items-center">
+          <svg class="w-72 h-36 sm:w-80 sm:h-40" viewBox="0 0 400 200">
+            <!-- Gear A (Teeth 24, R=45) -->
+            <g transform="translate(60, 100)" class="${g1Dir === 'CW' ? 'gear-spin-cw' : 'gear-spin-ccw'}">
+              <circle cx="0" cy="0" r="42" fill="#1e1b4b" stroke="#6366f1" stroke-width="4" stroke-dasharray="8 4"/>
+              <circle cx="0" cy="0" r="14" fill="#312e81"/>
+              <text x="0" y="5" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">A(24齒)</text>
+            </g>
+            <!-- Gear B (Teeth 12, R=25) -->
+            <g transform="translate(140, 100)" class="${g1Dir === 'CW' ? 'gear-spin-ccw' : 'gear-spin-cw'}">
+              <circle cx="0" cy="0" r="26" fill="#1e293b" stroke="#06b6d4" stroke-width="4" stroke-dasharray="7 4"/>
+              <circle cx="0" cy="0" r="8" fill="#0f172a"/>
+              <text x="0" y="4" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">B(12齒)</text>
+            </g>
+            <!-- Gear C (Teeth 18, R=35) -->
+            <g transform="translate(215, 100)" class="${g1Dir === 'CW' ? 'gear-spin-cw' : 'gear-spin-ccw'}">
+              <circle cx="0" cy="0" r="35" fill="#14532d" stroke="#22c55e" stroke-width="4" stroke-dasharray="7 4"/>
+              <circle cx="0" cy="0" r="10" fill="#052e16"/>
+              <text x="0" y="4" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold">C(18齒)</text>
+            </g>
+            <!-- Gear D (Teeth 12, R=25) -->
+            <g transform="translate(290, 100)" class="${g1Dir === 'CW' ? 'gear-spin-ccw' : 'gear-spin-cw'}">
+              <circle cx="0" cy="0" r="26" fill="#701a75" stroke="#ec4899" stroke-width="4" stroke-dasharray="7 4"/>
+              <circle cx="0" cy="0" r="8" fill="#4a044e"/>
+              <text x="0" y="4" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">D(12齒)</text>
+            </g>
+            <!-- Pointer arrow on A -->
+            <text x="60" y="35" text-anchor="middle" fill="#a5b4fc" font-size="11" font-weight="bold">起始動能：${g1Dir === 'CW' ? '順時針 ↻' : '逆時針 ↺'}</text>
+            <text x="290" y="35" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="bold">問：齒輪 D 狀態？</text>
+          </svg>
+        </div>
+      `;
+
+      return {
+        domain: 'mechanical',
+        subtype: '齒輪機械連動',
+        instruction: '【機械動態連動推理】已知齒輪 A 齒數 24 且如箭頭旋轉，末端齒輪 D（齒數 12）狀態為：',
+        puzzleHtml: gearSvg,
+        options: options.map(txt => ({ id: txt, text: txt })),
+        correct: correctAns,
+        explanation: `外齧合齒輪每經過一級接觸即反向一次（A:${g1Dir} ➔ B 反向 ➔ C 同A ➔ D 反向，得${targetDirZh}）；齒輪 D 齒數僅為 A 的一半，故同時間內轉速快 2 倍。`
+      };
+    }
+
+    // 2. 📊 FAST BUSINESS QUANTITATIVE & CHART ESTIMATION
+    function genBusinessFastMath() {
+      // Scenario: Revenue and Margin Estimation
+      const years = ['Q1', 'Q2', 'Q3', 'Q4'];
+      const revA = [120, 150, 180, 240]; // Company Alpha
+      const revB = [140, 160, 170, 200]; // Company Beta
+
+      // Question: 哪一季度「Alpha 公司的季度成長率（與前季相比）」最高？
+      // Q2: (150-120)/120 = 25%
+      // Q3: (180-150)/150 = 20%
+      // Q4: (240-180)/180 = 33.3% -> Winner!
+      const correctAns = 'Q4 (營收自 180 萬躍升至 240 萬，增長 33.3%)';
+      const wrong1 = 'Q2 (營收自 120 萬增長至 150 萬，增長 25.0%)';
+      const wrong2 = 'Q3 (營收自 150 萬增長至 180 萬，增長 20.0%)';
+      const wrong3 = '各季成長率完全均等 (皆為固定增長)';
+
+      const chartSvg = `
+        <div class="flex flex-col items-center">
+          <svg class="w-72 h-40 sm:w-80 sm:h-44" viewBox="0 0 320 180">
+            <!-- Axes -->
+            <line x1="40" y1="140" x2="300" y2="140" stroke="#475569" stroke-width="2"/>
+            <line x1="40" y1="20" x2="40" y2="140" stroke="#475569" stroke-width="2"/>
+            
+            <!-- Bars for Alpha and Beta -->
+            <!-- Q1 -->
+            <rect x="65" y="80" width="18" height="60" fill="#6366f1" rx="2"/>
+            <rect x="85" y="70" width="18" height="70" fill="#06b6d4" rx="2"/>
+            <text x="84" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">Q1</text>
+
+            <!-- Q2 -->
+            <rect x="125" y="65" width="18" height="75" fill="#6366f1" rx="2"/>
+            <rect x="145" y="60" width="18" height="80" fill="#06b6d4" rx="2"/>
+            <text x="144" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">Q2</text>
+
+            <!-- Q3 -->
+            <rect x="185" y="50" width="18" height="90" fill="#6366f1" rx="2"/>
+            <rect x="205" y="55" width="18" height="85" fill="#06b6d4" rx="2"/>
+            <text x="204" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">Q3</text>
+
+            <!-- Q4 -->
+            <rect x="245" y="20" width="18" height="120" fill="#6366f1" rx="2"/>
+            <rect x="265" y="40" width="18" height="100" fill="#06b6d4" rx="2"/>
+            <text x="264" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">Q4</text>
+
+            <!-- Legend -->
+            <circle cx="80" cy="12" r="4" fill="#6366f1"/>
+            <text x="90" y="15" fill="#a5b4fc" font-size="10">Alpha 公司</text>
+            <circle cx="160" cy="12" r="4" fill="#06b6d4"/>
+            <text x="170" y="15" fill="#67e8f9" font-size="10">Beta 公司</text>
+          </svg>
+        </div>
+      `;
+
+      return {
+        domain: 'numerical',
+        subtype: '商務圖表瞬時決策',
+        instruction: '【管顧 Fast Math 圖表判讀】觀察 Alpha 公司各季營收，其「季度環比增長率 (%)」最高發生於哪一季度？',
+        puzzleHtml: chartSvg,
+        options: shuffleArray([correctAns, wrong1, wrong2, wrong3]).map(t => ({ id: t, text: t })),
+        correct: correctAns,
+        explanation: 'Q4 成長率為 (240-180)/180 = 33.3%，高於 Q2 的 (150-120)/120 = 25% 及 Q3 的 (180-150)/150 = 20%。'
+      };
+    }
+
+    // 3. 🃏 WASON 4-CARD SELECTION TASK (認知偏誤與形式證偽)
+    function genWasonCardTask() {
+      // Classic rule: "If a card has a Vowel on one side, it has an Even number on the other side."
+      // Cards visible: [ E, K, 4, 7 ]
+      // Correct to turn: E (vowel, testing if even on back) AND 7 (odd, testing if vowel on back - Modus Tollens!)
+      const correctAns = '翻開【 E 】與【 7 】';
+      const wrong1 = '翻開【 E 】與【 4 】 (經典確認偏誤！)';
+      const wrong2 = '只需翻開【 E 】即可';
+      const wrong3 = '將四張全部翻開';
+
+      const wasonHtml = `
+        <div class="flex flex-col items-center gap-3">
+          <div class="text-xs sm:text-sm font-bold text-amber-300 bg-slate-950 px-4 py-2 rounded-xl border border-amber-500/30">
+            規則命題：「如果卡片正面是母音字母，背面必為偶數」
+          </div>
+          <div class="text-xs text-slate-400">目前桌面上呈現的四張卡片：</div>
+          <div class="flex items-center gap-3 sm:gap-4">
+            <div class="w-12 h-16 sm:w-14 sm:h-20 bg-slate-900 border-2 border-indigo-500 rounded-xl flex items-center justify-center font-black text-2xl text-white shadow-lg">E</div>
+            <div class="w-12 h-16 sm:w-14 sm:h-20 bg-slate-900 border-2 border-slate-700 rounded-xl flex items-center justify-center font-black text-2xl text-slate-400 shadow-lg">K</div>
+            <div class="w-12 h-16 sm:w-14 sm:h-20 bg-slate-900 border-2 border-slate-700 rounded-xl flex items-center justify-center font-black text-2xl text-slate-400 shadow-lg">4</div>
+            <div class="w-12 h-16 sm:w-14 sm:h-20 bg-slate-900 border-2 border-rose-500 rounded-xl flex items-center justify-center font-black text-2xl text-rose-400 shadow-lg">7</div>
+          </div>
+          <div class="text-[11px] text-slate-400 text-center max-w-sm">問：為了檢驗這條規則是否成立，至少且必須翻開哪幾張卡片？</div>
+        </div>
+      `;
+
+      return {
+        domain: 'verbal',
+        subtype: '沃森四卡片證偽',
+        instruction: '【Wason 選擇任務】心理學與面試經典！排除直覺偏誤，選出精確檢驗組合：',
+        puzzleHtml: wasonHtml,
+        options: shuffleArray([correctAns, wrong1, wrong2, wrong3]).map(t => ({ id: t, text: t })),
+        correct: correctAns,
+        explanation: '形式邏輯「否定後件證偽」：翻 E 若背面是奇數則命題破滅；翻 7 (非偶數) 若背面是母音亦破滅。翻 4 無意義，因為命題未說偶數背面一定要是母音！'
+      };
+    }
+
+    // 4. 🧠 2-BACK SPATIAL WORKING MEMORY (前額葉核心刺激)
+    function gen2BackQuestion() {
+      // 3x3 grid dots. We keep a rolling stream in appState.nbackStream.
+      // Target dot index 0..8
+      const streamLen = appState.nbackStream.length;
+      let targetPos;
+
+      // 40% probability to match the 2-back position if stream >= 2
+      const shouldMatch = (streamLen >= 2 && Math.random() < 0.45);
+      if (shouldMatch) {
+        targetPos = appState.nbackStream[streamLen - 2];
+      } else {
+        targetPos = Math.floor(Math.random() * 9);
+        if (streamLen >= 2 && targetPos === appState.nbackStream[streamLen - 2]) {
+          targetPos = (targetPos + 1) % 9; // force non-match
+        }
+      }
+      appState.nbackStream.push(targetPos);
+
+      // Render 3x3 grid with active dot
+      let cells = '';
+      for (let i = 0; i < 9; i++) {
+        const isActive = (i === targetPos);
+        cells += `
+          <div class="w-12 h-12 rounded-lg border ${isActive ? 'bg-amber-400 border-amber-300 shadow-lg shadow-amber-400/40 animate-pulse' : 'bg-slate-950 border-slate-800'} flex items-center justify-center">
+            ${isActive ? '<span class="text-slate-950 font-black text-xl">●</span>' : ''}
+          </div>
+        `;
+      }
+
+      const isMatch = (streamLen >= 2 && targetPos === appState.nbackStream[streamLen - 2]);
+      const correctAns = isMatch ? '與 2 題前相同 (MATCH)' : '與 2 題前不同 (NO MATCH)';
+
+      const nbackHtml = `
+        <div class="flex flex-col items-center gap-3">
+          <div class="text-xs font-bold text-amber-300 bg-slate-950 px-4 py-1.5 rounded-full border border-amber-500/30">
+            當前出現第 ${streamLen + 1} 個光點位置
+          </div>
+          <div class="grid grid-cols-3 gap-2.5 p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
+            ${cells}
+          </div>
+          <div class="text-xs text-slate-400 text-center">
+            ${streamLen < 2 ? '⚠️ 前 2 題為工作記憶注入期，請牢記此位置！' : '請迅速判斷：此點位是否與「2 題之前」的光點位置完全相同？'}
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'nback',
+        subtype: '雙重工作記憶 (2-Back)',
+        instruction: '【2-Back 工作記憶實時更新】神經醫學唯一證實活化前額葉機制：',
+        puzzleHtml: nbackHtml,
+        options: [
+          { id: '與 2 題前相同 (MATCH)', text: '與 2 題前相同 (MATCH)' },
+          { id: '與 2 題前不同 (NO MATCH)', text: '與 2 題前不同 (NO MATCH)' }
+        ],
+        correct: correctAns,
+        explanation: isMatch ? '該光點位置精確對齊了 2 題前的位置，前額葉記憶更新正確！' : '該光點位置與 2 題前不同。'
+      };
+    }
+
+    // 5. 🧩 EXISTING PRO SPATIAL (RAVEN 3X3 XOR & CUBE NET)
+    function genRaven3x3XOR() {
+      function makeRow() {
+        const c1 = Math.floor(Math.random() * 15) + 1;
+        const c2 = Math.floor(Math.random() * 15) + 1;
+        const c3 = c1 ^ c2;
+        return [c1, c2, c3];
+      }
+      const r1 = makeRow();
+      const r2 = makeRow();
+      const r3 = makeRow();
+      const targetAns = r3[2];
+
+      function renderCellSvg(val, isUnknown = false) {
+        if (isUnknown) {
+          return `
+            <svg class="w-full h-full bg-slate-950 rounded-lg border-2 border-dashed border-pink-500 flex items-center justify-center" viewBox="0 0 100 100">
+              <text x="50" y="60" text-anchor="middle" fill="#ec4899" font-size="36" font-weight="bold">?</text>
+            </svg>
+          `;
+        }
+        let lines = '';
+        if ((val & 1) !== 0) lines += `<line x1="20" y1="20" x2="80" y2="20" stroke="#f43f5e" stroke-width="8" stroke-linecap="round"/>`;
+        if ((val & 2) !== 0) lines += `<line x1="80" y1="20" x2="80" y2="80" stroke="#3b82f6" stroke-width="8" stroke-linecap="round"/>`;
+        if ((val & 4) !== 0) lines += `<line x1="80" y1="80" x2="20" y2="80" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>`;
+        if ((val & 8) !== 0) lines += `<line x1="20" y1="80" x2="20" y2="20" stroke="#eab308" stroke-width="8" stroke-linecap="round"/>`;
+        lines += `<circle cx="50" cy="50" r="5" fill="#64748b"/>`;
+        return `<svg class="w-full h-full bg-slate-950 rounded-lg border border-slate-800" viewBox="0 0 100 100">${lines}</svg>`;
+      }
+
+      const dist1 = (r3[0] | r3[1]) === targetAns ? (targetAns ^ 3) : (r3[0] | r3[1]);
+      const dist2 = (r3[0] & r3[1]) === targetAns ? (targetAns ^ 5) : (r3[0] & r3[1]);
+      const dist3 = targetAns ^ 15;
+      const optionVals = shuffleArray(Array.from(new Set([targetAns, dist1, dist2, dist3])).slice(0, 4));
+
+      const gridHtml = `
+        <div class="flex flex-col items-center">
+          <div class="grid grid-cols-3 gap-2.5 p-3.5 bg-slate-900/90 rounded-2xl border border-slate-800 shadow-xl w-60 h-60 sm:w-64 sm:h-64">
+            <div>${renderCellSvg(r1[0])}</div><div>${renderCellSvg(r1[1])}</div><div>${renderCellSvg(r1[2])}</div>
+            <div>${renderCellSvg(r2[0])}</div><div>${renderCellSvg(r2[1])}</div><div>${renderCellSvg(r2[2])}</div>
+            <div>${renderCellSvg(r3[0])}</div><div>${renderCellSvg(r3[1])}</div><div>${renderCellSvg(0, true)}</div>
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'spatial',
+        subtype: '瑞文九宮格 (XOR相消)',
+        instruction: '【3×3 瑞文九宮格矩陣】橫向觀察前兩格線段，推導右下角（？）線段形態：',
+        puzzleHtml: gridHtml,
+        options: optionVals.map(val => ({
+          id: String(val),
+          html: `<div class="flex flex-col items-center gap-1.5 p-2 bg-slate-950 rounded-xl border border-slate-800 hover:border-pink-500 w-full h-24"><div class="w-14 h-14">${renderCellSvg(val)}</div></div>`
+        })),
+        correct: String(targetAns),
+        explanation: '經典瑞文九宮格 XOR「異或相消律」：前兩格重複出現的線段相消抵銷，僅出現單次的線段保留！'
+      };
+    }
+
+    // 6. 3D CUBE NET FOLDING
+    function genCubeFoldingNet() {
+      const symbols = ['★', '▲', '■', '●', '✚', '◆'];
+      const colors = ['#f43f5e', '#3b82f6', '#10b981', '#eab308', '#a855f7', '#06b6d4'];
+
+      const netHtml = `
+        <div class="flex flex-col items-center">
+          <div class="text-xs text-slate-400 mb-2">正方體 6 面平面展開圖：</div>
+          <div class="grid grid-cols-4 gap-1 p-3 bg-slate-950 rounded-xl border border-slate-800 font-bold text-base select-none">
+            <div></div>
+            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[0]}">${symbols[0]}</div>
+            <div></div><div></div>
+            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[4]}">${symbols[4]}</div>
+            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[1]}">${symbols[1]}</div>
+            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[2]}">${symbols[2]}</div>
+            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[3]}">${symbols[3]}</div>
+            <div></div>
+            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[5]}">${symbols[5]}</div>
+            <div></div><div></div>
+          </div>
+        </div>
+      `;
+
+      function renderIsoCube(triple) {
+        return `
+          <svg class="w-14 h-14" viewBox="0 0 100 100">
+            <polygon points="50,15 85,35 50,55 15,35" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+            <text x="50" y="38" text-anchor="middle" fill="${colors[triple[0]]}" font-size="16" font-weight="bold">${symbols[triple[0]]}</text>
+            <polygon points="15,35 50,55 50,90 15,70" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+            <text x="32" y="68" text-anchor="middle" fill="${colors[triple[1]]}" font-size="16" font-weight="bold">${symbols[triple[1]]}</text>
+            <polygon points="50,55 85,35 85,70 50,90" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+            <text x="68" y="68" text-anchor="middle" fill="${colors[triple[2]]}" font-size="16" font-weight="bold">${symbols[triple[2]]}</text>
+          </svg>
+        `;
+      }
+
+      const options = shuffleArray([
+        { id: 'correct', html: `<div class="flex flex-col items-center p-2 bg-slate-950 rounded-xl border border-slate-800 hover:border-pink-500 w-full h-24">${renderIsoCube([0, 1, 2])}<span class="text-[11px] text-slate-400 mt-1">形態 A</span></div>` },
+        { id: 'w1', html: `<div class="flex flex-col items-center p-2 bg-slate-950 rounded-xl border border-slate-800 hover:border-pink-500 w-full h-24">${renderIsoCube([0, 5, 2])}<span class="text-[11px] text-slate-400 mt-1">形態 B</span></div>` },
+        { id: 'w2', html: `<div class="flex flex-col items-center p-2 bg-slate-950 rounded-xl border border-slate-800 hover:border-pink-500 w-full h-24">${renderIsoCube([1, 3, 0])}<span class="text-[11px] text-slate-400 mt-1">形態 C</span></div>` },
+        { id: 'w3', html: `<div class="flex flex-col items-center p-2 bg-slate-950 rounded-xl border border-slate-800 hover:border-pink-500 w-full h-24">${renderIsoCube([2, 4, 1])}<span class="text-[11px] text-slate-400 mt-1">形態 D</span></div>` }
+      ]);
+
+      return {
+        domain: 'spatial',
+        subtype: '3D 立體展開圖摺疊',
+        instruction: '【3D 心智旋轉與摺疊】根據上方平面展開圖，摺成正方體後，哪一個立體圖「完全符合」幾何相鄰性？',
+        puzzleHtml: netHtml,
+        options: options,
+        correct: 'correct',
+        explanation: '在平面展開圖中間隔一格的兩面為「相對面」，相對面絕不可能在同一視角同時相鄰出現！'
+      };
+    }
+
+    // 7. 3x3 MATH MATRIX
+    function gen3x3MathMatrix() {
+      const a1 = Math.floor(Math.random() * 6) + 3;
+      const b1 = Math.floor(Math.random() * 5) + 2;
+      const c1 = (a1 * 3) - b1;
+      const a2 = Math.floor(Math.random() * 6) + 3;
+      const b2 = Math.floor(Math.random() * 5) + 2;
+      const c2 = (a2 * 3) - b2;
+      const a3 = Math.floor(Math.random() * 6) + 3;
+      const b3 = Math.floor(Math.random() * 5) + 2;
+      const ans = (a3 * 3) - b3;
+
+      const opts = shuffleArray([ans, ans + 2, ans - 2, (a3 * 2) + b3]);
+
+      const puzzleHtml = `
+        <div class="flex flex-col items-center">
+          <div class="grid grid-cols-3 gap-2.5 p-3.5 bg-slate-950 rounded-2xl border border-slate-800 font-mono font-black text-xl text-emerald-400 shadow-xl">
+            <div class="w-14 h-14 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center justify-center">${a1}</div>
+            <div class="w-14 h-14 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center justify-center">${b1}</div>
+            <div class="w-14 h-14 bg-slate-800 border border-slate-600 rounded-xl flex items-center justify-center text-emerald-300">${c1}</div>
+            <div class="w-14 h-14 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center justify-center">${a2}</div>
+            <div class="w-14 h-14 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center justify-center">${b2}</div>
+            <div class="w-14 h-14 bg-slate-800 border border-slate-600 rounded-xl flex items-center justify-center text-emerald-300">${c2}</div>
+            <div class="w-14 h-14 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center justify-center">${a3}</div>
+            <div class="w-14 h-14 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center justify-center">${b3}</div>
+            <div class="w-14 h-14 bg-emerald-500/20 border-2 border-dashed border-emerald-500 rounded-xl flex items-center justify-center text-emerald-400 animate-pulse">?</div>
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'numerical',
+        subtype: '3×3 數字矩陣',
+        instruction: '【3×3 數字邏輯方陣】觀察各行各列數值關聯，推導問號（？）數值：',
+        puzzleHtml: puzzleHtml,
+        options: opts.map(val => ({ id: String(val), text: String(val) })),
+        correct: String(ans),
+        explanation: `第 3 列數值 = (第 1 列 × 3) － 第 2 列。依此計算：(${a3} × 3) － ${b3} = ${ans}。`
+      };
+    }
+
+    // 8. MULTI-CONDITION SYLLOGISM
+    function genComplexSyllogism() {
+      const item = {
+        premise: `
+          【邏輯前提】<br>
+          1. 任何成功的投資專案 (P) 都必須具備嚴謹的風控 (R)。<br>
+          2. 若具備嚴謹的風控 (R)，則絕不會出現無預警的流動性枯竭 (¬L)。<br>
+          【現況調查】：X 基金專案昨日爆發了無預警的流動性枯竭 (L)。
+        `,
+        question: '依據形式邏輯（逆否命題連鎖），下列何者為 100% 必然真理？',
+        ans: 'X 基金專案絕不是一項成功的投資專案',
+        others: [
+          'X 基金專案具備優秀風控但運氣欠佳',
+          'X 基金專案在下個月將會翻盤成功',
+          '該起事件純屬市場正常黑天鵝不可預測'
+        ],
+        exp: 'P ➔ R，R ➔ ¬L。連鎖得：P ➔ ¬L。其等價逆否命題為：L ➔ ¬P。'
+      };
+
+      const puzzleHtml = `
+        <div class="max-w-xl w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-2.5">
+          <div class="text-xs sm:text-sm text-indigo-300 leading-relaxed font-mono">${item.premise}</div>
+          <div class="text-sm font-bold text-white border-t border-slate-800 pt-2">${item.question}</div>
+        </div>
+      `;
+
+      return {
+        domain: 'verbal',
+        subtype: '多重假言三段論',
+        instruction: '【批判性邏輯三段論】嚴謹排除主觀直覺，秒速選出必然真理：',
+        puzzleHtml: puzzleHtml,
+        options: shuffleArray([item.ans, ...item.others]).map(txt => ({ id: txt, text: txt })),
+        correct: item.ans,
+        explanation: item.exp
+      };
+    }
+
+    function shuffleArray(arr) {
+      const c = [...arr];
+      for (let i = c.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [c[i], c[j]] = [c[j], c[i]];
+      }
+      return c;
+    }
+
+    /* =========================================================
+       GAME CONTROLLER & ACCELERATING TIMER
+       ========================================================= */
+    function startApp() {
+      initAudio();
+      appState.isErrorSprint = false;
+      appState.timePerQ = getSecForDiff(appState.diff);
+      appState.currentIdx = 0;
+      appState.score = 0;
+      appState.history = [];
+      appState.nbackStream = [];
+      appState.stats = {
+        verbal: { total: 0, correct: 0, timeSum: 0 },
+        numerical: { total: 0, correct: 0, timeSum: 0 },
+        spatial: { total: 0, correct: 0, timeSum: 0 },
+        mechanical: { total: 0, correct: 0, timeSum: 0 },
+        nback: { total: 0, correct: 0, timeSum: 0 }
+      };
+
+      document.getElementById('setupView').classList.add('hidden');
+      document.getElementById('reportView').classList.add('hidden');
+      document.getElementById('testView').classList.remove('hidden');
+      document.getElementById('testView').classList.add('flex');
+
+      loadQuestion();
+    }
+
+    function startErrorSprint() {
+      if (!appState.errorBank || appState.errorBank.length === 0) {
+        alert('目前錯題庫為空！請先進行標準測驗累積錯題。');
+        return;
+      }
+      initAudio();
+      appState.isErrorSprint = true;
+      appState.totalCount = Math.min(10, appState.errorBank.length);
+      appState.timePerQ = getSecForDiff(appState.diff);
+      appState.currentIdx = 0;
+      appState.score = 0;
+      appState.history = [];
+      appState.nbackStream = [];
+
+      document.getElementById('setupView').classList.add('hidden');
+      document.getElementById('reportView').classList.add('hidden');
+      document.getElementById('testView').classList.remove('hidden');
+      document.getElementById('testView').classList.add('flex');
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(appState.timerTimer);
+      clearTimeout(appState.beatTimeout);
+      resetStressEffects();
+
+      if (appState.currentIdx >= appState.totalCount) {
+        finishTest();
+        return;
+      }
+
+      appState.currentIdx++;
+      document.getElementById('hudIdx').innerText = appState.currentIdx;
+      document.getElementById('hudTotal').innerText = appState.totalCount;
+      document.getElementById('hudScore').innerText = appState.score;
+
+      // Select Question Type
+      let q = null;
+      let targetDomain = appState.mode;
+
+      if (appState.isErrorSprint) {
+        // Pop from error bank
+        const errItem = appState.errorBank[(appState.currentIdx - 1) % appState.errorBank.length];
+        targetDomain = errItem.domain || 'spatial';
+      }
+
+      if (targetDomain === 'all') {
+        const dList = ['spatial', 'mechanical', 'numerical', 'verbal', 'nback'];
+        targetDomain = dList[Math.floor(Math.random() * dList.length)];
+      }
+
+      if (targetDomain === 'spatial') {
+        q = (Math.random() > 0.5) ? genRaven3x3XOR() : genCubeFoldingNet();
+      } else if (targetDomain === 'mechanical') {
+        q = genGearRotationQuestion();
+      } else if (targetDomain === 'numerical') {
+        q = (Math.random() > 0.5) ? genBusinessFastMath() : gen3x3MathMatrix();
+      } else if (targetDomain === 'verbal') {
+        q = (Math.random() > 0.5) ? genWasonCardTask() : genComplexSyllogism();
+      } else {
+        q = gen2BackQuestion();
+      }
+
+      appState.activeQuestion = q;
+      appState.questionStartTime = Date.now();
+      appState.remainingSec = appState.timePerQ;
+
+      // Badges
+      const dBadge = document.getElementById('hudDomainBadge');
+      if (q.domain === 'spatial') {
+        dBadge.innerText = '3×3 瑞文與展開圖';
+        dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/40';
+      } else if (q.domain === 'mechanical') {
+        dBadge.innerText = '齒輪機械連動';
+        dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40';
+      } else if (q.domain === 'numerical') {
+        dBadge.innerText = '數理圖表速算';
+        dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+      } else if (q.domain === 'verbal') {
+        dBadge.innerText = '批判邏輯證偽';
+        dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40';
+      } else {
+        dBadge.innerText = '雙重工作記憶 2-Back';
+        dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40';
+      }
+      document.getElementById('hudSubtypeBadge').innerText = q.subtype;
+
+      // Render Instructions & Puzzle
+      document.getElementById('hudInstructions').innerText = q.instruction;
+      document.getElementById('hudPuzzleArea').innerHTML = q.puzzleHtml;
+
+      // Render Options with Keyboard Hotkey Badges [1] [2] [3] [4]
+      const optGrid = document.getElementById('hudOptionsGrid');
+      optGrid.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'cursor-pointer relative group';
+        const keyLabel = idx + 1; // 1, 2, 3, 4
+        
+        let innerContent = '';
+        if (opt.html) {
+          innerContent = opt.html;
+        } else {
+          innerContent = `
+            <button class="w-full h-24 p-3 bg-slate-950 hover:bg-slate-850 border border-slate-800 hover:border-indigo-400 rounded-xl text-xs sm:text-sm font-bold text-slate-100 transition active:scale-95 text-left flex flex-col justify-between shadow-md">
+              <span class="leading-snug">${opt.text}</span>
+            </button>
+          `;
+        }
+
+        wrap.innerHTML = `
+          ${innerContent}
+          <span class="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-slate-800/90 border border-slate-700 text-[10px] font-mono text-indigo-300 pointer-events-none group-hover:bg-indigo-600 group-hover:text-white transition">
+            [${keyLabel}]
+          </span>
+        `;
+        wrap.onclick = () => submitChoice(opt.id, wrap);
+        optGrid.appendChild(wrap);
+      });
+
+      document.getElementById('hudFeedback').classList.add('hidden');
+      startDynamicTimerHUD();
+    }
+
+    // Dynamic Accelerating Biofeedback Heartbeat
+    function startDynamicTimerHUD() {
+      const bar = document.getElementById('hudTimerBar');
+      const secLabel = document.getElementById('hudSeconds');
+      const totalMs = appState.timePerQ * 1000;
+      const startMs = Date.now();
+
+      appState.timerTimer = setInterval(() => {
+        const elapsed = Date.now() - startMs;
+        const left = Math.max(0, totalMs - elapsed);
+        const leftSec = (left / 1000).toFixed(1);
+        secLabel.innerText = leftSec;
+
+        const pct = (left / totalMs) * 100;
+        bar.style.width = pct + '%';
+
+        // Dynamic accelerating stress pulse under 4.0s
+        if (left <= 4000) {
+          document.getElementById('hudCard').classList.add('stress-active');
+        }
+
+        if (left <= 0) {
+          clearInterval(appState.timerTimer);
+          clearTimeout(appState.beatTimeout);
+          submitChoice('TIMEOUT', null);
+        }
+      }, 50);
+
+      scheduleNextBeat(startMs, totalMs);
+    }
+
+    function scheduleNextBeat(startMs, totalMs) {
+      const elapsed = Date.now() - startMs;
+      const left = Math.max(0, totalMs - elapsed);
+      if (left <= 0) return;
+
+      // When left <= 4.0s: BPM ramps from 85 to 150 BPM
+      if (left <= 4000) {
+        const stressProgress = (4000 - left) / 4000; // 0 to 1
+        const bpm = Math.round(85 + (stressProgress * 65)); // 85 -> 150 BPM
+        playDynamicHeartbeat(bpm);
+        const intervalMs = Math.round(60000 / bpm);
+        appState.beatTimeout = setTimeout(() => scheduleNextBeat(startMs, totalMs), intervalMs);
+      } else {
+        // Calm background check
+        appState.beatTimeout = setTimeout(() => scheduleNextBeat(startMs, totalMs), 800);
+      }
+    }
+
+    function resetStressEffects() {
+      document.getElementById('hudCard').classList.remove('stress-active');
+    }
+
+    function submitChoice(chosenId, clickedElem) {
+      clearInterval(appState.timerTimer);
+      clearTimeout(appState.beatTimeout);
+      resetStressEffects();
+
+      const timeTaken = (Date.now() - appState.questionStartTime) / 1000;
+      const q = appState.activeQuestion;
+      const isCorrect = (chosenId === q.correct);
+
+      document.querySelectorAll('#hudOptionsGrid div').forEach(d => d.style.pointerEvents = 'none');
+
+      // Update Statistics
+      if (appState.stats[q.domain]) {
+        appState.stats[q.domain].total++;
+        appState.stats[q.domain].timeSum += timeTaken;
+      }
+
+      const fb = document.getElementById('hudFeedback');
+      fb.classList.remove('hidden');
+
+      if (isCorrect) {
+        appState.score += 10;
+        if (appState.stats[q.domain]) appState.stats[q.domain].correct++;
+        playSuccessChime();
+        if (clickedElem) clickedElem.classList.add('ring-2', 'ring-emerald-500', 'rounded-xl');
+        fb.className = 'mt-3 w-full text-center text-xs sm:text-sm font-bold py-2 px-4 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        fb.innerHTML = `<span>✓ 精準推導！ 耗時 ${timeTaken.toFixed(2)} 秒</span>`;
+      } else {
+        playErrorBuzz();
+        document.getElementById('hudCard').classList.add('shake-error');
+        setTimeout(() => document.getElementById('hudCard').classList.remove('shake-error'), 350);
+
+        if (clickedElem) clickedElem.classList.add('ring-2', 'ring-rose-500', 'rounded-xl');
+        fb.className = 'mt-3 w-full text-center text-xs sm:text-sm font-bold py-2 px-4 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        fb.innerHTML = `<span>✕ ${chosenId === 'TIMEOUT' ? '⏰ 時間截止未能完成推導！' : '推導有誤！'}</span> <span class="font-normal text-xs text-slate-300 ml-1">(${q.explanation})</span>`;
+      }
+
+      appState.history.push({
+        idx: appState.currentIdx,
+        domain: q.domain,
+        subtype: q.subtype,
+        instruction: q.instruction,
+        chosen: chosenId,
+        correct: q.correct,
+        isCorrect: isCorrect,
+        timeTaken: timeTaken,
+        explanation: q.explanation
+      });
+
+      const avgTime = (appState.history.reduce((a, b) => a + b.timeTaken, 0) / appState.history.length).toFixed(1);
+      document.getElementById('hudAvgTime').innerText = avgTime + 's';
+      document.getElementById('hudScore').innerText = appState.score;
+
+      setTimeout(() => {
+        loadQuestion();
+      }, isCorrect ? 850 : 2000);
+    }
+
+    // Keyboard Hotkey Listener (1, 2, 3, 4)
+    window.addEventListener('keydown', (e) => {
+      const testView = document.getElementById('testView');
+      if (testView.classList.contains('hidden')) return;
+
+      const key = e.key;
+      if (['1', '2', '3', '4'].includes(key)) {
+        const idx = parseInt(key) - 1;
+        const options = document.querySelectorAll('#hudOptionsGrid > div');
+        if (options && options[idx]) {
+          options[idx].click();
+        }
+      }
+    });
+
+    function confirmAbort() {
+      if (confirm('確定要提前結算本輪測驗嗎？已完成題目將會生成抗壓報告。')) {
+        clearInterval(appState.timerTimer);
+        clearTimeout(appState.beatTimeout);
+        finishTest();
+      }
+    }
+
+    /* =========================================================
+       REPORT & BRAIN AGE DIAGNOSTICS & RADAR
+       ========================================================= */
+    function finishTest() {
+      document.getElementById('testView').classList.add('hidden');
+      document.getElementById('testView').classList.remove('flex');
+      document.getElementById('reportView').classList.remove('hidden');
+
+      const count = appState.history.length;
+      if (count === 0) {
+        goHome();
+        return;
+      }
+
+      const corrects = appState.history.filter(h => h.isCorrect).length;
+      const accPct = Math.round((corrects / count) * 100);
+      const totalTime = appState.history.reduce((a, b) => a + b.timeTaken, 0);
+      const avgTime = (totalTime / count).toFixed(2);
+      const fastest = Math.min(...appState.history.map(h => h.timeTaken)).toFixed(2);
+
+      function renderDom(dom, barId, pctId) {
+        const s = appState.stats[dom];
+        if (!s || s.total === 0) {
+          document.getElementById(pctId).innerText = '無測驗';
+          document.getElementById(barId).style.width = '0%';
+          return 0;
+        }
+        const p = Math.round((s.correct / s.total) * 100);
+        document.getElementById(pctId).innerText = p + '%';
+        document.getElementById(barId).style.width = p + '%';
+        return p;
+      }
+
+      const pSpatial = renderDom('spatial', 'repSpatialBar', 'repSpatialPct');
+      const pMech = renderDom('mechanical', 'repMechBar', 'repMechPct');
+      const pNum = renderDom('numerical', 'repNumBar', 'repNumPct');
+      const pVerbal = renderDom('verbal', 'repVerbalBar', 'repVerbalPct');
+      const pNBack = renderDom('nback', 'repNBackBar', 'repNBackPct');
+
+      // Generate SVG 5-Axis Radar Chart
+      renderSvgRadar([pSpatial, pMech, pNum, pVerbal, pNBack]);
+
+      document.getElementById('repAvgSec').innerText = avgTime + 's';
+      document.getElementById('repFastestSec').innerText = fastest + 's';
+      document.getElementById('repAccuracy').innerText = `${corrects} / ${count}`;
+
+      // PDI Calculation
+      const targetSec = appState.timePerQ;
+      const speedScore = Math.max(10, Math.min(100, Math.round(((targetSec - avgTime) / targetSec) * 100) + 40));
+      const pdi = Math.round((accPct * 0.65) + (speedScore * 0.35));
+
+      // Brain Age Calculation (Based on international cognitive reaction benchmarks)
+      // Normal brain: ~35-40 years old baseline. Fast + Accurate reduces age down to 22. Slow increases to 68.
+      let brainAge = Math.round(48 - (pdi * 0.28) + (parseFloat(avgTime) * 1.2));
+      brainAge = Math.max(22, Math.min(75, brainAge));
+
+      let ageStatus = '神經可塑性極高';
+      if (brainAge <= 26) ageStatus = '頂峰黃金腦 (20s)';
+      else if (brainAge <= 35) ageStatus = '敏捷清晰腦 (30s)';
+      else if (brainAge <= 48) ageStatus = '成熟穩健腦 (40s)';
+      else ageStatus = '注意神經疲勞';
+
+      document.getElementById('repBrainAge').innerText = `${brainAge} 歲`;
+      document.getElementById('repBrainAgeStatus').innerText = ageStatus;
+      document.getElementById('repPdiScore').innerText = `${pdi} 分`;
+
+      let percentile = Math.min(99, Math.max(25, Math.round(pdi * 1.05)));
+      document.getElementById('repPercentile').innerText = `勝過全體常模 ${percentile}% 測試者`;
+
+      let grade = '穩健分析者 (Tier 2)';
+      let advice = '';
+
+      if (pdi >= 88) {
+        grade = '頂尖高壓決策官 (Tier 1 菁英)';
+        advice = `【外商管顧與投行頂尖水平】在極限秒數壓迫下，您對「3×3 瑞文九宮格 XOR」、「齒輪速比」與「Wason 四卡片證偽」展現了驚人的冷靜與直覺推導。大腦活力年齡推算為 ${brainAge} 歲，神經元突觸傳導敏銳，是預防失智與認知老化的最高境界！`;
+      } else if (pdi >= 75) {
+        grade = '敏銳邏輯專家 (Tier 1 候選)';
+        advice = `【表現優異】在高壓環境下維持了極高水準的準確率。少數失誤主要源於「最後 4 秒加速心跳警示」引發的微幅慌亂。建議在日常中熟記「齒輪奇偶接觸反向律」與「Wason 逆否命題」，將思考轉為直覺反應。`;
+      } else if (pdi >= 60) {
+        grade = '中度抗壓分析師 (Tier 2 常模)';
+        advice = `【具備良好潛力】在數理與文字方面表現穩定，但在高階圖形與 2-Back 工作記憶時出現瞬時延遲。建議多加練習「雙重工作記憶模式」，有效擴充前額葉容量。`;
+      } else {
+        grade = '壓力敏感型思維 (需加強抑制干擾)';
+        advice = `【建議進行心流脫敏訓練】面對倒數紅光與動態心跳音效時，大腦有過早放棄或隨機猜測的傾向。請嘗試切換至「深思熟慮模式 (18秒)」，先建立穩固的邏輯推導模型，再循序漸進提升速度。`;
+      }
+
+      document.getElementById('repResilienceGrade').innerText = grade;
+      document.getElementById('repAdviceText').innerText = advice;
+
+      // Populate Review History
+      const hList = document.getElementById('repHistoryList');
+      hList.innerHTML = '';
+      appState.history.forEach((h, i) => {
+        const item = document.createElement('div');
+        item.className = `p-3.5 rounded-xl border text-xs flex flex-col gap-1.5 ${h.isCorrect ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-rose-950/20 border-rose-500/30'}`;
+        item.innerHTML = `
+          <div class="flex items-center justify-between font-bold">
+            <span class="${h.isCorrect ? 'text-emerald-300' : 'text-rose-300'}">題號 #${i+1} [${h.subtype}]</span>
+            <span class="font-mono ${h.isCorrect ? 'text-emerald-400' : 'text-rose-400'}">${h.isCorrect ? '✓ 推導正確' : '✕ 推導失敗'} (${h.timeTaken.toFixed(2)}s)</span>
+          </div>
+          <div class="text-slate-300">${h.instruction}</div>
+          <div class="text-slate-400">推導解析：<span class="text-slate-200">${h.explanation}</span></div>
+        `;
+        hList.appendChild(item);
+      });
+
+      // Save to LocalStorage History
+      saveSessionToStorage(pdi, `${corrects}/${count}`, avgTime, brainAge);
+    }
+
+    function renderSvgRadar(values) {
+      // 5 axes: [Spatial, Mechanical, Numerical, Verbal, N-Back]
+      // Angles: -90, -18, 54, 126, 198 degrees
+      const center = 100;
+      const maxR = 75;
+      const numAxes = 5;
+      const angleStep = (2 * Math.PI) / numAxes;
+
+      let polygonPoints = [];
+      let webLines = '';
+
+      for (let i = 0; i < numAxes; i++) {
+        const angle = -Math.PI / 2 + (i * angleStep);
+        const val = Math.max(15, values[i] || 25);
+        const r = (val / 100) * maxR;
+        const x = center + r * Math.cos(angle);
+        const y = center + r * Math.sin(angle);
+        polygonPoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+
+        // Axis line
+        const edgeX = center + maxR * Math.cos(angle);
+        const edgeY = center + maxR * Math.sin(angle);
+        webLines += `<line x1="${center}" y1="${center}" x2="${edgeX}" y2="${edgeY}" stroke="#334155" stroke-width="1.2"/>`;
+      }
+
+      const radarSvg = `
+        <svg class="w-52 h-52" viewBox="0 0 200 200">
+          <!-- Background webs -->
+          <circle cx="100" cy="100" r="75" fill="none" stroke="#1e293b" stroke-width="1"/>
+          <circle cx="100" cy="100" r="50" fill="none" stroke="#1e293b" stroke-width="1"/>
+          <circle cx="100" cy="100" r="25" fill="none" stroke="#1e293b" stroke-width="1"/>
+          ${webLines}
+          <!-- Filled Polygon -->
+          <polygon points="${polygonPoints.join(' ')}" fill="rgba(99, 102, 241, 0.35)" stroke="#6366f1" stroke-width="2.5"/>
+          <!-- Axis Labels -->
+          <text x="100" y="15" text-anchor="middle" fill="#ec4899" font-size="10" font-weight="bold">圖形空間</text>
+          <text x="180" y="70" text-anchor="middle" fill="#06b6d4" font-size="10" font-weight="bold">機械齒輪</text>
+          <text x="150" y="170" text-anchor="middle" fill="#10b981" font-size="10" font-weight="bold">數理圖表</text>
+          <text x="50" y="170" text-anchor="middle" fill="#818cf8" font-size="10" font-weight="bold">批判證偽</text>
+          <text x="20" y="70" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="bold">2-Back</text>
+        </svg>
+      `;
+
+      document.getElementById('radarChartContainer').innerHTML = radarSvg;
+    }
+
+    function saveMissedToBank() {
+      const missed = appState.history.filter(h => !h.isCorrect);
+      if (missed.length === 0) {
+        alert('太棒了！本輪測驗您全對，沒有任何錯題需要存入。');
+        return;
+      }
+      try {
+        const currentBank = JSON.parse(localStorage.getItem('cogni_error_bank') || '[]');
+        const updated = [...currentBank, ...missed];
+        // Deduplicate
+        const unique = Array.from(new Set(updated.map(a => a.instruction)))
+          .map(inst => updated.find(a => a.instruction === inst));
+        localStorage.setItem('cogni_error_bank', JSON.stringify(unique));
+        appState.errorBank = unique;
+        updateErrorBadge();
+        alert(`已成功將本輪 ${missed.length} 道錯題加入本機弱點庫！隨時可點擊主畫面「歷史錯題專攻」複習。`);
+      } catch (e) {}
+    }
+
+    function toggleHistoryAccordion() {
+      const l = document.getElementById('repHistoryList');
+      const chev = document.getElementById('historyChevron');
+      if (l.classList.contains('hidden')) {
+        l.classList.remove('hidden');
+        chev.innerText = '▲ 收起清單';
+      } else {
+        l.classList.add('hidden');
+        chev.innerText = '▼ 展開清單';
+      }
+    }
+
+    function restartTest() {
+      startApp();
+    }
+
+    function goHome() {
+      clearInterval(appState.timerTimer);
+      clearTimeout(appState.beatTimeout);
+      resetStressEffects();
+      document.getElementById('reportView').classList.add('hidden');
+      document.getElementById('testView').classList.add('hidden');
+      document.getElementById('testView').classList.remove('flex');
+      document.getElementById('setupView').classList.remove('hidden');
+    }
+
+    function openManualModal() {
+      document.getElementById('manualModal').classList.remove('hidden');
+    }
+    function closeManualModal() {
+      document.getElementById('manualModal').classList.add('hidden');
+    }
+
+    function openHistoryModal() {
+      document.getElementById('historyModal').classList.remove('hidden');
+      renderHistoryModalData();
+    }
+    function closeHistoryModal() {
+      document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    function renderHistoryModalData() {
+      try {
+        const hist = JSON.parse(localStorage.getItem('cogni_sessions') || '[]');
+        document.getElementById('histTotalSessions').innerText = `${hist.length} 次`;
+        if (hist.length > 0) {
+          const avgPdi = Math.round(hist.reduce((acc, h) => acc + h.pdi, 0) / hist.length);
+          document.getElementById('histAvgPdi').innerText = `${avgPdi} 分`;
+
+          const list = document.getElementById('histSessionList');
+          list.innerHTML = '';
+          hist.slice().reverse().forEach((s, idx) => {
+            const row = document.createElement('div');
+            row.className = 'p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between text-xs';
+            row.innerHTML = `
+              <div>
+                <span class="text-slate-400 font-mono">${s.date.split(' ')[0]}</span>
+                <span class="ml-2 font-bold text-white">${s.mode.toUpperCase()}</span>
+                <span class="ml-1 text-[11px] text-slate-500">(${s.diff})</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="font-bold text-emerald-400 font-mono">${s.brainAge}歲腦</span>
+                <span class="font-black text-indigo-400 font-mono">${s.pdi}分</span>
+              </div>
+            `;
+            list.appendChild(row);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function clearHistoryData() {
+      if (confirm('確定要清除所有本機歷史存檔與錯題庫嗎？')) {
+        localStorage.removeItem('cogni_sessions');
+        localStorage.removeItem('cogni_error_bank');
+        appState.errorBank = [];
+        updateErrorBadge();
+        renderHistoryModalData();
+      }
+    }
+
+    // Initialize on load
+    initLocalStorage();
+  </script>
+</body>
+</html>
