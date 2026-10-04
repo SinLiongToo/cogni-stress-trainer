@@ -23,10 +23,7 @@
     .shake-error {
       animation: subtle-shake 0.35s ease-in-out;
     }
-    .gear-spin-cw { transform-origin: center; animation: spin 6s linear infinite; }
-    .gear-spin-ccw { transform-origin: center; animation: spin-rev 6s linear infinite; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    @keyframes spin-rev { 100% { transform: rotate(-360deg); } }
+    /* gear-spin animations removed to ensure steady, high-precision engineering diagram */
     
     /* Sudoku Specific Grid Styling */
     .sudoku-cell {
@@ -1882,30 +1879,105 @@
       const options = shuffleArray([correctAns, otherAns1, otherAns2, otherAns3]);
 
       const gearSvg = `
-        <div class="flex flex-col items-center">
-          <svg class="w-72 h-36 sm:w-80 sm:h-40" viewBox="0 0 400 200">
-            <g transform="translate(60, 100)" class="${g1Dir === 'CW' ? 'gear-spin-cw' : 'gear-spin-ccw'}">
-              <circle cx="0" cy="0" r="42" fill="#1e1b4b" stroke="#6366f1" stroke-width="4" stroke-dasharray="8 4"/>
-              <circle cx="0" cy="0" r="14" fill="#312e81"/>
-              <text x="0" y="5" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">A(24齒)</text>
+        <div class="w-full flex flex-col items-center justify-center">
+          <svg class="w-full max-w-2xl h-56 sm:h-64 md:h-72 select-none" viewBox="0 0 660 250">
+            <defs>
+              <marker id="arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+              </marker>
+              <linearGradient id="gearGradA" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#312e81"/>
+                <stop offset="100%" stop-color="#1e1b4b"/>
+              </linearGradient>
+              <linearGradient id="gearGradB" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1e293b"/>
+                <stop offset="100%" stop-color="#0f172a"/>
+              </linearGradient>
+              <linearGradient id="gearGradC" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#14532d"/>
+                <stop offset="100%" stop-color="#052e16"/>
+              </linearGradient>
+              <linearGradient id="gearGradD" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#581c87"/>
+                <stop offset="100%" stop-color="#3b0764"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Status Indicator Banners -->
+            <g transform="translate(120, 26)">
+              <rect x="-85" y="-14" width="170" height="28" rx="7" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5"/>
+              <text x="0" y="5" text-anchor="middle" fill="#a5b4fc" font-size="12" font-weight="bold">${g1Dir === 'CW' ? '↻ 順時針轉動 (源頭)' : '↺ 逆時針轉動 (源頭)'}</text>
             </g>
-            <g transform="translate(140, 100)" class="${g1Dir === 'CW' ? 'gear-spin-ccw' : 'gear-spin-cw'}">
-              <circle cx="0" cy="0" r="26" fill="#1e293b" stroke="#06b6d4" stroke-width="4" stroke-dasharray="7 4"/>
-              <circle cx="0" cy="0" r="8" fill="#0f172a"/>
-              <text x="0" y="4" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">B(12齒)</text>
+
+            <g transform="translate(434, 26)">
+              <rect x="-85" y="-14" width="170" height="28" rx="7" fill="#500724" stroke="#f43f5e" stroke-width="1.5"/>
+              <text x="0" y="5" text-anchor="middle" fill="#fca5a5" font-size="12" font-weight="bold">❓ 目標齒輪 D 狀態？</text>
             </g>
-            <g transform="translate(215, 100)" class="${g1Dir === 'CW' ? 'gear-spin-cw' : 'gear-spin-ccw'}">
-              <circle cx="0" cy="0" r="35" fill="#14532d" stroke="#22c55e" stroke-width="4" stroke-dasharray="7 4"/>
-              <circle cx="0" cy="0" r="10" fill="#052e16"/>
-              <text x="0" y="4" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold">C(18齒)</text>
+
+            <!-- Gear A (24 齒, r=72, cx=120, cy=130) -->
+            <g>
+              <circle cx="120" cy="130" r="72" fill="url(#gearGradA)" stroke="#818cf8" stroke-width="9" stroke-dasharray="14 7"/>
+              <circle cx="120" cy="130" r="67" fill="none" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="120" cy="130" r="28" fill="#312e81" stroke="#4f46e5" stroke-width="2"/>
+              <circle cx="120" cy="130" r="7" fill="#c7d2fe"/>
+              <!-- Rotation Arrow on Gear A -->
+              ${g1Dir === 'CW' 
+                ? '<path d="M 85 105 A 45 45 0 0 1 155 105" fill="none" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round" marker-end="url(#arrow-blue)"/>'
+                : '<path d="M 155 105 A 45 45 0 0 0 85 105" fill="none" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round" marker-end="url(#arrow-blue)"/>'
+              }
+              <text x="120" y="127" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="900">A</text>
+              <text x="120" y="147" text-anchor="middle" fill="#c7d2fe" font-size="13" font-weight="bold">24 齒</text>
             </g>
-            <g transform="translate(290, 100)" class="${g1Dir === 'CW' ? 'gear-spin-ccw' : 'gear-spin-cw'}">
-              <circle cx="0" cy="0" r="26" fill="#701a75" stroke="#ec4899" stroke-width="4" stroke-dasharray="7 4"/>
-              <circle cx="0" cy="0" r="8" fill="#4a044e"/>
-              <text x="0" y="4" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">D(12齒)</text>
+
+            <!-- Contact Point 1 between A and B (x=192, y=130) -->
+            <g>
+              <circle cx="192" cy="130" r="5" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
             </g>
-            <text x="60" y="35" text-anchor="middle" fill="#a5b4fc" font-size="11" font-weight="bold">起始動能：${g1Dir === 'CW' ? '順時針 ↻' : '逆時針 ↺'}</text>
-            <text x="290" y="35" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="bold">問：齒輪 D 狀態？</text>
+
+            <!-- Gear B (12 齒, r=42, cx=234, cy=130) -->
+            <g>
+              <circle cx="234" cy="130" r="42" fill="url(#gearGradB)" stroke="#22d3ee" stroke-width="7" stroke-dasharray="10 5"/>
+              <circle cx="234" cy="130" r="38" fill="none" stroke="#0891b2" stroke-width="1.5"/>
+              <circle cx="234" cy="130" r="18" fill="#1e293b" stroke="#0e7490" stroke-width="1.5"/>
+              <circle cx="234" cy="130" r="5" fill="#a5f3fc"/>
+              <text x="234" y="126" text-anchor="middle" fill="#ffffff" font-size="17" font-weight="900">B</text>
+              <text x="234" y="144" text-anchor="middle" fill="#67e8f9" font-size="11" font-weight="bold">12 齒</text>
+            </g>
+
+            <!-- Contact Point 2 between B and C (x=276, y=130) -->
+            <g>
+              <circle cx="276" cy="130" r="5" fill="#4ade80" stroke="#16a34a" stroke-width="1.5"/>
+            </g>
+
+            <!-- Gear C (18 齒, r=58, cx=334, cy=130) -->
+            <g>
+              <circle cx="334" cy="130" r="58" fill="url(#gearGradC)" stroke="#4ade80" stroke-width="8" stroke-dasharray="12 6"/>
+              <circle cx="334" cy="130" r="54" fill="none" stroke="#16a34a" stroke-width="2"/>
+              <circle cx="334" cy="130" r="22" fill="#14532d" stroke="#15803d" stroke-width="1.5"/>
+              <circle cx="334" cy="130" r="6" fill="#bbf7d0"/>
+              <text x="334" y="127" text-anchor="middle" fill="#ffffff" font-size="19" font-weight="900">C</text>
+              <text x="334" y="146" text-anchor="middle" fill="#86efac" font-size="12" font-weight="bold">18 齒</text>
+            </g>
+
+            <!-- Contact Point 3 between C and D (x=392, y=130) -->
+            <g>
+              <circle cx="392" cy="130" r="5" fill="#f472b6" stroke="#db2777" stroke-width="1.5"/>
+            </g>
+
+            <!-- Gear D (12 齒, r=42, cx=434, cy=130) -->
+            <g>
+              <circle cx="434" cy="130" r="42" fill="url(#gearGradD)" stroke="#f472b6" stroke-width="7" stroke-dasharray="10 5"/>
+              <circle cx="434" cy="130" r="38" fill="none" stroke="#db2777" stroke-width="1.5"/>
+              <circle cx="434" cy="130" r="18" fill="#581c87" stroke="#701a75" stroke-width="1.5"/>
+              <circle cx="434" cy="130" r="5" fill="#fbcfe8"/>
+              <text x="434" y="126" text-anchor="middle" fill="#ffffff" font-size="17" font-weight="900">D</text>
+              <text x="434" y="144" text-anchor="middle" fill="#f472b6" font-size="11" font-weight="bold">12 齒</text>
+            </g>
+
+            <!-- Transmission Sequence Bottom Guide -->
+            <text x="277" y="228" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">
+              連動咬合鏈：齒輪 A ➔ 齒輪 B ➔ 齒輪 C ➔ 齒輪 D（四輪緊密咬合，無皮帶）
+            </text>
           </svg>
         </div>
       `;
@@ -2118,14 +2190,14 @@
           <div class="text-xs text-slate-400 mb-2">正方體 6 面平面展開圖：</div>
           <div class="grid grid-cols-4 gap-1 p-3 bg-slate-950 rounded-xl border border-slate-800 font-bold text-base select-none">
             <div></div>
-            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[0]}">${symbols[0]}</div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 border-2 border-slate-700 bg-slate-900 rounded-lg flex items-center justify-center text-xl sm:text-2xl shadow" style="color: ${colors[0]}">${symbols[0]}</div>
             <div></div><div></div>
-            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[4]}">${symbols[4]}</div>
-            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[1]}">${symbols[1]}</div>
-            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[2]}">${symbols[2]}</div>
-            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[3]}">${symbols[3]}</div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 border-2 border-slate-700 bg-slate-900 rounded-lg flex items-center justify-center text-xl sm:text-2xl shadow" style="color: ${colors[4]}">${symbols[4]}</div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 border-2 border-slate-700 bg-slate-900 rounded-lg flex items-center justify-center text-xl sm:text-2xl shadow" style="color: ${colors[1]}">${symbols[1]}</div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 border-2 border-slate-700 bg-slate-900 rounded-lg flex items-center justify-center text-xl sm:text-2xl shadow" style="color: ${colors[2]}">${symbols[2]}</div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 border-2 border-slate-700 bg-slate-900 rounded-lg flex items-center justify-center text-xl sm:text-2xl shadow" style="color: ${colors[3]}">${symbols[3]}</div>
             <div></div>
-            <div class="w-9 h-9 border border-slate-700 bg-slate-900 flex items-center justify-center" style="color: ${colors[5]}">${symbols[5]}</div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 border-2 border-slate-700 bg-slate-900 rounded-lg flex items-center justify-center text-xl sm:text-2xl shadow" style="color: ${colors[5]}">${symbols[5]}</div>
             <div></div><div></div>
           </div>
         </div>
