@@ -426,12 +426,34 @@
           </div>
 
           <!-- History Review -->
-          <div>
-            <button onclick="toggleHistoryAccordion()" class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 rounded-xl text-xs font-bold text-slate-200 flex items-center justify-between transition">
-              <span>🔍 查看本輪全部題目破題解析與推導過程</span>
-              <span id="historyChevron">▼ 展開清單</span>
+          <div class="space-y-3">
+            <button onclick="toggleHistoryAccordion()" class="w-full py-3.5 px-4 bg-slate-950 hover:bg-slate-850 border border-slate-800 hover:border-indigo-500/50 rounded-xl text-xs sm:text-sm font-bold text-slate-200 flex items-center justify-between transition shadow-md">
+              <span class="flex items-center gap-2">
+                <span class="text-base">🔍</span>
+                <span>查看本輪全部題目原始考題、選擇與破題推導過程</span>
+              </span>
+              <span id="historyChevron" class="text-indigo-400 font-mono text-xs">▼ 展開完整覆盤</span>
             </button>
-            <div id="repHistoryList" class="hidden mt-3 space-y-3 max-h-80 overflow-y-auto pr-1"></div>
+            
+            <div id="repHistoryContainer" class="hidden space-y-3 bg-slate-950/40 p-3 sm:p-4 rounded-2xl border border-slate-800/80">
+              <!-- Filter Tabs: All, Wrong/Timeout, Correct -->
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-slate-400 font-bold">覆盤篩選：</span>
+                  <div class="inline-flex rounded-lg bg-slate-900 p-1 border border-slate-800 text-xs">
+                    <button type="button" onclick="filterHistoryReview('all')" id="hfilter_all" class="hfilter-btn px-2.5 py-1 rounded-md font-bold bg-indigo-600 text-white shadow">全部題目 (<span id="hCountAll">0</span>)</button>
+                    <button type="button" onclick="filterHistoryReview('missed')" id="hfilter_missed" class="hfilter-btn px-2.5 py-1 rounded-md font-bold text-rose-300 hover:text-white">✕ 錯題與超時 (<span id="hCountMissed">0</span>)</button>
+                    <button type="button" onclick="filterHistoryReview('correct')" id="hfilter_correct" class="hfilter-btn px-2.5 py-1 rounded-md font-bold text-emerald-300 hover:text-white">✓ 正確推導 (<span id="hCountCorrect">0</span>)</button>
+                  </div>
+                </div>
+                <div class="text-[11px] text-slate-400">
+                  包含完整原始題目、SVG圖表/情境、各個選項及答題對照
+                </div>
+              </div>
+
+              <!-- List with scroll -->
+              <div id="repHistoryList" class="space-y-4 max-h-[72vh] overflow-y-auto pr-1.5"></div>
+            </div>
           </div>
 
           <!-- Actions -->
@@ -2435,6 +2457,8 @@
         domain: q.domain,
         subtype: q.subtype,
         instruction: q.instruction,
+        puzzleHtml: q.puzzleHtml,
+        options: q.options,
         chosen: chosenId,
         correct: q.correct,
         isCorrect: isCorrect,
@@ -2558,21 +2582,10 @@
       document.getElementById('repResilienceGrade').innerText = grade;
       document.getElementById('repAdviceText').innerText = advice;
 
-      const hList = document.getElementById('repHistoryList');
-      hList.innerHTML = '';
-      appState.history.forEach((h, i) => {
-        const item = document.createElement('div');
-        item.className = `p-3.5 rounded-xl border text-xs flex flex-col gap-1.5 ${h.isCorrect ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-rose-950/20 border-rose-500/30'}`;
-        item.innerHTML = `
-          <div class="flex items-center justify-between font-bold">
-            <span class="${h.isCorrect ? 'text-emerald-300' : 'text-rose-300'}">題號 #${i+1} [${h.subtype}]</span>
-            <span class="font-mono ${h.isCorrect ? 'text-emerald-400' : 'text-rose-400'}">${h.isCorrect ? '✓ 推導正確' : '✕ 推導失敗'} (${h.timeTaken.toFixed(2)}s)</span>
-          </div>
-          <div class="text-slate-300">${h.instruction}</div>
-          <div class="text-slate-400">推導解析：<span class="text-slate-200">${h.explanation}</span></div>
-        `;
-        hList.appendChild(item);
-      });
+      document.getElementById('hCountAll').innerText = appState.history.length;
+      document.getElementById('hCountMissed').innerText = appState.history.filter(h => !h.isCorrect).length;
+      document.getElementById('hCountCorrect').innerText = appState.history.filter(h => h.isCorrect).length;
+      filterHistoryReview('all');
 
       saveSessionToStorage(pdi, `${corrects}/${count}`, avgTime, brainAge);
     }
@@ -2635,16 +2648,171 @@
       } catch (e) {}
     }
 
+    let currentHistoryFilter = 'all';
+
     function toggleHistoryAccordion() {
-      const l = document.getElementById('repHistoryList');
+      const container = document.getElementById('repHistoryContainer');
       const chev = document.getElementById('historyChevron');
-      if (l.classList.contains('hidden')) {
-        l.classList.remove('hidden');
-        chev.innerText = '▲ 收起清單';
+      if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        chev.innerText = '▲ 收起覆盤清單';
+        renderHistoryListFiltered();
       } else {
-        l.classList.add('hidden');
-        chev.innerText = '▼ 展開清單';
+        container.classList.add('hidden');
+        chev.innerText = '▼ 展開完整覆盤';
       }
+    }
+
+    function filterHistoryReview(filter) {
+      currentHistoryFilter = filter;
+      document.querySelectorAll('.hfilter-btn').forEach(btn => {
+        btn.className = "hfilter-btn px-2.5 py-1 rounded-md font-bold text-slate-300 hover:text-white";
+      });
+      const activeBtn = document.getElementById(`hfilter_${filter}`);
+      if (activeBtn) {
+        if (filter === 'all') activeBtn.className = "hfilter-btn px-2.5 py-1 rounded-md font-bold bg-indigo-600 text-white shadow";
+        else if (filter === 'missed') activeBtn.className = "hfilter-btn px-2.5 py-1 rounded-md font-bold bg-rose-600 text-white shadow";
+        else activeBtn.className = "hfilter-btn px-2.5 py-1 rounded-md font-bold bg-emerald-600 text-white shadow";
+      }
+      renderHistoryListFiltered();
+    }
+
+    function renderHistoryListFiltered() {
+      const hList = document.getElementById('repHistoryList');
+      if (!hList) return;
+      hList.innerHTML = '';
+
+      let items = appState.history;
+      if (currentHistoryFilter === 'missed') {
+        items = appState.history.filter(h => !h.isCorrect);
+      } else if (currentHistoryFilter === 'correct') {
+        items = appState.history.filter(h => h.isCorrect);
+      }
+
+      if (items.length === 0) {
+        hList.innerHTML = `
+          <div class="p-8 text-center bg-slate-950/60 border border-slate-800 rounded-2xl text-slate-400 text-xs">
+            ${currentHistoryFilter === 'missed' ? '🎉 太厲害了！本輪測驗全部命中，無任何錯題與超時！' : '此分類目前無資料'}
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach((h) => {
+        const item = document.createElement('div');
+        item.className = `p-4 sm:p-5 rounded-2xl border text-xs sm:text-sm flex flex-col gap-3.5 transition shadow-lg ${h.isCorrect ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-rose-950/20 border-rose-500/30'}`;
+
+        // Options comparison markup
+        let optionsMarkup = '';
+        if (h.options && h.options.length > 0) {
+          optionsMarkup = `
+            <div class="space-y-1.5">
+              <div class="text-[11px] uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1">
+                <span>🎯</span> 原始選項與作答對照：
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                ${h.options.map((opt, optIdx) => {
+                  const isUserChoice = (opt.id === h.chosen);
+                  const isCorrectAnswer = (opt.id === h.correct);
+
+                  let cardBorderBg = 'border-slate-800 bg-slate-950/70 text-slate-300';
+                  let badgeHtml = '';
+
+                  if (isCorrectAnswer && isUserChoice) {
+                    cardBorderBg = 'border-emerald-500 bg-emerald-950/40 text-emerald-100 shadow-md shadow-emerald-500/10 ring-1 ring-emerald-500';
+                    badgeHtml = '<div class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-300 mt-1.5 bg-emerald-900/60 px-2 py-0.5 rounded border border-emerald-500/40">👤 您的選擇 ✓ 正確</div>';
+                  } else if (isCorrectAnswer) {
+                    cardBorderBg = 'border-emerald-500/80 bg-emerald-950/30 text-emerald-200 ring-1 ring-emerald-500/50';
+                    badgeHtml = '<div class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 mt-1.5 bg-emerald-900/60 px-2 py-0.5 rounded border border-emerald-500/40">✓ 正確解答</div>';
+                  } else if (isUserChoice) {
+                    cardBorderBg = 'border-rose-500 bg-rose-950/40 text-rose-100 shadow-md shadow-rose-500/10 ring-1 ring-rose-500';
+                    badgeHtml = '<div class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-300 mt-1.5 bg-rose-900/60 px-2 py-0.5 rounded border border-rose-500/40">👤 您的選擇 (錯誤)</div>';
+                  }
+
+                  const optBody = opt.html ? opt.html : `<span class="leading-snug">${opt.text}</span>`;
+
+                  return `
+                    <div class="p-3 rounded-xl border flex flex-col justify-between ${cardBorderBg}">
+                      <div class="text-[10px] font-mono text-slate-400 mb-1">選項 [${optIdx + 1}]</div>
+                      <div class="my-auto pointer-events-none">${optBody}</div>
+                      <div class="mt-2">${badgeHtml}</div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        // Puzzle graphic markup
+        let puzzleMarkup = '';
+        if (h.puzzleHtml) {
+          puzzleMarkup = `
+            <div class="space-y-1">
+              <div class="text-[11px] uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1">
+                <span>🧩</span> 原始題型情境與圖表：
+              </div>
+              <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-3 sm:p-4 flex items-center justify-center overflow-x-auto">
+                <div class="max-w-full pointer-events-none transform scale-90 sm:scale-100 origin-center">
+                  ${h.puzzleHtml}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        item.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="font-black text-sm ${h.isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                第 ${h.idx} 題
+              </span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                ${h.subtype || h.domain}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              ${h.chosen === 'TIMEOUT' ? `
+                <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-1">
+                  <span>⏰</span> 作答超時 (${h.timeTaken.toFixed(1)}s)
+                </span>
+              ` : h.isCorrect ? `
+                <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center gap-1">
+                  <span>✓</span> 推導正確 (${h.timeTaken.toFixed(2)}s)
+                </span>
+              ` : `
+                <span class="px-2.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1">
+                  <span>✕</span> 推導有誤 (${h.timeTaken.toFixed(2)}s)
+                </span>
+              `}
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1">
+              <span>📌</span> 原始題目指示：
+            </div>
+            <div class="text-xs sm:text-sm font-bold text-white bg-slate-950/60 p-3 rounded-xl border border-slate-800 leading-relaxed">
+              ${h.instruction}
+            </div>
+          </div>
+
+          ${puzzleMarkup}
+
+          ${optionsMarkup}
+
+          <div class="p-3.5 bg-indigo-950/30 border border-indigo-500/30 rounded-xl space-y-1">
+            <div class="text-xs font-bold text-indigo-300 flex items-center gap-1.5">
+              <span>💡</span> 破題推導解析與神經思維路徑：
+            </div>
+            <div class="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
+              ${h.explanation}
+            </div>
+          </div>
+        `;
+
+        hList.appendChild(item);
+      });
     }
 
     function restartTest() {
