@@ -151,47 +151,61 @@
               <span class="flex items-center gap-2"><span>🎯</span> 步驟一：選擇測驗題型範圍</span>
               <span id="errorBankBadge" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">錯題本 0 題</span>
             </label>
-            <div class="grid grid-cols-2 sm:grid-cols-6 gap-2.5" id="catGrid">
-              <button type="button" onclick="setMode('all')" data-cat="all" class="mode-btn active-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-indigo-500 bg-indigo-600/20 shadow-md">
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5" id="catGrid">
+              <button type="button" onclick="setMode('all')" data-cat="all" class="mode-btn active-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-indigo-500 bg-indigo-600/20 shadow-md">
                 <span class="text-2xl">🔥</span>
                 <div>
-                  <div class="font-bold text-xs sm:text-sm text-white">全領域綜合</div>
-                  <div class="text-[11px] text-slate-400">五大維度輪動</div>
+                  <div class="font-bold text-xs text-white">全領域綜合</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">17+題型全輪動</div>
                 </div>
               </button>
-              <button type="button" onclick="setMode('spatial')" data-cat="spatial" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <button type="button" onclick="setMode('spatial')" data-cat="spatial" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
                 <span class="text-2xl">🧩</span>
                 <div>
-                  <div class="font-bold text-xs sm:text-sm text-white">瑞文與 3D</div>
-                  <div class="text-[11px] text-slate-400">XOR與展開圖</div>
+                  <div class="font-bold text-xs text-white">空間與 3D</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">XOR/旋轉/羅盤</div>
                 </div>
               </button>
-              <button type="button" onclick="setMode('mechanical')" data-cat="mechanical" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <button type="button" onclick="setMode('mechanical')" data-cat="mechanical" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
                 <span class="text-2xl">⚙️</span>
                 <div>
-                  <div class="font-bold text-xs sm:text-sm text-white">齒輪物理</div>
-                  <div class="text-[11px] text-slate-400">傳動轉向速比</div>
+                  <div class="font-bold text-xs text-white">機械物理</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">齒輪/滑輪/槓桿</div>
                 </div>
               </button>
-              <button type="button" onclick="setMode('numerical')" data-cat="numerical" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <button type="button" onclick="setMode('numerical')" data-cat="numerical" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
                 <span class="text-2xl">📊</span>
                 <div>
-                  <div class="font-bold text-xs sm:text-sm text-white">數理與圖表</div>
-                  <div class="text-[11px] text-slate-400">天平與商業估算</div>
+                  <div class="font-bold text-xs text-white">數理圖表</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">矩陣/數列/套利</div>
                 </div>
               </button>
-              <button type="button" onclick="setMode('verbal')" data-cat="verbal" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <button type="button" onclick="setMode('verbal')" data-cat="verbal" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
                 <span class="text-2xl">🔤</span>
                 <div>
-                  <div class="font-bold text-xs sm:text-sm text-white">批判與證偽</div>
-                  <div class="text-[11px] text-slate-400">三段論與沃森卡</div>
+                  <div class="font-bold text-xs text-white">批判邏輯</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">Wason/德摩根/三段</div>
                 </div>
               </button>
-              <button type="button" onclick="setMode('nback')" data-cat="nback" class="mode-btn p-3.5 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+              <button type="button" onclick="setMode('nback')" data-cat="nback" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
                 <span class="text-2xl">🧠</span>
                 <div>
-                  <div class="font-bold text-xs sm:text-sm text-white">雙重工作記憶</div>
-                  <div class="text-[11px] text-slate-400">2-Back 神經刺激</div>
+                  <div class="font-bold text-xs text-white">工作記憶</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">2-Back 視覺隊列</div>
+                </div>
+              </button>
+              <button type="button" onclick="setMode('stroop')" data-cat="stroop" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+                <span class="text-2xl">⚡</span>
+                <div>
+                  <div class="font-bold text-xs text-white">斯特魯普</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">色彩抗干擾抑制</div>
+                </div>
+              </button>
+              <button type="button" onclick="setMode('symbol')" data-cat="symbol" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+                <span class="text-2xl">🔣</span>
+                <div>
+                  <div class="font-bold text-xs text-white">數字轉碼</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">WAIS 符號速譯</div>
                 </div>
               </button>
             </div>
@@ -234,10 +248,12 @@
           <div class="pt-2 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="w-full sm:w-auto">
               <label class="block text-sm font-bold text-white mb-2">測驗題數規格：</label>
-              <div class="inline-flex rounded-xl bg-slate-950 p-1 border border-slate-800">
-                <button type="button" onclick="setCount(10)" data-count="10" class="count-btn px-4 py-2 rounded-lg text-xs font-bold transition">10 題</button>
-                <button type="button" onclick="setCount(15)" data-count="15" class="count-btn active-btn px-4 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white">15 題 (標準)</button>
-                <button type="button" onclick="setCount(25)" data-count="25" class="count-btn px-4 py-2 rounded-lg text-xs font-bold transition">25 題</button>
+              <div class="inline-flex flex-wrap rounded-xl bg-slate-950 p-1 border border-slate-800 gap-1">
+                <button type="button" onclick="setCount(10)" data-count="10" class="count-btn px-3 py-1.5 rounded-lg text-xs font-bold transition">10 題</button>
+                <button type="button" onclick="setCount(15)" data-count="15" class="count-btn active-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white">15 題 (標準)</button>
+                <button type="button" onclick="setCount(25)" data-count="25" class="count-btn px-3 py-1.5 rounded-lg text-xs font-bold transition">25 題</button>
+                <button type="button" onclick="setCount(50)" data-count="50" class="count-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-pink-300 hover:text-white">50 題 (馬拉松)</button>
+                <button type="button" onclick="setCount('endless')" data-count="endless" class="count-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-amber-300 border border-amber-500/30 hover:bg-amber-500/10">♾️ 無限生存 (3命)</button>
               </div>
             </div>
 
@@ -266,11 +282,14 @@
         <!-- Top HUD -->
         <div class="bg-slate-900/90 border border-slate-800 rounded-xl px-5 py-3 flex flex-wrap items-center justify-between gap-4 shadow-lg">
           <div class="flex items-center gap-4">
-            <div class="text-xs font-bold uppercase tracking-wider text-slate-400">
-              第 <span id="hudIdx" class="text-indigo-400 text-lg font-black">1</span> / <span id="hudTotal">15</span> 題
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <span>第</span> <span id="hudIdx" class="text-indigo-400 text-lg font-black">1</span> / <span id="hudTotal">15</span> <span>題</span>
             </div>
             <div class="h-4 w-px bg-slate-800"></div>
             <span id="hudDomainBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/40">3×3 瑞文矩陣</span>
+            <div id="hudLivesContainer" class="hidden items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-bold">
+              <span>❤️ 生命:</span> <span id="hudLives" class="font-mono">3 / 3</span>
+            </div>
             <span id="hudSubtypeBadge" class="hidden sm:inline-block px-2 py-0.5 rounded text-[11px] bg-slate-800 text-slate-300 border border-slate-700">幾何異或疊加 (XOR)</span>
           </div>
 
@@ -385,6 +404,24 @@
                 </div>
                 <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                   <div id="repNBackBar" class="bg-amber-500 h-2 rounded-full w-0 transition-all duration-700"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-bold text-rose-400 flex items-center gap-1">🛑 Stroop 色字干擾抑制</span>
+                  <span id="repStroopPct" class="font-mono font-bold text-rose-400">--%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="repStroopBar" class="bg-rose-500 h-2 rounded-full w-0 transition-all duration-700"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-bold text-purple-400 flex items-center gap-1">⚡ 符號數字解碼 SDMT</span>
+                  <span id="repSymbolPct" class="font-mono font-bold text-purple-400">--%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="repSymbolBar" class="bg-purple-500 h-2 rounded-full w-0 transition-all duration-700"></div>
                 </div>
               </div>
             </div>
@@ -1161,7 +1198,7 @@
       <span class="text-slate-600">&bull;</span>
       <span class="text-indigo-400 font-mono inline-flex items-center gap-1.5 bg-slate-900/80 px-2.5 py-0.5 rounded-full border border-slate-800 text-[11px]">
         <span>📅</span>
-        <span>最後更新日期 (Updated)：<span id="footerUpdateDate">2026-10-04</span></span>
+        <span>最後更新日期 (Updated)：<span id="footerUpdateDate">2026-10-08</span></span>
       </span>
     </div>
     <div class="text-[11px] text-slate-600">
@@ -1769,12 +1806,16 @@
       timePerQ: 10,
       remainingSec: 10,
       history: [],
+      isEndless: false,
+      lives: 3,
       stats: {
         verbal: { total: 0, correct: 0, timeSum: 0 },
         numerical: { total: 0, correct: 0, timeSum: 0 },
         spatial: { total: 0, correct: 0, timeSum: 0 },
         mechanical: { total: 0, correct: 0, timeSum: 0 },
-        nback: { total: 0, correct: 0, timeSum: 0 }
+        nback: { total: 0, correct: 0, timeSum: 0 },
+        stroop: { total: 0, correct: 0, timeSum: 0 },
+        symbol: { total: 0, correct: 0, timeSum: 0 }
       },
       nbackStream: [],
       isErrorSprint: false,
@@ -1841,12 +1882,19 @@
     }
 
     function setCount(cnt) {
-      appState.totalCount = cnt;
+      if (cnt === 'endless') {
+        appState.isEndless = true;
+        appState.totalCount = 9999;
+        appState.lives = 3;
+      } else {
+        appState.isEndless = false;
+        appState.totalCount = parseInt(cnt);
+      }
       document.querySelectorAll('.count-btn').forEach(btn => {
-        const isTarget = parseInt(btn.getAttribute('data-count')) === cnt;
+        const isTarget = btn.getAttribute('data-count') === String(cnt);
         btn.className = isTarget
-          ? 'count-btn active-btn px-4 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white'
-          : 'count-btn px-4 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
+          ? 'count-btn active-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow'
+          : 'count-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
       });
     }
 
@@ -2332,8 +2380,23 @@
         numerical: { total: 0, correct: 0, timeSum: 0 },
         spatial: { total: 0, correct: 0, timeSum: 0 },
         mechanical: { total: 0, correct: 0, timeSum: 0 },
-        nback: { total: 0, correct: 0, timeSum: 0 }
+        nback: { total: 0, correct: 0, timeSum: 0 },
+        stroop: { total: 0, correct: 0, timeSum: 0 },
+        symbol: { total: 0, correct: 0, timeSum: 0 }
       };
+
+      const livesEl = document.getElementById('hudLivesContainer');
+      if (appState.isEndless) {
+        appState.lives = 3;
+        livesEl.classList.remove('hidden');
+        livesEl.classList.add('flex');
+        document.getElementById('hudLives').innerText = '3 / 3';
+        document.getElementById('hudTotal').innerText = '♾️';
+      } else {
+        livesEl.classList.add('hidden');
+        livesEl.classList.remove('flex');
+        document.getElementById('hudTotal').innerText = appState.totalCount;
+      }
 
       document.getElementById('setupView').classList.add('hidden');
       document.getElementById('reportView').classList.add('hidden');
@@ -2365,6 +2428,508 @@
       loadQuestion();
     }
 
+
+    /* =========================================================
+       NEW EXPANDED QUESTION GENERATORS (9 Additional Engines)
+       ========================================================= */
+
+    /* 1. Spatial: 3x3 Raven Rotation Matrix */
+    function genRavenRotationMatrix() {
+      const baseShapes = ['▲', '➔', '➜', '➤'];
+      const shape = baseShapes[Math.floor(Math.random() * baseShapes.length)];
+      const startDeg = Math.floor(Math.random() * 4) * 90;
+      
+      const r1 = [startDeg, (startDeg + 90) % 360, (startDeg + 180) % 360];
+      const r2 = [(startDeg + 90) % 360, (startDeg + 180) % 360, (startDeg + 270) % 360];
+      const r3 = [(startDeg + 180) % 360, (startDeg + 270) % 360, (startDeg + 360) % 360];
+      const targetDeg = r3[2];
+
+      function renderRotCell(deg, isUnknown = false) {
+        if (isUnknown) {
+          return `
+            <div class="w-full h-full bg-slate-950 rounded-xl border-2 border-dashed border-pink-500 flex items-center justify-center font-black text-2xl text-pink-400">?</div>
+          `;
+        }
+        return `
+          <div class="w-full h-full bg-slate-950 rounded-xl border border-slate-800 flex flex-col items-center justify-center shadow-inner">
+            <div class="text-3xl text-pink-400 font-black transform transition-transform" style="transform: rotate(${deg}deg);">${shape}</div>
+            <span class="text-[9px] font-mono text-slate-500 mt-1">${deg}°</span>
+          </div>
+        `;
+      }
+
+      const optDegs = shuffleArray([targetDeg, (targetDeg + 90) % 360, (targetDeg + 180) % 360, (targetDeg + 270) % 360]);
+
+      const gridHtml = `
+        <div class="flex flex-col items-center">
+          <div class="text-xs text-slate-400 mb-2 font-medium">每行圖形依順時針固定角度旋轉：</div>
+          <div class="grid grid-cols-3 gap-2.5 p-3.5 bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl w-64 h-64 sm:w-72 sm:h-72">
+            <div>${renderRotCell(r1[0])}</div><div>${renderRotCell(r1[1])}</div><div>${renderRotCell(r1[2])}</div>
+            <div>${renderRotCell(r2[0])}</div><div>${renderRotCell(r2[1])}</div><div>${renderRotCell(r2[2])}</div>
+            <div>${renderRotCell(r3[0])}</div><div>${renderRotCell(r3[1])}</div><div>${renderRotCell(0, true)}</div>
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'spatial',
+        subtype: '3×3 瑞文旋轉矩陣',
+        instruction: '【3×3 瑞文圖形空間旋轉】橫向觀察每行圖形旋轉角度步進規律，選出右下角（？）之正確形態：',
+        puzzleHtml: gridHtml,
+        options: optDegs.map(d => ({
+          id: String(d),
+          html: `
+            <div class="flex flex-col items-center justify-center p-2 bg-slate-950 rounded-xl border border-slate-800 hover:border-pink-500 w-full h-24">
+              <div class="text-3xl text-pink-400 font-black transform" style="transform: rotate(${d}deg);">${shape}</div>
+              <span class="text-[11px] font-mono text-slate-400 mt-1">${d}° 方向</span>
+            </div>
+          `
+        })),
+        correct: String(targetDeg),
+        explanation: `每行圖形依序以順時針 +90° 步進旋轉。第三行前兩格分別為 ${r3[0]}° 與 ${r3[1]}°，故問號處必為 (${r3[1]}° + 90°) = ${targetDeg}°！`
+      };
+    }
+
+    /* 2. Spatial: Compass Dynamic Navigation */
+    function genSpatialCompassNavigation() {
+      const directions = [
+        { name: '正北 (N)', deg: 0 },
+        { name: '東北 (NE)', deg: 45 },
+        { name: '正東 (E)', deg: 90 },
+        { name: '東南 (SE)', deg: 135 },
+        { name: '正南 (S)', deg: 180 },
+        { name: '西南 (SW)', deg: 225 },
+        { name: '正西 (W)', deg: 270 },
+        { name: '西北 (NW)', deg: 315 }
+      ];
+
+      const startIdx = Math.floor(Math.random() * directions.length);
+      const startDir = directions[startIdx];
+      const turn1Deg = [90, 135, 180][Math.floor(Math.random() * 3)];
+      const turn1Dir = Math.random() > 0.5 ? '順時針 (右轉)' : '逆時針 (左轉)';
+      const delta1 = (turn1Dir.includes('順') ? turn1Deg : -turn1Deg);
+
+      const turn2Deg = [45, 90, 135][Math.floor(Math.random() * 3)];
+      const turn2Dir = Math.random() > 0.5 ? '順時針 (右轉)' : '逆時針 (左轉)';
+      const delta2 = (turn2Dir.includes('順') ? turn2Deg : -turn2Deg);
+
+      let finalDeg = (startDir.deg + delta1 + delta2) % 360;
+      if (finalDeg < 0) finalDeg += 360;
+      const targetDir = directions.find(d => d.deg === finalDeg) || directions[0];
+
+      const wrongDirs = shuffleArray(directions.filter(d => d.name !== targetDir.name)).slice(0, 3);
+      const options = shuffleArray([targetDir.name, ...wrongDirs.map(d => d.name)]);
+
+      const compassSvg = `
+        <div class="flex flex-col items-center gap-3">
+          <div class="p-3 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col items-center justify-center shadow-xl">
+            <svg class="w-48 h-48 sm:w-56 sm:h-56 select-none" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="85" fill="#020617" stroke="#334155" stroke-width="2"/>
+              <circle cx="100" cy="100" r="72" fill="none" stroke="#1e293b" stroke-dasharray="4 4"/>
+              <text x="100" y="24" text-anchor="middle" fill="#f43f5e" font-size="12" font-weight="900">N (北)</text>
+              <text x="180" y="104" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="bold">E (東)</text>
+              <text x="100" y="185" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">S (南)</text>
+              <text x="20" y="104" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="bold">W (西)</text>
+              <g transform="rotate(${startDir.deg}, 100, 100)">
+                <polygon points="100,40 106,100 94,100" fill="#f43f5e" />
+                <polygon points="100,160 106,100 94,100" fill="#475569" />
+                <circle cx="100" cy="100" r="6" fill="#f8fafc"/>
+              </g>
+            </svg>
+            <div class="text-xs text-indigo-300 font-bold mt-1">初始朝向：${startDir.name}（紅色指針）</div>
+          </div>
+          <div class="text-xs text-slate-300 bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-center space-y-1">
+            <div>第 1 步：以 ${turn1Dir} 旋轉 <span class="text-amber-400 font-bold">${turn1Deg}°</span></div>
+            <div>第 2 步：再以 ${turn2Dir} 旋轉 <span class="text-amber-400 font-bold">${turn2Deg}°</span></div>
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'spatial',
+        subtype: '空間方位動態導航',
+        instruction: '【空間定向與三維羅盤推導】依照動態路徑旋轉指令，推導最終面朝方向：',
+        puzzleHtml: compassSvg,
+        options: options.map(t => ({ id: t, text: t })),
+        correct: targetDir.name,
+        explanation: `初始角度為 ${startDir.name} (${startDir.deg}°)。經過第 1 步 (${delta1 > 0 ? '+' : ''}${delta1}°) 及第 2 步 (${delta2 > 0 ? '+' : ''}${delta2}°)，累計旋轉至 ${finalDeg}°，對應方位為【${targetDir.name}】！`
+      };
+    }
+
+    /* 3. Mechanical: Pulley & Belt Transmission */
+    function genPulleyBeltQuestion() {
+      const aDir = Math.random() > 0.5 ? 'CW' : 'CCW';
+      const aDirZh = (aDir === 'CW') ? '順時針 ↻' : '逆時針 ↺';
+      const isCrossed = Math.random() > 0.5;
+
+      let cDir = aDir;
+      if (isCrossed) {
+        cDir = (cDir === 'CW') ? 'CCW' : 'CW';
+      }
+      const cDirZh = (cDir === 'CW') ? '順時針' : '逆時針';
+      const correctAns = `${cDirZh}，且轉速與滑輪 A 相同`;
+      const wrong1 = `${(cDir === 'CW' ? '逆時針' : '順時針')}，且轉速與滑輪 A 相同`;
+      const wrong2 = `${cDirZh}，但轉速比滑輪 A 快 2 倍`;
+      const wrong3 = `${(cDir === 'CW' ? '逆時針' : '順時針')}，但轉速比滑輪 A 慢 2 倍`;
+
+      const options = shuffleArray([correctAns, wrong1, wrong2, wrong3]);
+
+      const pulleySvg = `
+        <div class="w-full flex flex-col items-center justify-center">
+          <svg class="w-full max-w-2xl h-56 sm:h-64 select-none" viewBox="0 0 660 220">
+            <g transform="translate(130, 26)">
+              <rect x="-85" y="-14" width="170" height="28" rx="7" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5"/>
+              <text x="0" y="5" text-anchor="middle" fill="#a5b4fc" font-size="12" font-weight="bold">滑輪 A：${aDirZh}</text>
+            </g>
+            <g transform="translate(480, 26)">
+              <rect x="-85" y="-14" width="170" height="28" rx="7" fill="#500724" stroke="#f43f5e" stroke-width="1.5"/>
+              <text x="0" y="5" text-anchor="middle" fill="#fca5a5" font-size="12" font-weight="bold">❓ 目標滑輪 C 狀態？</text>
+            </g>
+
+            <!-- Belts -->
+            <line x1="130" y1="70" x2="310" y2="90" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6 3"/>
+            <line x1="130" y1="170" x2="310" y2="150" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6 3"/>
+            <text x="220" y="70" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="bold">平行皮帶</text>
+
+            ${isCrossed ? `
+              <line x1="310" y1="90" x2="480" y2="170" stroke="#ec4899" stroke-width="3" stroke-dasharray="6 3"/>
+              <line x1="310" y1="150" x2="480" y2="70" stroke="#ec4899" stroke-width="3" stroke-dasharray="6 3"/>
+              <text x="395" y="65" text-anchor="middle" fill="#ec4899" font-size="11" font-weight="bold">交叉皮帶 ⤬</text>
+            ` : `
+              <line x1="310" y1="90" x2="480" y2="70" stroke="#22c55e" stroke-width="3" stroke-dasharray="6 3"/>
+              <line x1="310" y1="150" x2="480" y2="170" stroke="#22c55e" stroke-width="3" stroke-dasharray="6 3"/>
+              <text x="395" y="65" text-anchor="middle" fill="#22c55e" font-size="11" font-weight="bold">平行皮帶</text>
+            `}
+
+            <!-- Pulley A (D=40) -->
+            <g>
+              <circle cx="130" cy="120" r="50" fill="#1e1b4b" stroke="#818cf8" stroke-width="6"/>
+              <circle cx="130" cy="120" r="16" fill="#312e81"/>
+              <circle cx="130" cy="120" r="5" fill="#ffffff"/>
+              <text x="130" y="116" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="900">A</text>
+              <text x="130" y="136" text-anchor="middle" fill="#c7d2fe" font-size="12" font-weight="bold">直徑 40cm</text>
+            </g>
+
+            <!-- Pulley B (D=20) -->
+            <g>
+              <circle cx="310" cy="120" r="30" fill="#0f172a" stroke="#06b6d4" stroke-width="5"/>
+              <circle cx="310" cy="120" r="10" fill="#1e293b"/>
+              <circle cx="310" cy="120" r="4" fill="#ffffff"/>
+              <text x="310" y="116" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="900">B</text>
+              <text x="310" y="134" text-anchor="middle" fill="#67e8f9" font-size="10" font-weight="bold">直徑 20cm</text>
+            </g>
+
+            <!-- Pulley C (D=40) -->
+            <g>
+              <circle cx="480" cy="120" r="50" fill="#3b0764" stroke="#ec4899" stroke-width="6"/>
+              <circle cx="480" cy="120" r="16" fill="#581c87"/>
+              <circle cx="480" cy="120" r="5" fill="#ffffff"/>
+              <text x="480" y="116" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="900">C</text>
+              <text x="480" y="136" text-anchor="middle" fill="#fbcfe8" font-size="12" font-weight="bold">直徑 40cm</text>
+            </g>
+
+            <text x="310" y="205" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">
+              傳動關係：平行皮帶傳動同向；交叉皮帶 (8字形) 傳動反向
+            </text>
+          </svg>
+        </div>
+      `;
+
+      return {
+        domain: 'mechanical',
+        subtype: '滑輪皮帶機械傳動',
+        instruction: '【機械物理滑輪系統】已知滑輪 A 轉向與直徑，推導終端滑輪 C 之旋轉方向與速比：',
+        puzzleHtml: pulleySvg,
+        options: options.map(t => ({ id: t, text: t })),
+        correct: correctAns,
+        explanation: `① 轉向：A 經平行皮帶傳至 B (同向)，B 經${isCrossed ? '交叉皮帶傳至 C (方向相反)' : '平行皮帶傳至 C (同向)'}，得【${cDirZh}】；② 轉速：直徑比為 A(40):C(40) ＝ 1:1，故 C 轉速與 A 相同！`
+      };
+    }
+
+    /* 4. Mechanical: Lever Torque Physics */
+    function genLeverHydraulicQuestion() {
+      const d1 = [2, 3, 4][Math.floor(Math.random() * 3)];
+      const w1 = [20, 30, 40, 60][Math.floor(Math.random() * 4)];
+      const d2 = [2, 3, 4, 5].filter(d => d !== d1)[Math.floor(Math.random() * 3)];
+      const totalTorque = d1 * w1;
+      const w2 = Math.round(totalTorque / d2);
+
+      const correctAns = `${w2} kg`;
+      const wrong1 = `${w2 + 10} kg`;
+      const wrong2 = `${Math.max(5, w2 - 10)} kg`;
+      const wrong3 = `${Math.round((d1 * d2) / 2)} kg`;
+      const options = shuffleArray([correctAns, wrong1, wrong2, wrong3]);
+
+      const leverSvg = `
+        <div class="flex flex-col items-center">
+          <svg class="w-full max-w-xl h-52 sm:h-60 select-none" viewBox="0 0 500 200">
+            <rect x="50" y="95" width="400" height="12" rx="4" fill="#334155" stroke="#64748b" stroke-width="2"/>
+            <polygon points="250,107 235,145 265,145" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+            <circle cx="250" cy="107" r="4" fill="#ffffff"/>
+            <text x="250" y="162" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="bold">支點 (0m)</text>
+
+            <g transform="translate(${250 - d1 * 40}, 95)">
+              <line x1="0" y1="0" x2="0" y2="40" stroke="#f43f5e" stroke-width="3"/>
+              <rect x="-24" y="40" width="48" height="34" rx="6" fill="#1e1b4b" stroke="#f43f5e" stroke-width="2"/>
+              <text x="0" y="62" text-anchor="middle" fill="#fda4af" font-size="12" font-weight="black">${w1}kg</text>
+              <text x="0" y="-12" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">距離 ${d1}m</text>
+            </g>
+
+            <g transform="translate(${250 + d2 * 40}, 95)">
+              <line x1="0" y1="0" x2="0" y2="40" stroke="#38bdf8" stroke-width="3"/>
+              <rect x="-24" y="40" width="48" height="34" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+              <text x="0" y="62" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="black">?</text>
+              <text x="0" y="-12" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">距離 ${d2}m</text>
+            </g>
+
+            <text x="250" y="190" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">槓桿力矩平衡定律：左側 (力臂 × 重量) ＝ 右側 (力臂 × 重量)</text>
+          </svg>
+        </div>
+      `;
+
+      return {
+        domain: 'mechanical',
+        subtype: '槓桿物理力矩平衡',
+        instruction: '【工程力學槓桿平衡】欲使上方槓桿維持完全水平靜止平衡，右側應懸掛多少重量？',
+        puzzleHtml: leverSvg,
+        options: options.map(t => ({ id: t, text: t })),
+        correct: correctAns,
+        explanation: `依據槓桿原理：左端力矩 = ${d1}m × ${w1}kg = ${totalTorque} kg·m。右端力臂為 ${d2}m，故右側重量 = ${totalTorque} ÷ ${d2} = ${w2} kg！`
+      };
+    }
+
+    /* 5. Numerical: Dual Alternating Interleaved Series */
+    function genDualAlternatingSeries() {
+      const startA = Math.floor(Math.random() * 5) + 2;
+      const stepA = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+      
+      const startB = Math.floor(Math.random() * 4) + 2;
+      const multB = [2, 3][Math.floor(Math.random() * 2)];
+
+      const a0 = startA;
+      const a1 = a0 + stepA;
+      const a2 = a1 + stepA;
+      const a3 = a2 + stepA;
+
+      const b0 = startB;
+      const b1 = b0 * multB;
+      const b2 = b1 * multB;
+      const b3 = b2 * multB;
+
+      const seq = [a0, b0, a1, b1, a2, b2, a3, '?'];
+      const targetAns = b3;
+
+      const wrong1 = b3 + multB;
+      const wrong2 = a3 + stepA;
+      const wrong3 = b2 * 2;
+      const options = shuffleArray([targetAns, wrong1, wrong2, wrong3]);
+
+      const seriesHtml = `
+        <div class="flex flex-col items-center gap-3">
+          <div class="text-xs text-slate-400 font-medium">觀察數列中的奇偶項雙軌交錯規律：</div>
+          <div class="flex flex-wrap items-center justify-center gap-2 max-w-xl">
+            ${seq.map((item, idx) => `
+              <div class="w-12 h-14 sm:w-14 sm:h-16 rounded-xl border flex flex-col items-center justify-center ${item === '?' ? 'border-amber-500 bg-amber-500/20 text-amber-300 font-black text-2xl shadow-lg' : idx % 2 === 0 ? 'border-indigo-500/50 bg-indigo-950/40 text-indigo-200' : 'border-cyan-500/50 bg-cyan-950/40 text-cyan-200'}">
+                <span class="text-lg sm:text-xl font-mono font-bold">${item}</span>
+                <span class="text-[9px] text-slate-500">${idx % 2 === 0 ? '軌道A' : '軌道B'}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="text-xs text-slate-400 text-center max-w-sm mt-1">
+            奇數項 (軌道A: +${stepA}) 與 偶數項 (軌道B: ×${multB}) 雙軌前進
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'numerical',
+        subtype: '雙重交錯數列',
+        instruction: '【進階雙軌數列推理】找出交錯數列之雙重遞增規律，推導問號（？）處數值：',
+        puzzleHtml: seriesHtml,
+        options: options.map(val => ({ id: String(val), text: String(val) })),
+        correct: String(targetAns),
+        explanation: `數列為雙重交錯數列：奇數位置為【+${stepA}】等差數列 (${a0}➔${a1}➔${a2}➔${a3})；偶數位置為【×${multB}】等比數列 (${b0}➔${b1}➔${b2}➔？)，故問號處為 ${b2} × ${multB} = ${b3}！`
+      };
+    }
+
+    /* 6. Numerical: Currency Arbitrage Math */
+    function genCurrencyArbitrageMath() {
+      const correctAns = '策略 A (先換 USD 可得 20 萬 USD，比策略 B 多 2 萬)';
+      const wrong1 = '策略 B (先換 EUR 再轉 USD 可得 22 萬 USD)';
+      const wrong2 = '兩種換匯路徑金額完全相同 (無套利空間)';
+      const wrong3 = '兩種路徑皆虧損超過 10% 資本';
+      const options = shuffleArray([correctAns, wrong1, wrong2, wrong3]);
+
+      const tradeHtml = `
+        <div class="max-w-xl w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
+          <div class="text-xs text-indigo-400 font-bold uppercase tracking-wider">管顧 Case Interview • 外貿換匯決策</div>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs font-mono">
+            <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">1 USD = 30 TWD</div>
+            <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">1 EUR = 40 TWD</div>
+            <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">1 EUR = 1.20 USD</div>
+          </div>
+          <div class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            某跨國企業擁有 <strong>600 萬 TWD</strong> 資金，欲全數換為美元 (USD)：<br>
+            • <strong>策略 A</strong>：直接以 TWD 兌換為 USD。<br>
+            • <strong>策略 B</strong>：先以 TWD 兌換為 EUR，再將 EUR 兌換為 USD。<br>
+            請問何者最優？
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'numerical',
+        subtype: '外匯商業速算',
+        instruction: '【商業跨幣別速算】在極限秒數內心算兩大換匯路徑，選出最佳財務決策：',
+        puzzleHtml: tradeHtml,
+        options: options.map(t => ({ id: t, text: t })),
+        correct: correctAns,
+        explanation: '策略 A：600萬 ÷ 30 = 20萬 USD；策略 B：600萬 ÷ 40 = 15萬 EUR，15萬 × 1.20 = 18萬 USD。策略 A 比策略 B 多出 2 萬 USD！'
+      };
+    }
+
+    /* 7. Verbal: De Morgan\'s Law Logic */
+    function genDeMorganLogic() {
+      const correctAns = '產品尚未通過法規審核';
+      const wrong1 = '產品已經正式上架且熱賣';
+      const wrong2 = '伺服器發生硬體重大故障';
+      const wrong3 = '全體員工獲得專案額外獎金';
+      const options = shuffleArray([correctAns, wrong1, wrong2, wrong3]);
+
+      const logicHtml = `
+        <div class="max-w-xl w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
+          <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider">德摩根定律與合取否定 (De Morgan\'s Law)</div>
+          <div class="text-xs sm:text-sm text-slate-200 font-mono leading-relaxed bg-slate-900 p-3 rounded-xl border border-slate-800">
+            【合規前提】：若「產品通過法規審核 (A)」且「專案經理簽核 (B)」，則「產品得以上架 (C)」。<br>
+            【實際審計】：專案經理已確認簽核 (B 為真)，但產品卻被判定「不得上架 (¬C)」。
+          </div>
+          <div class="text-xs sm:text-sm font-bold text-white">依形式邏輯等價推理，下列何者為 100% 必然真理？</div>
+        </div>
+      `;
+
+      return {
+        domain: 'verbal',
+        subtype: '德摩根定律證偽',
+        instruction: '【合規邏輯形式推導】克服常識假設，以純粹符號邏輯推導必然真理：',
+        puzzleHtml: logicHtml,
+        options: options.map(t => ({ id: t, text: t })),
+        correct: correctAns,
+        explanation: '(A 且 B) ➔ C 的逆否命題為：¬C ➔ ¬(A 且 B) ➔ (¬A 或 ¬B)。已知 B 為真，因此必為 ¬A（即產品尚未通過法規審核）！'
+      };
+    }
+
+    /* 8. Stroop: Color-Word Interference */
+    function genStroopInterference() {
+      const colorList = [
+        { name: '紅色', hex: '#f43f5e' },
+        { name: '綠色', hex: '#10b981' },
+        { name: '藍色', hex: '#38bdf8' },
+        { name: '黃色', hex: '#facc15' },
+        { name: '紫色', hex: '#c084fc' }
+      ];
+
+      const wordIdx = Math.floor(Math.random() * colorList.length);
+      let inkIdx = Math.floor(Math.random() * colorList.length);
+      while (inkIdx === wordIdx) {
+        inkIdx = Math.floor(Math.random() * colorList.length);
+      }
+
+      const wordObj = colorList[wordIdx];
+      const inkObj = colorList[inkIdx];
+
+      const askForInk = Math.random() > 0.5;
+      const correctAns = askForInk ? inkObj.name : wordObj.name;
+      const otherOptions = colorList.filter(c => c.name !== correctAns).map(c => c.name);
+      const options = shuffleArray([correctAns, ...shuffleArray(otherOptions).slice(0, 3)]);
+
+      const stroopHtml = `
+        <div class="flex flex-col items-center justify-center p-6 bg-slate-950/80 rounded-2xl border border-slate-800 shadow-2xl max-w-md w-full">
+          <div class="text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 mb-3">
+            ⚡ 前額葉抗干擾抑制測試 (Stroop Task)
+          </div>
+          <div class="text-xs text-slate-400 mb-2 font-medium">
+            ${askForInk ? '⚠️ 請選出該文字的【墨水印刷顏色】（忽略字意！）' : '⚠️ 請選出該文字的【字面涵義】（忽略墨水顏色！）'}
+          </div>
+          <div class="text-6xl sm:text-7xl font-black tracking-widest my-4 select-none drop-shadow-md" style="color: ${inkObj.hex};">
+            ${wordObj.name}
+          </div>
+          <div class="text-[11px] text-slate-500">
+            高壓秒數倒數，抑制杏仁核本能衝動
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'stroop',
+        subtype: '斯特魯普抗干擾',
+        instruction: askForInk 
+          ? '【斯特魯普色彩干擾】⚠️ 克服文字語意直覺！選出上方文字【實際印刷之墨水顏色】：'
+          : '【斯特魯普語意干擾】⚠️ 克服色彩視覺直覺！選出上方文字【真正的字面涵義】：',
+        puzzleHtml: stroopHtml,
+        options: options.map(t => ({ id: t, text: t })),
+        correct: correctAns,
+        explanation: askForInk 
+          ? `文字字面雖為「${wordObj.name}」，但實際印刷墨水顏色為「${inkObj.name}」。成功抑制字義直覺！`
+          : `墨水印刷雖為「${inkObj.name}」，但文字字面涵義為「${wordObj.name}」。成功抑制視覺顏色干擾！`
+      };
+    }
+
+    /* 9. Symbol: Symbol Digit Modalities Decoding */
+    function genSymbolDigitDecoding() {
+      const allSymbols = ['★', '▲', '■', '●', '✚', '◆'];
+      const shuffledSymbols = shuffleArray(allSymbols);
+      const digits = [1, 2, 3, 4, 5, 6];
+      
+      const mapSymToDigit = {};
+      shuffledSymbols.forEach((sym, idx) => {
+        mapSymToDigit[sym] = digits[idx];
+      });
+
+      const challengeSyms = [
+        shuffledSymbols[Math.floor(Math.random() * 6)],
+        shuffledSymbols[Math.floor(Math.random() * 6)],
+        shuffledSymbols[Math.floor(Math.random() * 6)]
+      ];
+
+      const correctCode = challengeSyms.map(s => mapSymToDigit[s]).join('');
+      const wrong1 = challengeSyms.map((s, i) => i === 0 ? ((mapSymToDigit[s] % 6) + 1) : mapSymToDigit[s]).join('');
+      const wrong2 = challengeSyms.slice().reverse().map(s => mapSymToDigit[s]).join('');
+      const wrong3 = challengeSyms.map((s, i) => i === 2 ? ((mapSymToDigit[s] % 6) + 1) : mapSymToDigit[s]).join('');
+
+      const options = shuffleArray(Array.from(new Set([correctCode, wrong1, wrong2, wrong3])).slice(0, 4));
+
+      const cipherTableHtml = `
+        <div class="flex flex-col items-center gap-4 max-w-xl w-full">
+          <div class="text-xs text-slate-400 font-bold">【密碼對照表】符號 ➔ 數字：</div>
+          <div class="grid grid-cols-6 gap-1.5 sm:gap-2 w-full p-2.5 bg-slate-950 rounded-xl border border-slate-800 shadow-xl">
+            ${shuffledSymbols.map(sym => `
+              <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-slate-900 border border-slate-800">
+                <span class="text-xl sm:text-2xl text-amber-400 font-black">${sym}</span>
+                <span class="text-xs font-mono font-bold text-slate-300 mt-1">${mapSymToDigit[sym]}</span>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="flex flex-col items-center gap-2 mt-1">
+            <span class="text-xs text-indigo-300 font-bold">請將目標符號序列轉換為數字代碼：</span>
+            <div class="flex items-center gap-3 px-5 py-2.5 bg-indigo-950/40 rounded-xl border border-indigo-500/40 text-3xl font-black text-amber-300 shadow-lg tracking-widest font-mono">
+              ${challengeSyms.map(s => `<span>${s}</span>`).join(' ')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'symbol',
+        subtype: '符號數字快速轉碼',
+        instruction: '【WAIS / SDMT 符號數字解碼】依上方密碼對照表，快速推導目標符號之對應數字：',
+        puzzleHtml: cipherTableHtml,
+        options: options.map(c => ({ id: c, text: `密碼：${c}` })),
+        correct: correctCode,
+        explanation: `依密碼對照表：${challengeSyms[0]}=${mapSymToDigit[challengeSyms[0]]}、${challengeSyms[1]}=${mapSymToDigit[challengeSyms[1]]}、${challengeSyms[2]}=${mapSymToDigit[challengeSyms[2]]}，組合得出正確代碼【${correctCode}】！`
+      };
+    }
+
     function loadQuestion() {
       clearInterval(appState.timerTimer);
       clearTimeout(appState.beatTimeout);
@@ -2389,18 +2954,26 @@
       }
 
       if (targetDomain === 'all') {
-        const dList = ['spatial', 'mechanical', 'numerical', 'verbal', 'nback'];
+        const dList = ['spatial', 'mechanical', 'numerical', 'verbal', 'nback', 'stroop', 'symbol'];
         targetDomain = dList[Math.floor(Math.random() * dList.length)];
       }
 
       if (targetDomain === 'spatial') {
-        q = (Math.random() > 0.5) ? genRaven3x3XOR() : genCubeFoldingNet();
+        const spatialGens = [genRaven3x3XOR, genCubeFoldingNet, genRavenRotationMatrix, genSpatialCompassNavigation];
+        q = spatialGens[Math.floor(Math.random() * spatialGens.length)]();
       } else if (targetDomain === 'mechanical') {
-        q = genGearRotationQuestion();
+        const mechGens = [genGearRotationQuestion, genPulleyBeltQuestion, genLeverHydraulicQuestion];
+        q = mechGens[Math.floor(Math.random() * mechGens.length)]();
       } else if (targetDomain === 'numerical') {
-        q = (Math.random() > 0.5) ? genBusinessFastMath() : gen3x3MathMatrix();
+        const numGens = [genBusinessFastMath, gen3x3MathMatrix, genDualAlternatingSeries, genCurrencyArbitrageMath];
+        q = numGens[Math.floor(Math.random() * numGens.length)]();
       } else if (targetDomain === 'verbal') {
-        q = (Math.random() > 0.5) ? genWasonCardTask() : genComplexSyllogism();
+        const verbalGens = [genWasonCardTask, genComplexSyllogism, genDeMorganLogic];
+        q = verbalGens[Math.floor(Math.random() * verbalGens.length)]();
+      } else if (targetDomain === 'stroop') {
+        q = genStroopInterference();
+      } else if (targetDomain === 'symbol') {
+        q = genSymbolDigitDecoding();
       } else {
         q = gen2BackQuestion();
       }
@@ -2411,10 +2984,10 @@
 
       const dBadge = document.getElementById('hudDomainBadge');
       if (q.domain === 'spatial') {
-        dBadge.innerText = '3×3 瑞文與展開圖';
+        dBadge.innerText = '圖形空間與 3D';
         dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/40';
       } else if (q.domain === 'mechanical') {
-        dBadge.innerText = '齒輪機械連動';
+        dBadge.innerText = '機械物理傳動';
         dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40';
       } else if (q.domain === 'numerical') {
         dBadge.innerText = '數理圖表速算';
@@ -2422,6 +2995,12 @@
       } else if (q.domain === 'verbal') {
         dBadge.innerText = '批判邏輯證偽';
         dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40';
+      } else if (q.domain === 'stroop') {
+        dBadge.innerText = '斯特魯普抗干擾';
+        dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40';
+      } else if (q.domain === 'symbol') {
+        dBadge.innerText = '符號數字轉碼';
+        dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40';
       } else {
         dBadge.innerText = '雙重工作記憶 2-Back';
         dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40';
@@ -2566,6 +3145,17 @@
       document.getElementById('hudAvgTime').innerText = avgTime + 's';
       document.getElementById('hudScore').innerText = appState.score;
 
+      if (!isCorrect && appState.isEndless) {
+        appState.lives = Math.max(0, appState.lives - 1);
+        document.getElementById('hudLives').innerText = `${appState.lives} / 3`;
+        if (appState.lives <= 0) {
+          setTimeout(() => {
+            finishTest();
+          }, 1500);
+          return;
+        }
+      }
+
       setTimeout(() => {
         loadQuestion();
       }, isCorrect ? 850 : 2000);
@@ -2631,8 +3221,10 @@
       const pNum = renderDom('numerical', 'repNumBar', 'repNumPct');
       const pVerbal = renderDom('verbal', 'repVerbalBar', 'repVerbalPct');
       const pNBack = renderDom('nback', 'repNBackBar', 'repNBackPct');
+      const pStroop = renderDom('stroop', 'repStroopBar', 'repStroopPct');
+      const pSymbol = renderDom('symbol', 'repSymbolBar', 'repSymbolPct');
 
-      renderSvgRadar([pSpatial, pMech, pNum, pVerbal, pNBack]);
+      renderSvgRadar([pSpatial, pMech, pNum, pVerbal, pNBack, pStroop, pSymbol]);
 
       document.getElementById('repAvgSec').innerText = avgTime + 's';
       document.getElementById('repFastestSec').innerText = fastest + 's';
@@ -2688,12 +3280,22 @@
 
     function renderSvgRadar(values) {
       const center = 100;
-      const maxR = 75;
-      const numAxes = 5;
+      const maxR = 72;
+      const labels = [
+        { name: '空間', color: '#ec4899' },
+        { name: '機械', color: '#06b6d4' },
+        { name: '數理', color: '#10b981' },
+        { name: '批判', color: '#818cf8' },
+        { name: '記憶', color: '#f59e0b' },
+        { name: '抑制', color: '#f43f5e' },
+        { name: '符號', color: '#c084fc' }
+      ];
+      const numAxes = labels.length;
       const angleStep = (2 * Math.PI) / numAxes;
 
       let polygonPoints = [];
       let webLines = '';
+      let textLabels = '';
 
       for (let i = 0; i < numAxes; i++) {
         const angle = -Math.PI / 2 + (i * angleStep);
@@ -2706,20 +3308,21 @@
         const edgeX = center + maxR * Math.cos(angle);
         const edgeY = center + maxR * Math.sin(angle);
         webLines += `<line x1="${center}" y1="${center}" x2="${edgeX}" y2="${edgeY}" stroke="#334155" stroke-width="1.2"/>`;
+
+        const labelDist = maxR + 15;
+        const lx = center + labelDist * Math.cos(angle);
+        const ly = center + labelDist * Math.sin(angle) + 3;
+        textLabels += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${labels[i].color}" font-size="9" font-weight="bold">${labels[i].name}</text>`;
       }
 
       const radarSvg = `
-        <svg class="w-52 h-52" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="75" fill="none" stroke="#1e293b" stroke-width="1"/>
-          <circle cx="100" cy="100" r="50" fill="none" stroke="#1e293b" stroke-width="1"/>
-          <circle cx="100" cy="100" r="25" fill="none" stroke="#1e293b" stroke-width="1"/>
+        <svg class="w-56 h-56" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="72" fill="none" stroke="#1e293b" stroke-width="1"/>
+          <circle cx="100" cy="100" r="48" fill="none" stroke="#1e293b" stroke-width="1"/>
+          <circle cx="100" cy="100" r="24" fill="none" stroke="#1e293b" stroke-width="1"/>
           ${webLines}
           <polygon points="${polygonPoints.join(' ')}" fill="rgba(99, 102, 241, 0.35)" stroke="#6366f1" stroke-width="2.5"/>
-          <text x="100" y="15" text-anchor="middle" fill="#ec4899" font-size="10" font-weight="bold">圖形空間</text>
-          <text x="180" y="70" text-anchor="middle" fill="#06b6d4" font-size="10" font-weight="bold">機械齒輪</text>
-          <text x="150" y="170" text-anchor="middle" fill="#10b981" font-size="10" font-weight="bold">數理圖表</text>
-          <text x="50" y="170" text-anchor="middle" fill="#818cf8" font-size="10" font-weight="bold">批判證偽</text>
-          <text x="20" y="70" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="bold">2-Back</text>
+          ${textLabels}
         </svg>
       `;
 
