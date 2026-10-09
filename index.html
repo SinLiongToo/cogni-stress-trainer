@@ -23,6 +23,13 @@
     .shake-error {
       animation: subtle-shake 0.35s ease-in-out;
     }
+    @keyframes pbs-breathe {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+    .pbs-pulsing {
+      animation: pbs-breathe 4s infinite ease-in-out;
+    }
     /* gear-spin animations removed to ensure steady, high-precision engineering diagram */
     
     /* Sudoku Specific Grid Styling */
@@ -151,12 +158,12 @@
               <span class="flex items-center gap-2"><span>🎯</span> 步驟一：選擇測驗題型範圍</span>
               <span id="errorBankBadge" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">錯題本 0 題</span>
             </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5" id="catGrid">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2" id="catGrid">
               <button type="button" onclick="setMode('all')" data-cat="all" class="mode-btn active-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-indigo-500 bg-indigo-600/20 shadow-md">
                 <span class="text-2xl">🔥</span>
                 <div>
                   <div class="font-bold text-xs text-white">全領域綜合</div>
-                  <div class="text-[10px] text-slate-400 leading-tight">17+題型全輪動</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">18+題型全輪動</div>
                 </div>
               </button>
               <button type="button" onclick="setMode('spatial')" data-cat="spatial" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
@@ -185,6 +192,13 @@
                 <div>
                   <div class="font-bold text-xs text-white">批判邏輯</div>
                   <div class="text-[10px] text-slate-400 leading-tight">Wason/德摩根/三段</div>
+                </div>
+              </button>
+              <button type="button" onclick="setMode('interview')" data-cat="interview" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
+                <span class="text-2xl">💼</span>
+                <div>
+                  <div class="font-bold text-xs text-teal-300">面試情緒定力</div>
+                  <div class="text-[10px] text-slate-400 leading-tight">質疑/打斷/死寂/揪錯</div>
                 </div>
               </button>
               <button type="button" onclick="setMode('nback')" data-cat="nback" class="mode-btn p-3 rounded-xl border text-left transition flex flex-col justify-between h-28 border-slate-800 bg-slate-950/50 hover:border-slate-700">
@@ -328,6 +342,15 @@
             </div>
           </div>
 
+          <!-- PBS Emotional Resilience & Vagus Breathing Bar -->
+          <div id="pbsBreathingGuide" class="w-full px-3 py-1.5 rounded-xl bg-teal-950/40 border border-teal-500/30 flex items-center justify-between text-[11px] text-teal-300 my-1">
+            <div class="flex items-center gap-2">
+              <span class="inline-block w-2.5 h-2.5 rounded-full bg-teal-400 pbs-pulsing shadow-sm shadow-teal-400/50"></span>
+              <span class="font-bold">🌿 生理定力錨定：PBS (Pause 停頓 ➔ Breathe 吐氣 ➔ Structure 架構)</span>
+            </div>
+            <span class="hidden sm:inline text-[10px] text-teal-400/80 font-mono">迷走神經回穩 • 抑制杏仁核</span>
+          </div>
+
           <div id="hudPuzzleArea" class="w-full flex-1 flex flex-col items-center justify-center p-2 sm:p-4 my-2"></div>
           <div id="hudOptionsGrid" class="w-full grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-800/60"></div>
           <div id="hudFeedback" class="hidden mt-3 w-full text-center text-xs sm:text-sm font-bold py-2.5 px-4 rounded-xl transition"></div>
@@ -422,6 +445,15 @@
                 </div>
                 <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                   <div id="repSymbolBar" class="bg-purple-500 h-2 rounded-full w-0 transition-all duration-700"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-bold text-teal-400 flex items-center gap-1">💼 面試情緒定力與抗壓</span>
+                  <span id="repInterviewPct" class="font-mono font-bold text-teal-400">--%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="repInterviewBar" class="bg-teal-500 h-2 rounded-full w-0 transition-all duration-700"></div>
                 </div>
               </div>
             </div>
@@ -721,6 +753,9 @@
         </button>
         <button type="button" onclick="switchManualTab('verbal')" data-mtab="verbal" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
           🔤 沃森 4-Card 證偽
+        </button>
+        <button type="button" onclick="switchManualTab('interview')" data-mtab="interview" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
+          💼 高壓面試情緒定力
         </button>
         <button type="button" onclick="switchManualTab('nback')" data-mtab="nback" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
           🧠 2-Back 雙重記憶
@@ -1128,6 +1163,140 @@
           </div>
         </div>
 
+        <!-- ================= PANEL: INTERVIEW EMOTIONAL RESILIENCE ================= -->
+        <div id="mpanel_interview" class="manual-panel hidden space-y-5">
+          <div class="bg-gradient-to-r from-teal-950/50 to-slate-900 border border-teal-500/30 rounded-xl p-4">
+            <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">世界級外商管顧、投行與科技巨頭壓力面試</span>
+            <h4 class="text-base font-black text-white mt-1">💼 面試高壓情緒定力與抗壓心態防衛手冊</h4>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              破解「杏仁核劫持 (Amygdala Hijacking)」，在高壓質疑、冷場死寂、粗暴打斷與當場揪錯中維持頂級前額葉心理定力與從容格局。
+            </p>
+          </div>
+
+          <!-- Section 1: Neuroscience of Stress Interviews -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-teal-300 font-bold text-sm">
+              <span>🧠 神經心理學底層：為什麼面試高壓時大腦會空白或失控？</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed text-xs">
+              當面試官冷嘲熱諷、質疑成果或粗暴打斷時，大腦演化核心<strong class="text-rose-400">「杏仁核 (Amygdala)」</strong>會判定遭受社會生存威脅，瞬間分泌大量<strong>皮質醇與去甲腎上腺素</strong>。這會導致負責高階邏輯、語言組織的<strong>背外側前額葉皮質 (DLPFC)</strong> 短暫缺血離線，引發三大情緒崩潰反應：
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+              <div class="p-3 bg-rose-950/30 border border-rose-500/30 rounded-lg">
+                <span class="font-bold text-rose-400">1. 戰鬥本能 (Fight)</span>
+                <p class="text-slate-300 mt-1"><strong>情緒防衛反擊</strong>：覺得被冒犯，面紅耳赤急於自衛辯解，甚至與面試官對槓。</p>
+              </div>
+              <div class="p-3 bg-amber-950/30 border border-amber-500/30 rounded-lg">
+                <span class="font-bold text-amber-400">2. 逃跑本能 (Flight)</span>
+                <p class="text-slate-300 mt-1"><strong>慌亂妥協自卑</strong>：冒牌者心態爆發，被面試官一句話嚇到推翻自己的正確立場，卑微認錯。</p>
+              </div>
+              <div class="p-3 bg-slate-900 border border-slate-700 rounded-lg">
+                <span class="font-bold text-slate-300">3. 僵住本能 (Freeze)</span>
+                <p class="text-slate-400 mt-1"><strong>大腦死機或胡言亂語</strong>：害怕沉默而語無倫次，以沒有邏輯的廢話填補空間。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: The PBS Master Protocol -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-teal-300 font-bold text-sm">
+              <span>🛡️ 頂尖外商高管的「PBS 黃金 3 步定力錨定法」</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div class="p-3 bg-teal-950/30 border border-teal-500/40 rounded-xl space-y-1.5">
+                <div class="flex items-center gap-1.5 text-teal-300 font-black text-sm">
+                  <span class="px-2 py-0.5 rounded bg-teal-500/20">P</span>
+                  <span>Pause (停頓 2 秒)</span>
+                </div>
+                <p class="text-slate-300 leading-relaxed">
+                  面對挑釁或刁難，<strong>絕不立刻開口</strong>。點頭或喝一口水，維持 2 秒沉靜。在面試官眼中這不是遲疑，而是<strong>成熟高管的審慎定力 (Executive Gravitas)</strong>。
+                </p>
+              </div>
+              <div class="p-3 bg-teal-950/30 border border-teal-500/40 rounded-xl space-y-1.5">
+                <div class="flex items-center gap-1.5 text-teal-300 font-black text-sm">
+                  <span class="px-2 py-0.5 rounded bg-teal-500/20">B</span>
+                  <span>Breathe (迷走神經深吐氣)</span>
+                </div>
+                <p class="text-slate-300 leading-relaxed">
+                  緩慢腹式深吐氣，啟動<strong>副交感神經迷走神經</strong>，強制壓制心率飆升，消除聲音微顫與喉嚨緊縮感，讓氧氣重新回流前額葉。
+                </p>
+              </div>
+              <div class="p-3 bg-teal-950/30 border border-teal-500/40 rounded-xl space-y-1.5">
+                <div class="flex items-center gap-1.5 text-teal-300 font-black text-sm">
+                  <span class="px-2 py-0.5 rounded bg-teal-500/20">S</span>
+                  <span>Structure (結論先行架構化)</span>
+                </div>
+                <p class="text-slate-300 leading-relaxed">
+                  以「結論 ➔ 核心維度 (三部曲) ➔ 數據佐證」模式輸出。杜絕無意識流水帳，強迫邏輯思維重新掌握話語主導權。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Psychological Armor Guide -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center gap-2 text-teal-300 font-bold text-sm">
+              <span>⚔️ 破解 6 種搞心態面試官招數的「心理防護罩」</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                <span class="font-bold text-teal-400">① 質疑成果水分：</span>
+                <span class="text-slate-300">肯定團隊協同格局 ➔ 定錨個人核心決策與量化指標。</span>
+              </div>
+              <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                <span class="font-bold text-teal-400">② 粗暴打斷變卦：</span>
+                <span class="text-slate-300">零情緒依戀 ➔ 結論先行 (Bottom-line first) ➔ 優先級檢傷三步走。</span>
+              </div>
+              <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                <span class="font-bold text-teal-400">③ 撲克臉死寂凝視：</span>
+                <span class="text-slate-300">從容享受沉默 ➔ 主動以「探詢邊界假設與深挖意願」推進對話。</span>
+              </div>
+              <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                <span class="font-bold text-teal-400">④ 當場揪出低級失誤：</span>
+                <span class="text-slate-300">優雅致謝校準 ➔ 現場光速修正 ➔ 將修正融匯回整體推論。</span>
+              </div>
+              <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                <span class="font-bold text-teal-400">⑤ 道德合規陷阱：</span>
+                <span class="text-slate-300">堅守誠信底線 ➔ 提出「合規雙軌風險緩釋方案」，不盲從亦不盲目對抗。</span>
+              </div>
+              <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                <span class="font-bold text-teal-400">⑥ 全盤否定方案：</span>
+                <span class="text-slate-300">抱持「Tell me more」好奇心態 ➔ 探詢致命瓶頸，轉衝突為共創。</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Interactive Warm-Up Quiz -->
+          <div class="bg-teal-950/20 border border-teal-500/30 rounded-xl p-4 space-y-3" id="warmup_interview">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-bold">
+                🎮 開始前熱身小試 (不計入時間與成績)
+              </span>
+              <button id="warmup_reset_interview" onclick="resetWarmup('interview')" class="hidden text-xs text-teal-400 hover:text-teal-300 underline">
+                🔄 重新嘗試
+              </button>
+            </div>
+            <p class="font-bold text-white text-xs sm:text-sm">
+              【熱身題】面試官皺眉打斷你：「你剛才第三步的市場規模計算完全是錯的。這數字根本毫無常識，你平時工作就是這種水準嗎？」面對突如其來的羞辱性質疑，哪一種應對展現了最高階的情緒定力？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="answerWarmup('interview', 0)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-teal-500 hover:bg-teal-950/30 text-slate-300 text-left text-xs font-medium transition">
+                A. 「我沒有算錯，這是我們業界慣用的估算法，您可能不熟悉我們這個領域。」
+              </button>
+              <button type="button" onclick="answerWarmup('interview', 1)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-teal-500 hover:bg-teal-950/30 text-slate-300 text-left text-xs font-medium transition">
+                B. 「對不起對不起！我今天太緊張了，我真的很粗心，我可能真的沒資格應徵這個職缺…」
+              </button>
+              <button type="button" onclick="answerWarmup('interview', 2)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-teal-500 hover:bg-teal-950/30 text-slate-300 text-left text-xs font-medium transition">
+                C. 「非常感謝您敏銳地指出了這個代數盲點。讓我立即代入修正：修正後滲透率調整為 4.2%，這也更強化了我們先前對現金流風險的保守預估。謝謝您的修正，我們繼續推進。」
+              </button>
+              <button type="button" onclick="answerWarmup('interview', 3)" class="warmup-opt-btn w-full p-2.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-teal-500 hover:bg-teal-950/30 text-slate-300 text-left text-xs font-medium transition">
+                D. 「那是因為你們給的思考時間太短了，而且白板筆斷斷續續，平常在辦公室我不會錯。」
+              </button>
+            </div>
+            <div id="warmup_fb_interview" class="hidden"></div>
+          </div>
+        </div>
+
         <!-- ================= PANEL 7: SUMMARY ================= -->
         <div id="mpanel_summary" class="manual-panel hidden space-y-4">
           <div class="bg-gradient-to-r from-slate-900 to-indigo-950/50 border border-slate-700 rounded-xl p-4">
@@ -1153,6 +1322,10 @@
             <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
               <span class="font-bold text-indigo-400">🔤 沃森 4-Card 證偽</span>
               <p class="text-slate-400 mt-1">翻「肯定前件 P」與「否定後件 非 Q」；絕不翻 Q（避免確認偏誤）。</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-teal-400">💼 面試情緒定力</span>
+              <p class="text-slate-400 mt-1">PBS 錨定（停頓2秒➔深呼吸➔結論先行）；將挑釁重構為壓力測試，絕不防衛反擊。</p>
             </div>
             <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
               <span class="font-bold text-amber-400">🧠 2-Back 工作記憶</span>
@@ -2382,7 +2555,8 @@
         mechanical: { total: 0, correct: 0, timeSum: 0 },
         nback: { total: 0, correct: 0, timeSum: 0 },
         stroop: { total: 0, correct: 0, timeSum: 0 },
-        symbol: { total: 0, correct: 0, timeSum: 0 }
+        symbol: { total: 0, correct: 0, timeSum: 0 },
+        interview: { total: 0, correct: 0, timeSum: 0 }
       };
 
       const livesEl = document.getElementById('hudLivesContainer');
@@ -2930,6 +3104,220 @@
       };
     }
 
+    /* 10. Interview: High-Stress Emotional Resilience & Composure Generator */
+    let lastInterviewScenarioIdx = -1;
+    function genInterviewStressQuestion() {
+      const scenarios = [
+        {
+          title: "履歷成果質疑與能力打壓",
+          tag: "質疑打壓 • Ego Control",
+          mood: "冷笑挑釁",
+          dialogue: "我看你這段架構主導的經歷水分很大。以你當時的年資，這種千萬級流量架構根本不可能由你決定，這純粹是團隊其他人扛起來、你只是掛名沾光吧？",
+          bioAlert: "自尊心遭受重擊！心率飆升，喉嚨緊縮，產生想要面紅耳赤反駁爭辯的強烈衝動。",
+          composed: "保持溫和目光與沉穩微笑，先肯定團隊合作格局，再精準定錨個人核心決策：「這確實需要全團隊通力合作。我個人當時主要負責的是『分庫分表與快取穿透防禦』的關鍵技術決策，在黑五流量峰值達到 8.5 萬 QPS 時實現零宕機。我很樂意跟您深入探討我當時選型的技術折衷考量。」",
+          defensive: "情緒被激怒，嚴厲抗議反擊：「我請你尊重我的專業！如果不信你可以去背調我前主管，我才是真正的核心，你不能隨便否定我的努力！」",
+          submissive: "冒牌者心態爆發，慌亂妥協道歉：「呃…確實大部分也是主管設計的，我只是負責一部分模組，我可能在履歷上寫得太誇張了，對不起…」",
+          evasive: "閃爍其詞，藉口推託：「這很難說清楚，反正當時公司架構大家都有參與，每個人都有功勞啦，細節我也記不太清了…」",
+          explanation: "【考點透析】世界級外商合夥人常透過『貶低成果』測試候選人在不公質疑下的『情緒定力 (EQ)、格局心態 (Ego Management) 與自信定錨能力』。頂尖應對法：不防衛、不卑微、肯定團隊格局，並以『第一人稱關鍵具體架構抉擇 + 量化結果』從容定錨，化被動為主動！"
+        },
+        {
+          title: "粗暴打斷與突發極限逆境",
+          tag: "突發變卦 • Triage Focus",
+          mood: "粗暴揮手打斷",
+          dialogue: "停！別再背教科書套話了，我聽膩了。現在情境變了：你剛接手團隊，明早預算被腰斬 90%，三位骨幹工程師同時提離職，伺服器正在被駭客攻擊。你只有 30 秒，說出你明早進辦公室第一分鐘的行動！",
+          bioAlert: "發言被打斷產生挫折感，面對多重極端危機引發認知過載與大腦空白。",
+          composed: "零情緒滯留，深吸一口氣，結論先行 (Bottom-line First) 輸出檢傷三步走：「收到極限約束。我將按『止血 ➔ 止損 ➔ 穩人』三步走：第一分鐘，立刻下令安全團隊切斷受駭網段與受影響 API，封存備份；第二，召集骨幹展開 15 分鐘一對一面談，確認痛點並爭取關鍵交接緩衝；第三，凍結非核心開支，聚焦維護核心付費客戶。」",
+          defensive: "對被打斷心生不滿，抗議爭辯：「面試官您先讓我把剛才的邏輯講完好嗎？剛才那個脈絡很關鍵，您這樣突然打斷會打亂我的思考。」",
+          submissive: "放棄主導權，完全依賴上層指示：「這種情況我一個人做不了主，太混亂了，我會立刻打電話給大老闆，等老闆來裁示我再做。」",
+          evasive: "慌張混亂，語無倫次：「這…這太極端了吧？怎麼可能同時發生？可能先報警？還是先跟老闆請假？我不知道該先看哪一個…」",
+          explanation: "【考點透析】測試在『被粗暴打斷』與『極端混沌逆境』下的心理韌性與認知重置速度。頂尖高管秘訣：零情緒依戀（不糾結被廢棄的上半段），運用 PBS 法則迅速調動『結論先行 + 優先級檢傷矩陣 (Triage Framework)』。"
+        },
+        {
+          title: "冷酷死亡凝視與高壓沉默",
+          tag: "沉默高壓 • Silent Armor",
+          mood: "面無表情凝視 8 秒",
+          dialogue: "（你剛回答完複雜估算，面試官雙手抱胸，不發一語，眼神銳利地冷冷凝視你長達 8 秒，空氣徹底凝固，毫無點頭或表情反饋）",
+          bioAlert: "空氣冰冷死寂，強烈自我懷疑湧上心頭，極度焦慮想開口胡言亂語來打破尷尬。",
+          composed: "保持挺拔開放坐姿，從容承受沉默，目光溫和堅定；停頓片刻後主動以結構化方式探詢：「這是我基於現有資料所建立的第一階段假說。面試官，您希望我針對『獲客成本拆解』進一步深挖，還是探討另一種更激進的市場滲透路徑？」",
+          defensive: "被冷場激怒，皺眉瞪回面試官，語氣帶刺：「您為什麼不說話？我的答案有什麼問題嗎？您可以直接指出來。」",
+          submissive: "恐慌自爆，自我推翻：「我是不是講錯了？如果這個方法不對，我還有另一個完全不一樣的猜想，我剛才講的您就當作沒聽到…」",
+          evasive: "無法忍受空白，開始無邊際囉嗦填補空白：「呃…還有就是…其實那家公司還有其他很多問題，比如文化啊、薪水啊…（開始漫無邊際發散）」",
+          explanation: "【考點透析】『高壓沉默』是頂級管顧（McKinsey/BCG）常用的心理測試。許多候選人因無法忍受空白而『開口自爆』。心法：舒適擁抱沉默 (Be comfortable with silence)，若需推進，以『探詢邊界假設與深挖意願』的專業姿態引導對話。"
+        },
+        {
+          title: "當場揪錯與低級失誤施壓",
+          tag: "揪錯逆境 • Graceful Calibration",
+          mood: "眉頭深鎖敲桌",
+          dialogue: "看看你的第三步推導，你連最基本的複利計算公式都代錯了。這麼低級的錯誤，你覺得你配拿這個職位的薪水嗎？",
+          bioAlert: "巨大羞愧感爆發，大腦產生逃避、硬拗或全盤認輸崩潰的自毀衝動。",
+          composed: "優雅校準 (Graceful Calibration)：「非常感謝您敏銳地指出了這個代數盲點。確實，在此步驟應採用連續複利公式而非單利。讓我立即代入修正：修正後淨現值調整為 1,280 萬，這也更強化了我們先前對現金流風險的保守預估。謝謝您的修正，我們繼續推進。」",
+          defensive: "死不認錯，硬拗強辯：「我這不是算錯，這是我自創的簡化模型，在我們業界都是這樣粗估的，根本沒必要吹毛求疵！」",
+          submissive: "心態徹底自卑崩潰：「對不起…我今天太緊張了，我可能真的沒資格應徵這個職位，抱歉浪費您的時間…」",
+          evasive: "找客觀藉口甩鍋：「是因為白板筆不太好寫，而且你們給的思考時間太短了，平常在辦公室用電腦我絕不會錯。」",
+          explanation: "【考點透析】面試官在檢驗候選人被指出低級失誤時的『心理反脆弱性』與『教導反饋接受度 (Coachability)』。頂尖人才從不浪費一秒在找藉口或自怨自艾上：優雅致謝 ➔ 現場光速修正 ➔ 將修正融匯回整體論點！"
+        },
+        {
+          title: "道德合規陷阱與高層施壓",
+          tag: "合規兩難 • Ethical Anchor",
+          mood: "低聲試探逼視",
+          dialogue: "如果你的直接主管（部門 VP）私下指示你：『把測試報告裡的嚴重資安漏洞註記刪掉，否則大客戶明天不簽約，全組今年年終全泡湯，我也會開除你。』你只有 10 秒，你照辦還是拒絕？",
+          bioAlert: "恐慌於兩難絕境：害怕顯得『死板幼稚的消極反對者』或『喪失職業操守的附庸』。",
+          composed: "原則堅定 + 建設性雙軌解方：「我絕不會刪除嚴重漏洞註記，這是企業法律與誠信底線；但我亦非消極對抗。我會以客觀數據向 VP 提交『風險緩釋雙軌方案』：在報告中誠實披露已知漏洞，同時附上『48 小時應急補丁與隔離措施』，並陪同 VP 向客戶說明我們嚴謹的安全承諾，化合規危機為專業信任。」",
+          defensive: "激進對抗，當場揚言越級舉報：「我會立刻衝去跟 CEO 或廉政專線舉報我的 VP，大義滅親，並在公司大群公開信件揭發他！」",
+          submissive: "為保飯碗盲目屈從：「既然是 VP 直接下令，我只能照辦，畢竟如果組員拿不到獎金我也會很愧疚，責任在 VP 身上。」",
+          evasive: "踢皮球裝病逃避：「我會推說我生病請假一週，讓別人去交這份報告，這樣我就沒有法律責任了。」",
+          explanation: "【考點透析】考察在重大利益威脅下的原則底線、成熟商業情商 (Executive Presence) 與合規意識。高階領導者既不『同流合污』，也不『幼稚硬槓』，而是透過『雙軌合規解法 (Constructive Mitigation)』守護公司防線。"
+        },
+        {
+          title: "方案被徹底全盤否定",
+          tag: "否定衝突 • Curiosity Mindset",
+          mood: "雙手抱胸冷酷否定",
+          dialogue: "你這個方案在我看來毫無商業可行性，既燒錢又沒壁壘，純粹是象牙塔裡的幻想。你到底有沒有做過一天的真實商業？",
+          bioAlert: "自尊心遭受重創，感到受辱，產生冷嘲熱諷或強烈自衛的對抗衝動。",
+          composed: "保持好奇探詢心態 (Curiosity Mindset)：「這是一個非常有價值的審視角度。我很想深入請教您，在您的商業直覺中，您認為這個方案最致命的瓶頸是在『使用者獲取成本 (CAC)』過高，還是『技術交付周期』過長？我很樂意就這兩點檢視我們的邊界假說。」",
+          defensive: "冷嘲熱諷回嗆：「那是因為您不懂最新的技術趨勢，微軟和 Google 都已經在做了，您這種傳統思維很容易落伍。」",
+          submissive: "自我否定退縮：「您說得對，我可能真的沒商業頭腦，這方案確實很爛，我就當隨便說說吧…」",
+          evasive: "表面迎合內心怨恨：「行吧，您是面試官您說了算，您覺得不可行那就不可行吧，隨便您。」",
+          explanation: "【考點透析】測試面對客戶或董事會嚴厲否定時，是否會變成情緒爭吵對抗，還是能將衝突轉化為共同探索的建設性對話。心法：採用『Tell me more』探詢心態，把否定視為免費的壓力測試。"
+        },
+        {
+          title: "拷問最慘痛失敗與弱點",
+          tag: "挫敗深挖 • Anti-Fragility",
+          mood: "身體前傾逼問",
+          dialogue: "不要拿那些『我太追求完美』的公版假缺點來敷衍我。我要聽你這輩子因為你個人的愚蠢決策，導致團隊蒙受慘痛損失、甚至想挖洞鑽進去的真實失敗！",
+          bioAlert: "害怕揭露真實弱點會立刻被刷掉，想繼續編織包裝假話以求自保。",
+          composed: "真誠坦然 + 機制化反脆弱 (Post-Mortem Growth)：「我曾因過度自信未做灰度發布，直接全量推送新版，導致核心結帳系統宕機 40 分鐘，公司損失數十萬營收。那是我職業生涯最痛的警鐘。事後我不僅帶頭撰寫透明的事後覆盤 (Post-mortem)，更主動推動建立了『自動化金絲雀發布與一鍵回滾機制』。這段經歷讓我從『單打獨鬥的工程師』轉變為『敬畏系統穩定性與容錯機制的架構思考者』。」",
+          defensive: "將失敗完全甩鍋他人：「上個專案確實慘敗，但那完全是因為產品經理亂改需求、老闆預算沒到位，我被坑了，不是我的錯。」",
+          submissive: "過度自責情緒沉淪：「我那次真的犯了大錯，我覺得自己能力極差，直到現在我都還覺得自己不配當工程師…」",
+          evasive: "繼續套路假話裝腔作勢：「我真正的缺點就是太追求完美，總是對自己和團隊太嚴格，大家都覺得我太拚了。」",
+          explanation: "【考點透析】頂級面試官最反感假大空的套話。他們想檢驗真實誠信 (Authenticity) 以及從廢墟中建立系統防禦的能力。心法：客觀描述事實（不甩鍋）➔ 深刻自省本質原因 ➔ 展現機制化預防與認知蛻變！"
+        },
+        {
+          title: "荒謬未知估算與大腦空白",
+          tag: "未知逆境 • Fermi Framework",
+          mood: "突擊倒數施壓",
+          dialogue: "全台灣此時此刻正在空中飛行的鳥類有幾隻？你只有 15 秒，給我數字和推導，計時開始！",
+          bioAlert: "大腦瞬間短路，數字恐懼症爆發，面臨極端未知時產生失控窒息感。",
+          composed: "微笑穩定深呼吸，確立宏觀邊界與乘法鏈拆解：「這是一個考驗動態心算模型的估算。我將它拆解為：『台灣總面積 3.6 萬平方公里』➔『平均每平方公里鳥類密度 500 隻（全台約 1,800 萬隻）』➔『日間空中覓食飛行比例 5%』，心算得出當前約有 90 萬隻在空中。關鍵在於監測棲息地密度這項核心槓桿。」",
+          defensive: "直接抗議題目荒謬：「這誰會知道啊？世界上根本沒有這種統計數據，這題太不合理了，根本在整人！」",
+          submissive: "毫無邏輯隨意瞎猜：「呃…大概 50 萬隻吧！我直覺感覺是 50 萬，我也說不出為什麼…」",
+          evasive: "糾結細節導致當場死機：「等等，鳥類包括麻雀嗎？野生還是人工？不同天氣會不一樣，我需要查中央氣象局…（卡死超時）」",
+          explanation: "【考點透析】費米問題 (Fermi Problem) 從來不在乎數字精不精確，而在於面臨極端未知時是否會心態失衡，以及前額葉能否瞬間構建乘法鏈結構模型。心法：從容微笑，將未知降維成『面積 × 密度 × 比例』的假說乘法鏈。"
+        },
+        {
+          title: "離職動機誘餌與負面挑撥",
+          tag: "動機陷阱 • Professional Pull",
+          mood: "瞇眼試探挑撥",
+          dialogue: "你前東家在業界資源那麼好、待遇也不錯，你才待一年多就急著走，是不是跟主管處不來，還是被組裡邊緣化了？",
+          bioAlert: "被戳中痛點，誘發大吐苦水、抱怨前主管或前同事的衝動。",
+          composed: "感恩前東家 + 錨定主動追求目標：「在前東家的一年多是我成長最扎實的時期，主管給了我很多關鍵項目的歷練，我非常感激。隨著我完成了第一階段架構搭建，我渴望在『高頻跨國業務與 0 到 1 拓荒』的戰場上承擔更大責任，而貴公司在這領域的戰略佈局正是我深思熟慮後全力奔赴的方向。」",
+          defensive: "大肆吐槽前東家發洩怨氣：「您真的猜對了！我前主管極度微觀管理，而且內部政治鬥爭非常嚴重，我真的受不了才走的！」",
+          submissive: "慌亂自證辯解：「沒有沒有！我人緣很好，主管很喜歡我，真的不是被邊緣化，您千萬不要誤會！」",
+          evasive: "背誦生硬機械套話：「我離職純粹是因為家裡住太遠，通勤時間太長，其他都很好。」",
+          explanation: "【考點透析】測試職業忠誠度、情緒成熟度與歸因傾向。任何對前東家的抱怨都會讓面試官想像你未來離開時也會同樣抱怨他們。心法：『前東家給了厚實基礎 (Grounded foundation) ➔ 主動追求更高的戰略挑戰 (Pull factor, not push factor)』。"
+        },
+        {
+          title: "壓軸靈魂拷問：為何不該錄用你？",
+          tag: "極限反轉 • Strategic Reframing",
+          mood: "身體前傾微笑道",
+          dialogue: "最後一個問題，非常尖銳：請給我三個『我們今天絕對不該錄用你』的理由。",
+          bioAlert: "恐慌不知所措，害怕自曝致命短板，或裝腔作勢讓場面尷尬。",
+          composed: "優雅重構條件 (Strategic Reframing)：「如果您期望的是一位『安於現狀、不挑戰既有低效流程』的執行者，我不合適；如果您希望團隊在面對重大技術債時『保持沉默、迴避爭議』，我也不合適；最後，若貴團隊傾向於『短期打補丁而非建立長期架構』，我的理念可能不完全契合。因為我的價值正是為具備雄心、追求卓越系統的團隊而生。」",
+          defensive: "狂妄自大迴避問題：「沒有任何理由不錄用我，除非貴公司沒有眼光，我是你們能找到最好的候選人。」",
+          submissive: "自曝致命硬傷自殺：「第一，我抗壓性比較差；第二，我不太擅長跟脾氣壞的人溝通；第三，我偶爾會遲到。」",
+          evasive: "嬉皮笑臉打哈哈：「哈哈這太難了吧，面試官您別開玩笑了，我真的很想來貴公司上班啦！」",
+          explanation: "【考點透析】考察在面對極端負向引導時的認知重構 (Cognitive Reframing) 能力、幽默感與領導者格局。心法：將『劣勢』巧妙重構為『特定低效情境下的不相容』，反襯出敢於擔當、追求高標準的頂尖特質。"
+        },
+        {
+          title: "連續追問施壓與窒息節奏",
+          tag: "語速壓制 • Pacing Control",
+          mood: "連續快節奏開火",
+          dialogue: "為什麼用這個演算法？複雜度是多少？如果有 10 億筆資料記憶體爆了怎麼辦？為什麼不選 B 方案？你現在立刻回答！",
+          bioAlert: "被對方的窒息語速牽著帶快，呼吸紊亂，聲音開始顫抖與恐慌搶答。",
+          composed: "降速定錨 (Pacing Anchor)，保持沈穩中速與堅定眼神接觸：「面對巨量資料，核心矛盾在於『記憶體上限與外部 I/O 的平衡』。在 10 億筆規模下，我會採用『外部歸併排序 (External Merge Sort) 結合 LSM-Tree 架構』，將資料分塊寫入磁碟並進行多路歸併，以此徹底杜絕 OOM 崩潰。」",
+          defensive: "情緒爆發抗議刁難：「您問這麼快我怎麼回答？您能不能一個一個問，這是在故意刁難人嗎？」",
+          submissive: "完全被氣勢壓垮，眼神飄忽呆滯，一句話都說不出來。",
+          evasive: "被節奏帶跑失控狂飆：「用快速排序！複雜度 N log N！記憶體爆了加伺服器！B 方案太慢！啊不對等等…」",
+          explanation: "【考點透析】面試官利用『語速壓制』誘導候選人進入焦慮共振，觀察在節奏失控時是否具備主動降速與定力掌握能力。心法：永遠不要被面試官的語速帶跑，對方越快，你的語速越要保持從容深沉，以『降速錨定』奪回對話節奏。"
+        },
+        {
+          title: "臨場技術考題掛黑板卡住",
+          tag: "死機逆境 • Think Out Loud",
+          mood: "看著手錶冷笑",
+          dialogue: "（你在白板前卡住了 20 秒毫無進展）時間已經過去一半了，你還沒寫出第一行程式碼，你平常是怎麼寫系統的？",
+          bioAlert: "窒息式恐慌湧上心頭，大腦一片空白，產生想直接放棄或逃跑的衝動。",
+          composed: "大聲思考 (Think Out Loud) + 暴力解定錨：「我目前在平衡時間複雜度的最優策略。讓我們先從最直觀的『暴力窮舉 (Brute Force)』出發：暴力法的思路是雙重迴圈，時間為 O(N²)、空間 O(1)；接著我們觀察其中重複計算的子問題——如果引入滑動窗口或雜湊表，我們就能將時間降至 O(N)。我現在立刻把滑動窗口的指針轉移邏輯實作出來。」",
+          defensive: "咬牙怪罪環境：「白板寫代碼根本不符合實際開發情況，平常在 IDE 裡有 Copilot 我早就寫完了！」",
+          submissive: "直接舉手投降：「這題我真的沒刷過，太難了，我寫不出來，可以換一題嗎？」",
+          evasive: "在白板上亂畫語法，寫一些明知行不通的廢程式碼試圖掩飾，企圖矇混過關。",
+          explanation: "【考點透析】工程與量化面試中最致命的不是卡住，而是『卡住時的溝通死機』。面試官想看的是你在逆境中的『外顯化思維路徑 (Think Out Loud)』與工程推進韌性。心法：永遠不要死機沉默，從暴力解出發，主動把思維過程拆解給面試官聽！"
+        }
+      ];
+
+      let sIdx = Math.floor(Math.random() * scenarios.length);
+      if (sIdx === lastInterviewScenarioIdx) {
+        sIdx = (sIdx + 1) % scenarios.length;
+      }
+      lastInterviewScenarioIdx = sIdx;
+      const s = scenarios[sIdx];
+
+      const optsData = [
+        { id: 'composed', text: s.composed, type: 'composed' },
+        { id: 'defensive', text: s.defensive, type: 'defensive' },
+        { id: 'submissive', text: s.submissive, type: 'submissive' },
+        { id: 'evasive', text: s.evasive, type: 'evasive' }
+      ];
+      const shuffledOpts = shuffleArray(optsData);
+
+      const scenarioHtml = `
+        <div class="max-w-2xl w-full bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-xl space-y-3.5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-base sm:text-lg">💼</span>
+              <span class="text-xs sm:text-sm font-bold text-teal-300">${s.title}</span>
+            </div>
+            <span class="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-400">
+              ${s.tag}
+            </span>
+          </div>
+          
+          <div class="flex items-start gap-3 bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div class="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-sm shadow">
+              👤
+            </div>
+            <div class="space-y-1 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-indigo-300">面試官 (Interviewer)</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold">${s.mood}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-serif">
+                “${s.dialogue}”
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 bg-rose-950/30 border border-rose-500/30 px-3 py-2 rounded-xl text-[11px] text-rose-300">
+            <span class="animate-pulse">⚡</span>
+            <span><strong>生理情緒預警：</strong>${s.bioAlert}</span>
+          </div>
+
+          <div class="text-xs sm:text-sm text-slate-300 font-semibold pt-1">
+            🎯 <strong>此時考驗你的情緒定力，您的第一反應與應對策略是？</strong>
+          </div>
+        </div>
+      `;
+
+      return {
+        domain: 'interview',
+        subtype: `高壓面試 • ${s.tag}`,
+        instruction: '【面試高壓情緒定力】面對極限施壓與心理擾動，抑制防衛衝動，選出具備頂尖定力之成熟應對：',
+        puzzleHtml: scenarioHtml,
+        options: shuffledOpts.map(o => ({ id: o.id, text: o.text })),
+        correct: 'composed',
+        explanation: s.explanation
+      };
+    }
+
     function loadQuestion() {
       clearInterval(appState.timerTimer);
       clearTimeout(appState.beatTimeout);
@@ -2954,7 +3342,7 @@
       }
 
       if (targetDomain === 'all') {
-        const dList = ['spatial', 'mechanical', 'numerical', 'verbal', 'nback', 'stroop', 'symbol'];
+        const dList = ['spatial', 'mechanical', 'numerical', 'verbal', 'nback', 'stroop', 'symbol', 'interview'];
         targetDomain = dList[Math.floor(Math.random() * dList.length)];
       }
 
@@ -2970,6 +3358,8 @@
       } else if (targetDomain === 'verbal') {
         const verbalGens = [genWasonCardTask, genComplexSyllogism, genDeMorganLogic];
         q = verbalGens[Math.floor(Math.random() * verbalGens.length)]();
+      } else if (targetDomain === 'interview') {
+        q = genInterviewStressQuestion();
       } else if (targetDomain === 'stroop') {
         q = genStroopInterference();
       } else if (targetDomain === 'symbol') {
@@ -2995,6 +3385,9 @@
       } else if (q.domain === 'verbal') {
         dBadge.innerText = '批判邏輯證偽';
         dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40';
+      } else if (q.domain === 'interview') {
+        dBadge.innerText = '高壓面試情緒定力';
+        dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-teal-500/20 text-teal-300 border border-teal-500/40';
       } else if (q.domain === 'stroop') {
         dBadge.innerText = '斯特魯普抗干擾';
         dBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40';
@@ -3012,6 +3405,12 @@
 
       const optGrid = document.getElementById('hudOptionsGrid');
       optGrid.innerHTML = '';
+      if (q.domain === 'interview') {
+        optGrid.className = 'w-full grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-800/60';
+      } else {
+        optGrid.className = 'w-full grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-800/60';
+      }
+
       q.options.forEach((opt, idx) => {
         const wrap = document.createElement('div');
         wrap.className = 'cursor-pointer relative group';
@@ -3022,8 +3421,8 @@
           innerContent = opt.html;
         } else {
           innerContent = `
-            <button class="w-full h-24 p-3 bg-slate-950 hover:bg-slate-850 border border-slate-800 hover:border-indigo-400 rounded-xl text-xs sm:text-sm font-bold text-slate-100 transition active:scale-95 text-left flex flex-col justify-between shadow-md">
-              <span class="leading-snug">${opt.text}</span>
+            <button class="w-full min-h-[5.5rem] h-auto p-3.5 bg-slate-950 hover:bg-slate-850 border border-slate-800 hover:border-teal-400 rounded-xl text-xs sm:text-sm font-semibold text-slate-100 transition active:scale-95 text-left flex flex-col justify-between shadow-md">
+              <span class="leading-relaxed">${opt.text}</span>
             </button>
           `;
         }
@@ -3116,7 +3515,11 @@
         playSuccessChime();
         if (clickedElem) clickedElem.classList.add('ring-2', 'ring-emerald-500', 'rounded-xl');
         fb.className = 'mt-3 w-full text-center text-xs sm:text-sm font-bold py-2.5 px-4 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-        fb.innerHTML = `<span>✓ 精準推導！ 耗時 ${timeTaken.toFixed(2)} 秒</span>`;
+        if (q.domain === 'interview') {
+          fb.innerHTML = `<span>✓ 卓越情緒定力！前額葉成功接管杏仁核，展現高階抗壓風範 (耗時 ${timeTaken.toFixed(2)} 秒)</span>`;
+        } else {
+          fb.innerHTML = `<span>✓ 精準推導！ 耗時 ${timeTaken.toFixed(2)} 秒</span>`;
+        }
       } else {
         playErrorBuzz();
         document.getElementById('hudCard').classList.add('shake-error');
@@ -3124,7 +3527,8 @@
 
         if (clickedElem) clickedElem.classList.add('ring-2', 'ring-rose-500', 'rounded-xl');
         fb.className = 'mt-3 w-full text-center text-xs sm:text-sm font-bold py-2.5 px-4 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30';
-        fb.innerHTML = `<span>✕ ${chosenId === 'TIMEOUT' ? '⏰ 時間截止未能完成推導！' : '推導有誤！'}</span> <span class="font-normal text-xs text-slate-300 ml-1">(${q.explanation})</span>`;
+        const prefix = (chosenId === 'TIMEOUT') ? '⏰ 時間截止未能完成決策！' : (q.domain === 'interview' ? '✕ 陷入情緒防衛、慌亂妥協或藉口推託！' : '推導有誤！');
+        fb.innerHTML = `<span>${prefix}</span> <span class="font-normal text-xs text-slate-300 ml-1">(${q.explanation})</span>`;
       }
 
       appState.history.push({
@@ -3158,7 +3562,7 @@
 
       setTimeout(() => {
         loadQuestion();
-      }, isCorrect ? 850 : 2000);
+      }, isCorrect ? 900 : (q.domain === 'interview' ? 2600 : 2000));
     }
 
     // Keyboard Hotkey Listener for Stress Mode
@@ -3220,11 +3624,12 @@
       const pMech = renderDom('mechanical', 'repMechBar', 'repMechPct');
       const pNum = renderDom('numerical', 'repNumBar', 'repNumPct');
       const pVerbal = renderDom('verbal', 'repVerbalBar', 'repVerbalPct');
+      const pInterview = renderDom('interview', 'repInterviewBar', 'repInterviewPct');
       const pNBack = renderDom('nback', 'repNBackBar', 'repNBackPct');
       const pStroop = renderDom('stroop', 'repStroopBar', 'repStroopPct');
       const pSymbol = renderDom('symbol', 'repSymbolBar', 'repSymbolPct');
 
-      renderSvgRadar([pSpatial, pMech, pNum, pVerbal, pNBack, pStroop, pSymbol]);
+      renderSvgRadar([pSpatial, pMech, pNum, pVerbal, pInterview, pNBack, pStroop, pSymbol]);
 
       document.getElementById('repAvgSec').innerText = avgTime + 's';
       document.getElementById('repFastestSec').innerText = fastest + 's';
@@ -3267,8 +3672,17 @@
         advice = `【建議進行心流脫敏訓練】面對倒數紅光與動態心跳音效時，大腦有過早放棄或隨機猜測的傾向。請嘗試切換至「深思熟慮模式 (18秒)」，先建立穩固的邏輯推導模型，再循序漸進提升速度。`;
       }
 
+      const sInterview = appState.stats.interview;
+      if (sInterview && sInterview.total > 0) {
+        const iAcc = Math.round((sInterview.correct / sInterview.total) * 100);
+        advice += `<br><br><span class="text-teal-300 font-bold">💼 高壓面試情緒定力覆盤 (${iAcc}%)：</span>` +
+          (iAcc >= 80 
+            ? '您展現了外商頂尖合夥人等級的情緒定力 (Executive Gravitas)，面對質疑打壓、粗暴打斷與死寂凝視時，成功抑制了杏仁核的防衛與自卑本能，以前額葉事實定錨與沉著探詢化解危機。'
+            : '在高壓挑釁或突發打斷時，大腦杏仁核仍有被激起防禦反彈、慌亂妥協或藉口推託的傾向。建議牢記「PBS 錨定法 (停頓2秒➔腹式深呼吸➔結論先行)」，把對方的挑釁重構為好奇的壓力測試。');
+      }
+
       document.getElementById('repResilienceGrade').innerText = grade;
-      document.getElementById('repAdviceText').innerText = advice;
+      document.getElementById('repAdviceText').innerHTML = advice;
 
       document.getElementById('hCountAll').innerText = appState.history.length;
       document.getElementById('hCountMissed').innerText = appState.history.filter(h => !h.isCorrect).length;
@@ -3286,6 +3700,7 @@
         { name: '機械', color: '#06b6d4' },
         { name: '數理', color: '#10b981' },
         { name: '批判', color: '#818cf8' },
+        { name: '面試', color: '#14b8a6' },
         { name: '記憶', color: '#f59e0b' },
         { name: '抑制', color: '#f43f5e' },
         { name: '符號', color: '#c084fc' }
@@ -3528,7 +3943,7 @@
       document.getElementById('setupView').classList.remove('hidden');
     }
 
-    const manualTabOrder = ['spatial', 'mechanical', 'numerical', 'verbal', 'nback', 'sudoku', 'summary'];
+    const manualTabOrder = ['spatial', 'mechanical', 'numerical', 'verbal', 'interview', 'nback', 'sudoku', 'summary'];
     let currentManualTab = 'spatial';
 
     function openManualModal(defaultTab = 'spatial') {
@@ -3598,6 +4013,12 @@
         selected: null,
         correct: 1, // B
         explanation: "① 檢查『出國差旅單』（肯定前件 P）是否附了機票（若沒附就違規）；④ 檢查『無機票存根』（否定後件 非 Q）背後是否違規報銷了出國差旅（若無機票卻報出國差旅立刻抓到違規！）。翻『附有機票』無法推翻規則，因為國內差旅附機票並不違法！"
+      },
+      interview: {
+        answered: false,
+        selected: null,
+        correct: 2, // C
+        explanation: "【優雅校準 (Graceful Calibration)】頂級人才面對當場揪錯，不浪費一秒在防衛爭辯（A）、卑微自貶（B）或怨天尤人（D）上。而是：優雅致謝 ➔ 現場光速修正 ➔ 將修正融匯回整體論點，把危機轉化為展示高階 Coachability 與心理反脆弱性的加分亮點！"
       },
       nback: {
         answered: false,
@@ -3678,6 +4099,12 @@
         mechanical: ['A. 逆時針旋轉，1 圈', 'B. 順時針旋轉，3 圈', 'C. 逆時針旋轉，3 圈', 'D. 順時針旋轉，1.5 圈'],
         numerical: ['A. 2 顆 ♦', 'B. 3 顆 ♦', 'C. 4 顆 ♦', 'D. 6 顆 ♦'],
         verbal: ['A. ① 出國差旅單 與 ③ 附有機票存根', 'B. ① 出國差旅單 與 ④ 無機票存根', 'C. ② 國內差旅單 與 ④ 無機票存根', 'D. 全部四張單據都要逐一檢查'],
+        interview: [
+          'A. 「我沒有算錯，這是我們業界慣用的估算法，您可能不熟悉我們這個領域。」',
+          'B. 「對不起對不起！我今天太緊張了，我真的很粗心，我可能真的沒資格應徵這個職缺…」',
+          'C. 「非常感謝您敏銳地指出了這個代數盲點。讓我立即代入修正：修正後滲透率調整為 4.2%，這也更強化了我們先前對現金流風險的保守預估。謝謝您的修正，我們繼續推進。」',
+          'D. 「那是因為你們給的思考時間太短了，而且白板筆斷斷續續，平常在辦公室我不會錯。」'
+        ],
         nback: ['A. 一致 (MATCH)', 'B. 不一致 (MISMATCH)'],
         sudoku: ['A. 4', 'B. 0', 'C. 6', 'D. 無法確定']
       };
