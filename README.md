@@ -3,7 +3,8 @@
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-success?logo=github)](https://sinliongtoo.github.io/cogni-stress-trainer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Last Updated](https://img.shields.io/badge/Updated-2026--10--08-brightgreen.svg)](#)
+[![Last Updated](https://img.shields.io/badge/Updated-2026--10--14-brightgreen.svg)](#)
+[![Bilingual](https://img.shields.io/badge/Languages-EN%20%7C%20%E7%B9%81%E4%B8%AD-blueviolet.svg)](#中英雙語即時切換)
 [![Zero Dependency](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Vanilla%20JS)-purple.svg)](#技術架構)
 [![Web Audio API](https://img.shields.io/badge/Audio-Web%20Audio%20API-orange.svg)](#生體動態壓力機制)
 
@@ -20,6 +21,15 @@
 
 ---
 
+## 🌐 中英雙語切換 (Bilingual Toggle)
+
+全系統支援一鍵無縫切換 **繁體中文 (Traditional Chinese)** 與 **English (英文)**：
+* 頂部導航一鍵切換，偏好設定自動持久化於本機（LocalStorage）。
+* 涵蓋**全站介面、全部題型題幹、SVG 向量圖情境標記、選項文本、詳解覆盤與生理呼吸指引**。
+* 完美適配準備國際頂尖管顧（MBB）、華爾街投行與跨國科技巨頭全英語高壓面試。
+
+---
+
 ## 🚀 線上即時體驗 (Live Demo)
 
 🔗 **GitHub Pages 線上直接玩**：  
@@ -32,15 +42,16 @@
 
 ---
 
-## 🧩 模組一：八大高階認知與情緒維度 × 18+ 題型 (CogniStress Ultimate)
+## 🧩 模組一：九大高階認知與情緒維度 × 22+ 題型 (CogniStress Ultimate)
 
-針對世界級管理顧問公司、外商投行及科技業高階筆試與高壓面試設計，題庫涵蓋 **8 大維度、18+ 種獨立程序式（Procedural）生成題型**：
+針對世界級管理顧問公司、外商投行及科技業高階筆試與高壓面試設計，題庫涵蓋 **9 大維度、22+ 種獨立程序式（Procedural）生成題型**：
 
 | 維度 | 包含測驗機制與題型 | 面試與實戰對標 | 神經科學與抗衰防失智機制 |
 | :--- | :--- | :--- | :--- |
 | **🧩 空間旋轉與瑞文幾何 (Spatial)** | ① 3×3 瑞文九宮格（XOR / AND / OR 疊加相消律）<br>② 正方體 6 面十字展開圖（心智折疊與對立面判斷）<br>③ 幾何角度多步旋轉陣列（角度累進與對稱變換）<br>④ 羅盤方位多步航行（連續方位轉向與相對方位換算） | Mensa 門薩智商、SHL 抽象推理、高階飛行員空間定向 | 鍛鍊頂枕葉三維空間旋轉與視知覺解構能力 |
 | **⚙️ 機械傳動與物理 (Mechanical)** | ① 4～5 級齒輪咬合連動（奇偶級轉向反轉律與齒數速比）<br>② 滑輪組與交叉皮帶傳動（同向/逆向轉向傳動）<br>③ 槓桿力矩與連通管水壓平衝（$d_1 \times W_1 = d_2 \times W_2$） | 外商工程、科技業力學筆試、航空機械測驗 | 刺激大腦頂葉的「動態心智物理模擬 (Mental Simulation)」 |
 | **📊 數理矩陣與商務速算 (Numerical)** | ① 3×3 行列複合函數方陣（行相乘/列差分規律）<br>② 雙重交錯遞迴數列（等差/等比交錯跳格數列）<br>③ 跨國外匯套利與商務速算（三角換匯與基點損益估算）<br>④ 符號天平代數置換（聯立代數置換心算） | 投行 Quantitative Math、外商管顧 Case Fast Math | 活化頂內溝與海馬迴短期數理運算與數字敏感度 |
+| **📈 商業圖表速讀與統計陷阱 (Chart)** | ① **Y 軸起點非零截斷陷阱**（辨識被誇大之視覺高度與真實百分比差距）<br>② **損益平衡點交叉門檻**（總成本 TC 與營收 TR 交會產量 Q* 分析）<br>③ **市場份額與規模翻倍解耦**（區分市佔率微跌與絕對營業額暴增之市佔率陷阱）<br>④ **雙軸營運利潤矩陣**（左軸銷量 × 右軸利潤率之總營業利潤最大化推導）<br>⑤ 各季營收環比增長率（季增率速算） | McKinsey / BCG 管顧筆試、投行個案分析、商業數據速讀 | 鍛鍊頂枕葉尺標校準能力，強力抑制以柱高為依據的「直覺捷思偏誤 (Heuristic Bias)」 |
 | **🔤 批判邏輯與反駁 (Verbal)** | ① 多條件假言三段論（假言推理與傳遞律）<br>② 德摩根定律與否定轉換（「且 / 或」真值變換）<br>③ **Wason 4-Card 證偽任務**（嚴格檢驗「肯定前件 P」與「否定後件 非 Q」） | GMAT 批判性推理、Watson-Glaser 決策能力測試 | 強力抑制「確認偏誤 (Confirmation Bias)」，強化前額葉嚴謹邏輯 |
 | **💼 高壓面試情緒定力 (Interview)** | ① 履歷質疑與能力打壓（Ego Control）<br>② 粗暴打斷與突發極限逆境（Triage Focus）<br>③ 冷酷死亡凝視與高壓沉默（Silent Armor）<br>④ 當場揪錯與低級失誤施壓（Graceful Calibration）<br>⑤ 道德合規陷阱與高層施壓（Ethical Anchor）<br>⑥ 方案被徹底全盤否定（Curiosity Mindset）<br>⑦ 拷問最慘痛失敗與弱點（Anti-Fragility）<br>⑧ 荒謬未知估算與大腦空白（Fermi Framework）<br>⑨ 離職動機誘餌與負面挑撥（Professional Pull）<br>⑩ 壓軸靈魂拷問：為何不該錄用你？（Strategic Reframing）<br>⑪ 連續追問施壓與窒息節奏（Pacing Control）<br>⑫ 臨場技術考題掛黑板卡住（Think Out Loud） | 外商合夥人壓力面試 (Stress Interview)、投行/FAANG 主管評估、董事會應變、高階管理答辯 | 強力抑制「杏仁核劫持 (Amygdala Hijacking)」，鍛鍊背外側前額葉皮質 (DLPFC) 接管情緒，運用「PBS 錨定法」與箱式迷走神經呼吸穩固心律 |
 | **🧠 雙重工作記憶 (N-Back)** | ① 雙重工作記憶 2-Back（9 格動態光點滑動佇列比對） | 國際醫學界證實可擴充流體智力 (Fluid Intelligence) | 高強度活化背外側前額葉皮質 (DLPFC) 與工作記憶容量 |
@@ -57,7 +68,7 @@
 * **三檔極限秒數**：⚡ 極限競賽 (6s)、🎯 外商標準 (10s)、🧠 深思熟慮 (18s)。
 * **🌿 PBS 生理情緒錨定指引**：整合 **Pause (停頓 2 秒) ➔ Breathe (4-7-8 迷走神經腹式深吐氣) ➔ Structure (結論先行架構化)** 生理調節光環，在高壓心跳飆升時啟動副交感神經，實質降低喉嚨緊縮與發抖。
 * **加速心跳生物反饋**：Web Audio API 原生合成。最後 4 秒心跳由 **80 BPM 飆升至 150 BPM**，螢幕伴隨脈衝紅光邊框，模擬臨場心跳加速逆境。
-* **全維度診斷評估**：**八軸動態全向量 SVG 雷達圖（含高壓面試情緒定力軸）**、推算大腦神經年齡（20s 頂峰腦 ➔ 60s 疲憊腦）、本機錯題專攻庫（LocalStorage）。
+* **全維度診斷評估**：**九軸動態全向量 SVG 雷達圖（含商業圖表與高壓面試情緒定力軸）**、推算大腦神經年齡（20s 頂峰腦 ➔ 60s 疲憊腦）、本機錯題專攻庫（LocalStorage）。
 * **🔍 原始考題與選項覆盤**：測驗結束後支援展開「完整題目覆盤」，忠實重現**原始題目指示、情境對話框、SVG 向量情境圖、全部 4 個原始選項**，清楚標記「👤 您的選擇」與「✓ 正確解答」，並支援「全部 / 錯題與超時 / 正確推導」三向篩選檢視。
 
 ---
