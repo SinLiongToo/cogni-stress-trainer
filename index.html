@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CogniStress &amp; Sudoku Master - 高壓決策與全能數獨抗衰系統</title>
+  <title>CogniStress, Sudoku &amp; Topo Master - 高壓決策・專注數獨・等高線地形判讀三合一系統</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <!-- Three.js for 3D Topographic Terrain -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     @keyframes pulse-stress {
       0%, 100% { box-shadow: inset 0 0 25px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); }
@@ -63,13 +65,16 @@
           </svg>
         </div>
         
-        <!-- Two Distinct Main App Modes -->
+        <!-- Three Distinct Main App Modes -->
         <nav class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800">
-          <button id="navTabStress" onclick="switchMainTab('stress')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-indigo-600 text-white shadow">
+          <button id="navTabStress" onclick="switchMainTab('stress')" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-indigo-600 text-white shadow">
             <span>⚡</span> <span class="hidden xs:inline">高壓認知決策</span><span class="xs:hidden">抗壓測驗</span>
           </button>
-          <button id="navTabSudoku" onclick="switchMainTab('sudoku')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white">
+          <button id="navTabSudoku" onclick="switchMainTab('sudoku')" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white">
             <span>🧩</span> <span class="hidden xs:inline">專注數獨工坊</span><span class="xs:hidden">經典數獨</span>
+          </button>
+          <button id="navTabTopo" onclick="switchMainTab('topo')" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white">
+            <span>🧭</span> <span class="hidden xs:inline">等高線地形判讀</span><span class="xs:hidden">地形識圖</span>
           </button>
         </nav>
       </div>
@@ -694,6 +699,178 @@
 
     </div>
 
+    <!-- =========================================================
+         MODULE 3: TOPOGRAPHIC & CONTOUR IDENTIFICATION (TopoMaster)
+         ========================================================= -->
+    <div id="topoModule" class="hidden w-full space-y-6">
+
+      <!-- Top Spec Banner -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-sky-950/40 to-slate-900 border border-sky-500/30 p-5 sm:p-7 shadow-2xl">
+        <div class="absolute -right-12 -bottom-12 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-300 text-xs font-bold mb-3">
+              🧭 空間三維解構 × 3D 現地全景 ⟷ 2D 等高線地圖對照
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight" id="topoMainTitle">
+              Where Are You? 等高線地形判讀實戰
+            </h2>
+            <p class="mt-2 text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed" id="topoMainDesc">
+              透過 3D 超廣角全景視野（山嶺峰頂、鞍部啞口、溪谷走向），比對右方等高線地圖，瞬間推斷自身精確站位。支援鍵盤數字鍵 <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-sky-300 text-xs">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-sky-300 text-xs">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-sky-300 text-xs">3</kbd> 或 <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-sky-300 text-xs">A</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-sky-300 text-xs">B</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-sky-300 text-xs">C</kbd> 極速作答！
+            </p>
+          </div>
+
+          <!-- Score & Streak Dashboard -->
+          <div class="flex items-center gap-3 bg-slate-950/80 border border-slate-800 p-3 rounded-2xl shadow-inner">
+            <div class="text-center px-3">
+              <div class="text-[11px] text-slate-400" id="topoScoreLabel">得分</div>
+              <div id="topoScoreVal" class="text-xl sm:text-2xl font-black text-sky-400">0</div>
+            </div>
+            <div class="h-8 w-px bg-slate-800"></div>
+            <div class="text-center px-3">
+              <div class="text-[11px] text-slate-400" id="topoStreakLabel">連續答對</div>
+              <div id="topoStreakVal" class="text-xl sm:text-2xl font-black text-amber-400">0 🔥</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Game Workspace: 3D Left vs 2D Right -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        
+        <!-- Left: 3D First-Person Panoramic View -->
+        <div class="flex flex-col bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+          <div class="px-4 py-3 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-semibold tracking-wider text-slate-300 uppercase" id="topoViewTitle">3D 現地視野 (FIRST-PERSON VIEW)</span>
+            </div>
+            <div class="px-2.5 py-0.5 rounded bg-sky-950/90 border border-sky-600/50 text-sky-300 font-mono text-xs font-bold tracking-widest" id="topoFacingBadge">
+              FACING NORTH
+            </div>
+          </div>
+
+          <!-- 3D Canvas -->
+          <div id="topoThreeContainer" class="relative w-full aspect-[4/3] bg-slate-950">
+            <canvas id="topoThreeCanvas" class="w-full h-full block"></canvas>
+            <div class="absolute bottom-2 left-2 pointer-events-none bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-md text-[11px] text-sky-300 border border-sky-800/40 flex items-center gap-1.5">
+              <span>📷</span> <span id="topoPanTip">固定廣角全景（一覽正前方地勢起伏，無須手動調整）</span>
+            </div>
+          </div>
+
+          <!-- Feature Observation Clues -->
+          <div class="p-3 bg-slate-950/50 border-t border-slate-800 text-xs text-slate-300 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-amber-400">👁️ <span id="topoClueLabel">判讀特徵：</span></span>
+              <span id="topoClueText">請比對正前方鞍部與左右兩側山嶺之相對高低與等高線走向。</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: 2D Contour Map & Answer Section -->
+        <div class="flex flex-col bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+          <div class="px-4 py-3 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-slate-400">🗺️</span>
+              <span class="text-xs font-semibold tracking-wider text-slate-300 uppercase" id="topoMapTitle">等高線地形圖 (CONTOUR MAP)</span>
+            </div>
+            <div class="text-[11px] text-slate-400" id="topoIntervalText">
+              等高距: <span class="font-bold text-slate-200">20m</span>
+            </div>
+          </div>
+
+          <!-- 2D Canvas with North Arrow & Legend -->
+          <div class="relative w-full aspect-[4/3] bg-slate-950 flex items-center justify-center p-2">
+            <canvas id="topoMapCanvas" width="512" height="512" class="max-w-full max-h-full aspect-square border border-slate-800/60 rounded-lg shadow-inner"></canvas>
+            
+            <!-- North Indicator -->
+            <div class="absolute top-4 left-4 bg-slate-900/90 backdrop-blur border border-slate-700 px-2.5 py-1.5 rounded-lg flex flex-col items-center select-none shadow-md">
+              <span class="text-rose-500 font-bold text-xs leading-none">▲</span>
+              <span class="text-slate-200 font-bold text-[10px] mt-0.5">N</span>
+            </div>
+
+            <!-- Legend Overlay -->
+            <div class="absolute bottom-4 right-4 bg-slate-900/90 backdrop-blur border border-slate-700 p-2 rounded-lg text-[11px] select-none text-slate-300 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-0.5 bg-slate-100 inline-block"></span> <span id="topoLegIndex">計曲線 (100m)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-0.5 bg-slate-500 inline-block"></span> <span id="topoLegInter">首曲線 (20m)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Answer & Choice Buttons -->
+          <div class="p-4 bg-slate-950/60 border-t border-slate-800 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold text-slate-200" id="topoPromptText">你在地圖上的哪一個位置？</span>
+              <span id="topoFeedbackBadge" class="hidden text-xs font-bold px-2 py-1 rounded"></span>
+            </div>
+
+            <!-- Choice Buttons (A, B, C) -->
+            <div class="grid grid-cols-3 gap-3">
+              <button onclick="handleTopoChoice('A')" data-topo-choice="A" class="topo-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-sm sm:text-base transition flex items-center justify-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400 text-xs flex items-center justify-center font-mono">1</span>
+                <span>位置 A</span>
+              </button>
+              <button onclick="handleTopoChoice('B')" data-topo-choice="B" class="topo-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-sm sm:text-base transition flex items-center justify-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400 text-xs flex items-center justify-center font-mono">2</span>
+                <span>位置 B</span>
+              </button>
+              <button onclick="handleTopoChoice('C')" data-topo-choice="C" class="topo-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-sm sm:text-base transition flex items-center justify-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400 text-xs flex items-center justify-center font-mono">3</span>
+                <span>位置 C</span>
+              </button>
+            </div>
+
+            <!-- Explanation Box -->
+            <div id="topoExplanationBox" class="hidden p-3 bg-slate-800/80 border border-slate-700 rounded-xl text-xs space-y-1.5 animate-fadeIn">
+              <div class="font-bold text-sm text-sky-300 flex items-center gap-1.5">
+                <span>💡</span> <span id="topoExpTitle">地形判別要領解析</span>
+              </div>
+              <p id="topoExpContent" class="text-slate-300 leading-relaxed"></p>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="flex items-center justify-between gap-3 pt-1">
+              <button onclick="toggleTopoHint()" class="text-xs text-slate-400 hover:text-slate-200 transition underline underline-offset-4 flex items-center gap-1">
+                🔍 <span id="topoHintBtnText">顯示提示 (視野輔助)</span> <kbd class="px-1 text-[10px] bg-slate-800 rounded border border-slate-700">H</kbd>
+              </button>
+              <button onclick="createNextTopoQuestion()" class="px-5 py-2.5 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-lg shadow-sky-900/30 flex items-center gap-2">
+                <span id="topoNextBtnText">下一題 (隨機生成)</span> <kbd class="px-1.5 py-0.5 text-[10px] bg-sky-950/60 rounded border border-sky-400/30 font-mono">Space</kbd> ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guide Card -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl">
+        <h3 class="text-base font-bold text-slate-200 mb-3 flex items-center gap-2">
+          <span>📚</span> <span id="topoGuideHeader">等高線快速辨識四大口訣與登山現地對照指南</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs text-slate-300">
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div class="font-bold text-emerald-400 mb-1" id="tg1_t">1. 坡度密陡疏緩</div>
+            <p id="tg1_d">等高線間距越密，代表地勢坡度越陡峭；等高線間距越開闊，代表平緩台地或鞍部開闊處。</p>
+          </div>
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div class="font-bold text-sky-400 mb-1" id="tg2_t">2. 凸高為谷・凸低為脊</div>
+            <p id="tg2_d">等高線往高處彎凸（V形指向山頂）代表溪谷/沖溝；往低處彎凸（U/V形指向山腳）代表稜線/山脊。</p>
+          </div>
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div class="font-bold text-amber-400 mb-1" id="tg3_t">3. 鞍部與雙峰特徵</div>
+            <p id="tg3_d">兩個閉合山頭高圈之間較平緩凹陷的啞口即為鞍部（Col/Saddle）。站在此處左右高、前後低。</p>
+          </div>
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
+            <div class="font-bold text-purple-400 mb-1" id="tg4_t">4. 視角方位校準</div>
+            <p id="tg4_d">在地圖上確認北方（N），依題目視角方向轉動地圖，使「視線正前方」與眼前山形起伏完全同向。</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
   </main>
 
   <!-- Sudoku Victory Modal -->
@@ -809,6 +986,9 @@
         </button>
         <button type="button" onclick="switchManualTab('sudoku')" data-mtab="sudoku" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
           🔢 專注數獨工坊
+        </button>
+        <button type="button" onclick="switchManualTab('topo')" data-mtab="topo" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
+          🧭 等高線地形判讀
         </button>
         <button type="button" onclick="switchManualTab('summary')" data-mtab="summary" class="manual-tab-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800">
           📜 全題型速查心法
@@ -1420,6 +1600,35 @@
           </div>
         </div>
 
+        <!-- ================= PANEL 9: TOPOGRAPHIC MAPPING ================= -->
+        <div id="mpanel_topo" class="manual-panel hidden space-y-4">
+          <div class="bg-gradient-to-r from-sky-950/40 to-slate-900 border border-sky-500/30 rounded-xl p-4">
+            <h4 class="text-base font-black text-white">🧭 等高線地形判讀實戰心法與空間對照</h4>
+            <p class="text-xs text-slate-400 mt-1">
+              將第一人稱 3D 景觀與 2D 等高線地圖瞬時對齊，培養頂枕葉的三維心智逆向重構能力。
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+              <span class="font-bold text-emerald-400">1. 坡度密陡疏緩</span>
+              <p class="text-slate-400 mt-1">等高線密集代表陡坡或斷崖；等高線開闊疏散代表緩坡、開闊谷地或鞍部。</p>
+            </div>
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+              <span class="font-bold text-sky-400">2. 凸高為谷・凸低為脊</span>
+              <p class="text-slate-400 mt-1">等高線尖端凸向高海拔數值代表溪谷；圓弧凸向低海拔數值代表稜線山脊。</p>
+            </div>
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+              <span class="font-bold text-amber-400">3. 鞍部與雙峰特徵</span>
+              <p class="text-slate-400 mt-1">兩個閉合同心圓山頂之間的啞口即為鞍部（左右高、前後低）。</p>
+            </div>
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+              <span class="font-bold text-purple-400">4. 視角方位校準</span>
+              <p class="text-slate-400 mt-1">確認地圖北（▲N），依朝向轉動視線，使前方開口與山形起伏完全一致。</p>
+            </div>
+          </div>
+        </div>
+
         <!-- ================= PANEL 7: SUMMARY ================= -->
         <div id="mpanel_summary" class="manual-panel hidden space-y-4">
           <div class="bg-gradient-to-r from-slate-900 to-indigo-950/50 border border-slate-700 rounded-xl p-4">
@@ -1524,25 +1733,41 @@
       currentMainTab = tab;
       const tabStress = document.getElementById('navTabStress');
       const tabSudoku = document.getElementById('navTabSudoku');
+      const tabTopo = document.getElementById('navTabTopo');
       const stressModule = document.getElementById('stressModule');
       const sudokuModule = document.getElementById('sudokuModule');
+      const topoModule = document.getElementById('topoModule');
+
+      // Reset all navigation tabs styling
+      tabStress.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white";
+      tabSudoku.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white";
+      if (tabTopo) tabTopo.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white";
+
+      stressModule.classList.add('hidden');
+      sudokuModule.classList.add('hidden');
+      if (topoModule) topoModule.classList.add('hidden');
 
       if (tab === 'stress') {
-        tabStress.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-indigo-600 text-white shadow";
-        tabSudoku.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white";
+        tabStress.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-indigo-600 text-white shadow";
         stressModule.classList.remove('hidden');
-        sudokuModule.classList.add('hidden');
         window.location.hash = 'stress';
-      } else {
-        tabSudoku.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-purple-600 text-white shadow";
-        tabStress.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white";
-        stressModule.classList.add('hidden');
+      } else if (tab === 'sudoku') {
+        tabSudoku.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-purple-600 text-white shadow";
         sudokuModule.classList.remove('hidden');
         window.location.hash = 'sudoku';
         
         // Init Sudoku if empty
         if (!sudokuState.board || sudokuState.board.length === 0) {
           initSudokuGame();
+        }
+      } else if (tab === 'topo') {
+        if (tabTopo) tabTopo.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-sky-600 text-white shadow";
+        if (topoModule) topoModule.classList.remove('hidden');
+        window.location.hash = 'topo';
+
+        // Initialize Topo Module
+        if (typeof initTopoModule === 'function') {
+          initTopoModule();
         }
       }
     }
@@ -1551,6 +1776,8 @@
     window.addEventListener('load', () => {
       if (window.location.hash === '#sudoku') {
         switchMainTab('sudoku');
+      } else if (window.location.hash === '#topo') {
+        switchMainTab('topo');
       }
       try {
         const el = document.getElementById('footerUpdateDate');
@@ -2245,6 +2472,15 @@
       updateErrorBadge();
       if (typeof updateSudokuStats === 'function') {
         updateSudokuStats();
+      }
+      const navTabTopo = document.getElementById('navTabTopo');
+      if (navTabTopo) {
+        navTabTopo.innerHTML = (lang === 'en')
+          ? '<span>🧭</span> <span class="hidden xs:inline">Topo Navigation</span><span class="xs:hidden">Topo</span>'
+          : '<span>🧭</span> <span class="hidden xs:inline">等高線地形判讀</span><span class="xs:hidden">地形識圖</span>';
+      }
+      if (typeof updateTopoLanguage === 'function') {
+        updateTopoLanguage(lang);
       }
     }
 
@@ -4534,7 +4770,7 @@
       document.getElementById('setupView').classList.remove('hidden');
     }
 
-    const manualTabOrder = ['spatial', 'mechanical', 'numerical', 'chart', 'verbal', 'interview', 'nback', 'sudoku', 'summary'];
+    const manualTabOrder = ['spatial', 'mechanical', 'numerical', 'chart', 'verbal', 'interview', 'nback', 'sudoku', 'topo', 'summary'];
     let currentManualTab = 'spatial';
 
     function openManualModal(defaultTab = 'spatial') {
@@ -4773,6 +5009,599 @@
         appState.errorBank = [];
         updateErrorBadge();
         renderHistoryModalData();
+      }
+    }
+
+    /* =========================================================
+       MODULE 3: TOPOGRAPHIC & CONTOUR IDENTIFICATION SCRIPT
+       ========================================================= */
+    const topoState = {
+      isInitialized: false,
+      score: 0,
+      streak: 0,
+      answered: false,
+      showHintCone: false,
+      currentQuestion: null,
+      gridSize: 64,
+      mapDim: 240,
+      heightMap: null,
+      scene: null,
+      camera: null,
+      renderer: null,
+      terrainMesh: null,
+      cameraYaw: 0,
+      baseYaw: 0
+    };
+
+    const TOPO_DIRECTIONS = [
+      { name: 'NORTH', angle: 0, textZh: '北方', textEn: 'NORTH' },
+      { name: 'EAST',  angle: 90, textZh: '東方', textEn: 'EAST' },
+      { name: 'SOUTH', angle: 180, textZh: '南方', textEn: 'SOUTH' },
+      { name: 'WEST',  angle: 270, textZh: '西方', textEn: 'WEST' }
+    ];
+
+    function generateRandomTopoTerrain() {
+      const size = topoState.gridSize;
+      topoState.heightMap = new Float32Array(size * size);
+
+      const peaks = [
+        { x: 0.28 + (Math.random() - 0.5) * 0.1, y: 0.35 + (Math.random() - 0.5) * 0.1, radius: 0.18 + Math.random() * 0.06, weight: 1.0 },
+        { x: 0.72 + (Math.random() - 0.5) * 0.1, y: 0.40 + (Math.random() - 0.5) * 0.1, radius: 0.20 + Math.random() * 0.06, weight: 0.9 },
+        { x: 0.50 + (Math.random() - 0.5) * 0.2, y: 0.80 + (Math.random() - 0.5) * 0.1, radius: 0.22 + Math.random() * 0.06, weight: 0.85 }
+      ];
+
+      const raw = new Float32Array(size * size);
+      let rawMin = Infinity, rawMax = -Infinity;
+
+      for (let j = 0; j < size; j++) {
+        for (let i = 0; i < size; i++) {
+          const u = i / (size - 1);
+          const v = j / (size - 1);
+          let h = 0;
+
+          for (const p of peaks) {
+            const dx = u - p.x;
+            const dy = v - p.y;
+            const distSq = dx * dx + dy * dy;
+            h += p.weight * Math.exp(-distSq / (2 * p.radius * p.radius));
+          }
+
+          h += Math.sin(u * 6.28) * 0.12 + Math.cos(v * 6.28) * 0.12;
+          h += Math.sin((u + v) * 12.0) * 0.05;
+
+          const idx = j * size + i;
+          raw[idx] = h;
+          if (h < rawMin) rawMin = h;
+          if (h > rawMax) rawMax = h;
+        }
+      }
+
+      const targetMin = 90;
+      const targetMax = 250;
+      for (let k = 0; k < raw.length; k++) {
+        const norm = (raw[k] - rawMin) / (rawMax - rawMin);
+        topoState.heightMap[k] = targetMin + norm * (targetMax - targetMin);
+      }
+
+      return { minH: targetMin, maxH: targetMax, peaks };
+    }
+
+    function getTopoElevation(normX, normY) {
+      const size = topoState.gridSize;
+      const gx = Math.max(0, Math.min(size - 1, normX * (size - 1)));
+      const gy = Math.max(0, Math.min(size - 1, normY * (size - 1)));
+      const x0 = Math.floor(gx), x1 = Math.min(size - 1, x0 + 1);
+      const y0 = Math.floor(gy), y1 = Math.min(size - 1, y0 + 1);
+      const fx = gx - x0, fy = gy - y0;
+
+      const map = topoState.heightMap;
+      const h00 = map[y0 * size + x0];
+      const h10 = map[y0 * size + x1];
+      const h01 = map[y1 * size + x0];
+      const h11 = map[y1 * size + x1];
+
+      return (1 - fx) * (1 - fy) * h00 + fx * (1 - fy) * h10 + (1 - fx) * fy * h01 + fx * fy * h11;
+    }
+
+    function initTopoModule() {
+      if (topoState.isInitialized) {
+        onTopoResize();
+        return;
+      }
+
+      const container = document.getElementById('topoThreeContainer');
+      const canvas = document.getElementById('topoThreeCanvas');
+      if (!container || !canvas) return;
+
+      topoState.scene = new THREE.Scene();
+      topoState.scene.background = new THREE.Color(0x3e4f65);
+      topoState.scene.fog = new THREE.Fog(0x3e4f65, 30, 220);
+
+      topoState.camera = new THREE.PerspectiveCamera(80, container.clientWidth / container.clientHeight, 0.5, 500);
+
+      topoState.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+      topoState.renderer.setSize(container.clientWidth, container.clientHeight);
+      topoState.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const hemiLight = new THREE.HemisphereLight(0xd9e6f2, 0x2a3b25, 0.9);
+      topoState.scene.add(hemiLight);
+
+      const dirLight = new THREE.DirectionalLight(0xfff3e0, 1.2);
+      dirLight.position.set(80, 140, 60);
+      topoState.scene.add(dirLight);
+
+      window.addEventListener('resize', onTopoResize);
+
+      function animateTopo() {
+        requestAnimationFrame(animateTopo);
+        if (topoState.renderer && topoState.scene && topoState.camera && currentMainTab === 'topo') {
+          topoState.renderer.render(topoState.scene, topoState.camera);
+        }
+      }
+      animateTopo();
+
+      topoState.isInitialized = true;
+      createNextTopoQuestion();
+    }
+
+    function onTopoResize() {
+      const container = document.getElementById('topoThreeContainer');
+      if (!container || !topoState.renderer || !topoState.camera) return;
+      topoState.camera.aspect = container.clientWidth / container.clientHeight;
+      topoState.camera.updateProjectionMatrix();
+      topoState.renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    function createNextTopoQuestion() {
+      topoState.answered = false;
+      topoState.showHintCone = false;
+
+      const expBox = document.getElementById('topoExplanationBox');
+      const fbBadge = document.getElementById('topoFeedbackBadge');
+      if (expBox) expBox.classList.add('hidden');
+      if (fbBadge) fbBadge.classList.add('hidden');
+
+      document.querySelectorAll('.topo-btn').forEach(btn => {
+        btn.className = "topo-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-sm sm:text-base transition flex items-center justify-center gap-2";
+      });
+
+      const terrain = generateRandomTopoTerrain();
+      const dirObj = TOPO_DIRECTIONS[Math.floor(Math.random() * TOPO_DIRECTIONS.length)];
+
+      const targetPoint = {
+        u: 0.35 + Math.random() * 0.30,
+        v: 0.40 + Math.random() * 0.25,
+        isTarget: true
+      };
+
+      const decoys = [];
+      let attempts = 0;
+      while (decoys.length < 2 && attempts < 50) {
+        attempts++;
+        const du = 0.22 + Math.random() * 0.56;
+        const dv = 0.22 + Math.random() * 0.56;
+        const distToTarget = Math.hypot(du - targetPoint.u, dv - targetPoint.v);
+        const distToDecoys = decoys.map(d => Math.hypot(du - d.u, dv - d.v));
+        if (distToTarget > 0.20 && (distToDecoys.length === 0 || Math.min(...distToDecoys) > 0.20)) {
+          decoys.push({ u: du, v: dv, isTarget: false });
+        }
+      }
+
+      const allPoints = [targetPoint, ...decoys].sort(() => Math.random() - 0.5);
+      const letters = ['A', 'B', 'C'];
+      let correctChoice = 'A';
+
+      allPoints.forEach((p, idx) => {
+        p.choice = letters[idx];
+        if (p.isTarget) correctChoice = letters[idx];
+      });
+
+      topoState.currentQuestion = {
+        direction: dirObj,
+        target: targetPoint,
+        options: allPoints,
+        correctChoice: correctChoice,
+        terrain: terrain
+      };
+
+      const facingBadge = document.getElementById('topoFacingBadge');
+      if (facingBadge) {
+        const isEn = appState.lang === 'en';
+        facingBadge.innerText = isEn ? `FACING ${dirObj.name}` : `朝向 ${dirObj.textZh} (${dirObj.name})`;
+      }
+
+      updateTopoThreeTerrain();
+      setupTopoCamera(targetPoint.u, targetPoint.v, dirObj.angle);
+      renderTopoContourMap();
+    }
+
+    function updateTopoThreeTerrain() {
+      if (topoState.terrainMesh) topoState.scene.remove(topoState.terrainMesh);
+
+      const dim = topoState.mapDim;
+      const size = topoState.gridSize;
+      const geom = new THREE.PlaneGeometry(dim, dim, size - 1, size - 1);
+      geom.rotateX(-Math.PI / 2);
+
+      const pos = geom.attributes.position;
+      const colors = [];
+
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        const u = (x + dim / 2) / dim;
+        const v = (z + dim / 2) / dim;
+        const h = getTopoElevation(u, v);
+        pos.setY(i, h);
+
+        const normH = Math.max(0, Math.min(1, (h - 90) / 160));
+        let r, g, b;
+        if (normH < 0.4) {
+          const t = normH / 0.4;
+          r = (55 + t * 30) / 255;
+          g = (85 + t * 30) / 255;
+          b = (38 + t * 7) / 255;
+        } else if (normH < 0.75) {
+          const t = (normH - 0.4) / 0.35;
+          r = (85 + t * 60) / 255;
+          g = (115 + t * 13) / 255;
+          b = (45 + t * 20) / 255;
+        } else {
+          const t = (normH - 0.75) / 0.25;
+          r = (145 - t * 15) / 255;
+          g = (128 - t * 3) / 255;
+          b = (65 + t * 50) / 255;
+        }
+        colors.push(r, g, b);
+      }
+
+      geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      pos.needsUpdate = true;
+      geom.computeVertexNormals();
+
+      const mat = new THREE.MeshLambertMaterial({
+        vertexColors: true,
+        wireframe: false
+      });
+
+      topoState.terrainMesh = new THREE.Mesh(geom, mat);
+      topoState.scene.add(topoState.terrainMesh);
+    }
+
+    function setupTopoCamera(u, v, directionAngleDeg) {
+      const dim = topoState.mapDim;
+      const worldX = (u - 0.5) * dim;
+      const worldZ = (v - 0.5) * dim;
+      const groundH = getTopoElevation(u, v);
+      const eyeH = groundH + 6.5;
+
+      topoState.camera.position.set(worldX, eyeH, worldZ);
+
+      topoState.baseYaw = directionAngleDeg * (Math.PI / 180);
+      topoState.cameraYaw = topoState.baseYaw;
+
+      const lookDist = 75;
+      const targetX = topoState.camera.position.x + Math.sin(topoState.cameraYaw) * lookDist;
+      const targetZ = topoState.camera.position.z - Math.cos(topoState.cameraYaw) * lookDist;
+
+      const frontU = Math.max(0, Math.min(1, (targetX + dim / 2) / dim));
+      const frontV = Math.max(0, Math.min(1, (targetZ + dim / 2) / dim));
+      const frontH = getTopoElevation(frontU, frontV);
+
+      const targetY = (topoState.camera.position.y * 0.35 + frontH * 0.65) + 3.0;
+      topoState.camera.lookAt(targetX, targetY, targetZ);
+    }
+
+    function renderTopoContourMap() {
+      const canvas = document.getElementById('topoMapCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Shading relief
+      const imgData = ctx.createImageData(w, h);
+      for (let py = 0; py < h; py++) {
+        for (let px = 0; px < w; px++) {
+          const u = px / (w - 1);
+          const v = py / (h - 1);
+          const elev = getTopoElevation(u, v);
+          const idx = (py * w + px) * 4;
+          const t = Math.max(0, Math.min(1, (elev - 90) / 160));
+
+          imgData.data[idx]     = 15 + t * 45;
+          imgData.data[idx + 1] = 23 + t * 50;
+          imgData.data[idx + 2] = 42 + t * 65;
+          imgData.data[idx + 3] = 255;
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      // Draw contour lines
+      const startElev = 100;
+      const endElev = 240;
+      const interval = 20;
+
+      for (let elev = startElev; elev <= endElev; elev += interval) {
+        const isIndex = (elev === 100 || elev === 160 || elev === 220);
+        ctx.beginPath();
+        ctx.lineWidth = isIndex ? 2.2 : 0.9;
+        ctx.strokeStyle = isIndex ? '#f1f5f9' : 'rgba(148, 163, 184, 0.55)';
+
+        drawContourLevelMarching(ctx, elev, w, h);
+        ctx.stroke();
+
+        if (isIndex) {
+          drawContourIndexLabels(ctx, elev, w, h);
+        }
+      }
+
+      if (topoState.showHintCone || topoState.answered) {
+        drawTopoFovCone(ctx, topoState.currentQuestion.target, topoState.currentQuestion.direction.angle, w, h);
+      }
+
+      topoState.currentQuestion.options.forEach(opt => {
+        drawTopoOptionBadge(ctx, opt, w, h);
+      });
+    }
+
+    function drawContourLevelMarching(ctx, level, canvasW, canvasH) {
+      const size = topoState.gridSize;
+      const stepX = canvasW / (size - 1);
+      const stepY = canvasH / (size - 1);
+      const map = topoState.heightMap;
+
+      for (let j = 0; j < size - 1; j++) {
+        for (let i = 0; i < size - 1; i++) {
+          const v0 = map[j * size + i];
+          const v1 = map[j * size + (i + 1)];
+          const v2 = map[(j + 1) * size + (i + 1)];
+          const v3 = map[(j + 1) * size + i];
+
+          let caseIndex = 0;
+          if (v0 >= level) caseIndex |= 1;
+          if (v1 >= level) caseIndex |= 2;
+          if (v2 >= level) caseIndex |= 4;
+          if (v3 >= level) caseIndex |= 8;
+
+          if (caseIndex === 0 || caseIndex === 15) continue;
+
+          const x = i * stepX;
+          const y = j * stepY;
+
+          const getT = (a, b) => Math.abs(b - a) < 0.001 ? 0.5 : Math.max(0, Math.min(1, (level - a) / (b - a)));
+          const top    = { x: x + stepX * getT(v0, v1), y: y };
+          const right  = { x: x + stepX, y: y + stepY * getT(v1, v2) };
+          const bottom = { x: x + stepX * getT(v3, v2), y: y + stepY };
+          const left   = { x: x, y: y + stepY * getT(v0, v3) };
+
+          const line = (p1, p2) => { ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); };
+
+          switch (caseIndex) {
+            case 1:  case 14: line(left, top); break;
+            case 2:  case 13: line(top, right); break;
+            case 3:  case 12: line(left, right); break;
+            case 4:  case 11: line(right, bottom); break;
+            case 5: line(left, top); line(right, bottom); break;
+            case 6:  case 9:  line(top, bottom); break;
+            case 7:  case 8:  line(left, bottom); break;
+            case 10: line(top, right); line(left, bottom); break;
+          }
+        }
+      }
+    }
+
+    function drawContourIndexLabels(ctx, level, canvasW, canvasH) {
+      const size = topoState.gridSize;
+      const stepX = canvasW / (size - 1);
+      const stepY = canvasH / (size - 1);
+      const map = topoState.heightMap;
+
+      ctx.save();
+      ctx.font = 'bold 9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let j = 6; j < size - 6; j += 14) {
+        for (let i = 6; i < size - 6; i += 14) {
+          const v = map[j * size + i];
+          if (Math.abs(v - level) < 8) {
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(i * stepX - 12, j * stepY - 6, 24, 12);
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillText(`${level}m`, i * stepX, j * stepY);
+            ctx.restore();
+            return;
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawTopoFovCone(ctx, pt, angleDeg, w, h) {
+      const cx = pt.u * w;
+      const cy = pt.v * h;
+      const rad = (angleDeg - 90) * (Math.PI / 180);
+      const fovSpan = 80 * (Math.PI / 180);
+      const coneLength = 80;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, coneLength, rad - fovSpan / 2, rad + fovSpan / 2);
+      ctx.closePath();
+
+      const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, coneLength);
+      grad.addColorStop(0, 'rgba(56, 189, 248, 0.55)');
+      grad.addColorStop(1, 'rgba(56, 189, 248, 0.02)');
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    function drawTopoOptionBadge(ctx, opt, w, h) {
+      const px = opt.u * w;
+      const py = opt.v * h;
+
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 6;
+
+      ctx.beginPath();
+      ctx.arc(px, py, 14, 0, Math.PI * 2);
+
+      if (topoState.answered) {
+        ctx.fillStyle = opt.isTarget ? '#10b981' : '#475569';
+      } else {
+        ctx.fillStyle = opt.choice === 'A' ? '#0284c7' : (opt.choice === 'B' ? '#059669' : '#d97706');
+      }
+      ctx.fill();
+
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(opt.choice, px, py);
+
+      ctx.restore();
+    }
+
+    function handleTopoChoice(selectedChoice) {
+      if (topoState.answered || !topoState.currentQuestion) return;
+      topoState.answered = true;
+
+      const isCorrect = (selectedChoice === topoState.currentQuestion.correctChoice);
+      const badge = document.getElementById('topoFeedbackBadge');
+      const expBox = document.getElementById('topoExplanationBox');
+      const expContent = document.getElementById('topoExpContent');
+      const isEn = appState.lang === 'en';
+
+      if (badge) badge.classList.remove('hidden');
+      if (expBox) expBox.classList.remove('hidden');
+
+      if (isCorrect) {
+        topoState.score += 10;
+        topoState.streak += 1;
+        playSuccessChime();
+        if (badge) {
+          badge.className = "text-xs font-bold px-3 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500";
+          badge.innerText = isEn ? "CORRECT! +10 🎯" : "答對了！+10 分 🎯";
+        }
+      } else {
+        topoState.streak = 0;
+        playErrorBuzz();
+        if (badge) {
+          badge.className = "text-xs font-bold px-3 py-1 rounded bg-rose-500/20 text-rose-400 border border-rose-500";
+          badge.innerText = isEn ? `WRONG! Correct was ${topoState.currentQuestion.correctChoice} ❌` : `答錯了！正解為 ${topoState.currentQuestion.correctChoice} ❌`;
+        }
+      }
+
+      document.getElementById('topoScoreVal').innerText = topoState.score;
+      document.getElementById('topoStreakVal').innerText = `${topoState.streak} 🔥`;
+
+      document.querySelectorAll('.topo-btn').forEach(btn => {
+        const c = btn.getAttribute('data-topo-choice');
+        if (c === topoState.currentQuestion.correctChoice) {
+          btn.className = "topo-btn py-3 rounded-xl border border-emerald-500 bg-emerald-950/80 text-emerald-300 font-bold text-sm sm:text-base transition flex items-center justify-center gap-2 ring-2 ring-emerald-500/50";
+        } else if (c === selectedChoice && !isCorrect) {
+          btn.className = "topo-btn py-3 rounded-xl border border-rose-500 bg-rose-950/80 text-rose-300 font-bold text-sm sm:text-base transition flex items-center justify-center gap-2";
+        } else {
+          btn.className = "topo-btn py-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-500 font-bold text-sm sm:text-base transition flex items-center justify-center gap-2 opacity-50";
+        }
+      });
+
+      const elev = Math.round(getTopoElevation(topoState.currentQuestion.target.u, topoState.currentQuestion.target.v));
+      const dirText = isEn ? topoState.currentQuestion.direction.name : topoState.currentQuestion.direction.textZh;
+
+      if (expContent) {
+        if (isEn) {
+          expContent.innerHTML = `
+            You are standing at approx elevation <strong>${elev}m</strong>, facing <strong>${dirText}</strong>.<br>
+            Notice the blue FOV cone on the 2D contour map: looking in this direction aligns perfectly with the 3D horizon contours (slopes on flanks and pass opening ahead)!
+          `;
+        } else {
+          expContent.innerHTML = `
+            你正站在海拔約 <strong>${elev}m</strong> 處，面朝 <strong>${dirText}</strong>。<br>
+            請檢視右方等高線地圖中展開的藍色扇形視角（FOV Cone）：當你面朝該方向時，左右兩側等高線向高處收縮為山頭，正前方則是開闊下凹的鞍部啞口，與 3D 視角景觀完全吻合！
+          `;
+        }
+      }
+
+      renderTopoContourMap();
+    }
+
+    function toggleTopoHint() {
+      topoState.showHintCone = !topoState.showHintCone;
+      renderTopoContourMap();
+    }
+
+    // Keyboard support for Topo Module
+    window.addEventListener('keydown', (e) => {
+      if (currentMainTab !== 'topo') return;
+      const key = e.key.toUpperCase();
+      if (key === '1' || key === 'A') {
+        handleTopoChoice('A');
+      } else if (key === '2' || key === 'B') {
+        handleTopoChoice('B');
+      } else if (key === '3' || key === 'C') {
+        handleTopoChoice('C');
+      } else if (key === ' ' || key === 'ENTER' || key === 'N') {
+        createNextTopoQuestion();
+      } else if (key === 'H') {
+        toggleTopoHint();
+      }
+    });
+
+    function updateTopoLanguage(lang) {
+      const isEn = (lang === 'en');
+      const setTxt = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+      };
+
+      setTxt('topoMainTitle', isEn ? 'Where Are You? Topographic Terrain Association' : 'Where Are You? 等高線地形判讀實戰');
+      setTxt('topoScoreLabel', isEn ? 'Score' : '得分');
+      setTxt('topoStreakLabel', isEn ? 'Streak' : '連續答對');
+      setTxt('topoViewTitle', isEn ? '3D FIRST-PERSON VIEW' : '3D 現地視野 (FIRST-PERSON VIEW)');
+      setTxt('topoPanTip', isEn ? 'Fixed Panoramic Vista (Wide landscape, no adjustment needed)' : '固定廣角全景（一覽正前方地勢起伏，無須手動調整）');
+      setTxt('topoClueLabel', isEn ? 'Feature:' : '判讀特徵：');
+      setTxt('topoClueText', isEn ? 'Compare the forward saddle and flank peaks with the contour contours.' : '請比對正前方鞍部與左右兩側山嶺之相對高低與等高線走向。');
+      setTxt('topoMapTitle', isEn ? 'CONTOUR MAP' : '等高線地形圖 (CONTOUR MAP)');
+      setTxt('topoIntervalText', isEn ? 'Interval: 20m' : '等高距: 20m');
+      setTxt('topoLegIndex', isEn ? 'Index Contour (100m)' : '計曲線 (100m)');
+      setTxt('topoLegInter', isEn ? 'Intermediate (20m)' : '首曲線 (20m)');
+      setTxt('topoPromptText', isEn ? 'Where are you on the map?' : '你在地圖上的哪一個位置？');
+      setTxt('topoExpTitle', isEn ? 'Terrain Reading Analysis' : '地形判別要領解析');
+      setTxt('topoHintBtnText', isEn ? 'Show Hint (FOV Cone)' : '顯示提示 (視野輔助)');
+      setTxt('topoNextBtnText', isEn ? 'Next Question (Random)' : '下一題 (隨機生成)');
+
+      setTxt('topoGuideHeader', isEn ? 'Essential Land Navigation & Contour Reading Rules' : '等高線快速辨識四大口訣與登山現地對照指南');
+      setTxt('tg1_t', isEn ? '1. Contour Spacing' : '1. 坡度密陡疏緩');
+      setTxt('tg1_d', isEn ? 'Close lines indicate steep cliffs/slopes; widely spaced lines indicate gentle plains or saddles.' : '等高線間距越密，代表地勢坡度越陡峭；等高線間距越開闊，代表平緩台地或鞍部開闊處。');
+      setTxt('tg2_t', isEn ? '2. V-Shapes for Valleys & Ridges' : '2. 凸高為谷・凸低為脊');
+      setTxt('tg2_d', isEn ? 'V-shapes pointing upstream indicate valleys/gullies; U/V shapes pointing downhill indicate ridges.' : '等高線往高處彎凸（V形指向山頂）代表溪谷/沖溝；往低處彎凸（U/V形指向山腳）代表稜線/山脊。');
+      setTxt('tg3_t', isEn ? '3. Saddles & Dual Peaks' : '3. 鞍部與雙峰特徵');
+      setTxt('tg3_d', isEn ? 'A dip between two summits is a saddle (col). Standing here, you have slopes rising on two sides and falling on two sides.' : '兩個閉合山頭高圈之間較平緩凹陷的啞口即為鞍部（Col/Saddle）。站在此處左右高、前後低。');
+      setTxt('tg4_t', isEn ? '4. Map Orientation' : '4. 視角方位校準');
+      setTxt('tg4_d', isEn ? 'Align map North. Rotate perspective so your viewing direction matches the 3D horizon features.' : '在地圖上確認北方（N），依題目視角方向轉動地圖，使「視線正前方」與眼前山形起伏完全同向。');
+
+      if (topoState.currentQuestion) {
+        const dir = topoState.currentQuestion.direction;
+        const fb = document.getElementById('topoFacingBadge');
+        if (fb) fb.innerText = isEn ? `FACING ${dir.name}` : `朝向 ${dir.textZh} (${dir.name})`;
       }
     }
 

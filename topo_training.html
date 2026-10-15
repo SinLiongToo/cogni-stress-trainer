@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where Are You? 等高線地形判別實戰訓練器</title>
+  <!-- Tailwind CSS -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <!-- Three.js for 3D Terrain -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root[data-theme="dark"] {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --map-bg: #0b1120;
+      --contour-color: #94a3b8;
+      --contour-index: #e2e8f0;
+      --accent: #38bdf8;
+    }
+    :root[data-theme="light"] {
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --map-bg: #f1f5f9;
+      --contour-color: #94a3b8;
+      --contour-index: #334155;
+      --accent: #0284c7;
+    }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .badge-point {
+      transition: all 0.2s ease-in-out;
+    }
+    .badge-point:hover {
+      transform: scale(1.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col p-3 md:p-6 transition-colors duration-300">
+  <!-- Top Navigation & Controls -->
+  <header class="max-w-6xl w-full mx-auto flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-700/50">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🧭</span>
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight" id="ui-title">Where Are You? 等高線地形判讀訓練</h1>
+      </div>
+      <p class="text-xs md:text-sm text-slate-400 mt-1" id="ui-subtitle">第一人稱 3D 視角與 2D 等高線地圖對照・野外定向與登山識圖技能訓練</p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- Streak & Score Badge -->
+      <div class="bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-3 text-sm">
+        <div><span id="ui-score-label">得分</span>: <span id="score-val" class="font-bold text-sky-400">0</span></div>
+        <div class="h-4 w-px bg-slate-600"></div>
+        <div><span id="ui-streak-label">連續答對</span>: <span id="streak-val" class="font-bold text-amber-400">0 🔥</span></div>
+      </div>
+
+      <!-- Language Toggle -->
+      <button id="lang-btn" class="px-3 py-1.5 text-sm bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1">
+        🌐 <span id="lang-text">EN</span>
+      </button>
+
+      <!-- Theme Toggle -->
+      <button id="theme-btn" class="px-3 py-1.5 text-sm bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors">
+        ☀️ / 🌙
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Game Workspace -->
+  <main class="max-w-6xl w-full mx-auto flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+    
+    <!-- Left Column: 3D First Person View -->
+    <div class="flex flex-col bg-slate-900/90 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+      <!-- 3D Header -->
+      <div class="px-4 py-3 bg-slate-950/70 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-xs font-semibold tracking-wider text-slate-300 uppercase" id="ui-view-title">3D 現地視野 (FIRST-PERSON VIEW)</span>
+        </div>
+        <div class="px-2.5 py-0.5 rounded bg-sky-950/80 border border-sky-600/50 text-sky-300 font-mono text-xs font-bold tracking-widest" id="facing-badge">
+          FACING NORTH
+        </div>
+      </div>
+
+      <!-- 3D Canvas Container -->
+      <div id="three-container" class="relative w-full aspect-[4/3] bg-slate-950">
+        <canvas id="three-canvas" class="w-full h-full block"></canvas>
+        <div class="absolute bottom-2 left-2 pointer-events-none bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-md text-[11px] text-sky-300 border border-sky-800/40 flex items-center gap-1.5">
+          <span>📷</span> <span id="ui-pan-tip">固定廣角全景（一覽正前方地勢起伏，無須手動調整）</span>
+        </div>
+      </div>
+
+      <!-- Feature Observation Clues -->
+      <div class="p-3 bg-slate-950/40 border-t border-slate-800/80 text-xs text-slate-300 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400">👁️ 判讀特徵：</span>
+          <span id="terrain-clue-text">請比對正前方鞍部與左右兩側山嶺之相對高低與等高線走向。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: 2D Contour Map & Answer Choice -->
+    <div class="flex flex-col bg-slate-900/90 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+      <!-- Map Header -->
+      <div class="px-4 py-3 bg-slate-950/70 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-slate-400">🗺️</span>
+          <span class="text-xs font-semibold tracking-wider text-slate-300 uppercase" id="ui-map-title">等高線地形圖 (CONTOUR MAP)</span>
+        </div>
+        <div class="text-[11px] text-slate-400">
+          等高距 (Interval): <span class="font-bold text-slate-200">20m</span>
+        </div>
+      </div>
+
+      <!-- 2D Canvas Container with North Arrow -->
+      <div class="relative w-full aspect-[4/3] bg-slate-950 flex items-center justify-center p-2">
+        <canvas id="map-canvas" width="512" height="512" class="max-w-full max-h-full aspect-square border border-slate-800/60 rounded-lg shadow-inner"></canvas>
+        
+        <!-- North Indicator Overlay -->
+        <div class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur border border-slate-700 px-2 py-1.5 rounded-md flex flex-col items-center select-none shadow-md">
+          <span class="text-rose-500 font-bold text-xs leading-none">▲</span>
+          <span class="text-slate-200 font-bold text-[10px] mt-0.5">N</span>
+        </div>
+
+        <!-- Legend Overlay -->
+        <div class="absolute bottom-4 right-4 bg-slate-900/85 backdrop-blur border border-slate-700 p-2 rounded text-[11px] select-none text-slate-300 space-y-1">
+          <div class="flex items-center gap-1.5">
+            <span class="w-4 h-0.5 bg-slate-100 inline-block"></span> <span id="leg-index">計曲線 (100m)</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-4 h-0.5 bg-slate-500 inline-block"></span> <span id="leg-inter">首曲線 (20m)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Options / Answer Area -->
+      <div class="p-4 bg-slate-950/60 border-t border-slate-800 flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-semibold text-slate-200" id="ui-question-prompt">你在地圖上的哪一個位置？</span>
+          <span id="feedback-badge" class="hidden text-xs font-bold px-2 py-1 rounded"></span>
+        </div>
+
+        <!-- Choice Buttons -->
+        <div class="grid grid-cols-3 gap-3" id="choice-buttons-group">
+          <button data-choice="A" class="choice-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-base transition flex items-center justify-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400 text-xs flex items-center justify-center">A</span>
+            <span class="choice-text">位置 A</span>
+          </button>
+          <button data-choice="B" class="choice-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-base transition flex items-center justify-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400 text-xs flex items-center justify-center">B</span>
+            <span class="choice-text">位置 B</span>
+          </button>
+          <button data-choice="C" class="choice-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-base transition flex items-center justify-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400 text-xs flex items-center justify-center">C</span>
+            <span class="choice-text">位置 C</span>
+          </button>
+        </div>
+
+        <!-- Explanation Card (Visible after answering) -->
+        <div id="explanation-box" class="hidden p-3 bg-slate-800/80 border border-slate-700 rounded-xl text-xs space-y-1.5 animate-fadeIn">
+          <div class="font-bold text-sm text-sky-300 flex items-center gap-1.5">
+            <span>💡</span> <span id="exp-title">地形判別要領解析</span>
+          </div>
+          <p id="exp-content" class="text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <!-- Next / Action Buttons -->
+        <div class="flex items-center justify-between gap-3 pt-1">
+          <button id="hint-btn" class="text-xs text-slate-400 hover:text-slate-200 transition underline underline-offset-4 flex items-center gap-1">
+            🔍 <span id="ui-hint-btn">顯示提示 (視野輔助)</span>
+          </button>
+          <button id="next-btn" class="px-5 py-2.5 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-sky-900/30 flex items-center gap-2">
+            <span id="ui-next-text">下一題 (隨機生成)</span> ➔
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Topographic Reading Crash Course Card -->
+  <section class="max-w-6xl w-full mx-auto mt-6 bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl">
+    <h2 class="text-base font-bold text-slate-200 mb-3 flex items-center gap-2">
+      <span>📚</span> <span id="guide-header">等高線快速辨識口訣與登山現地對照指南</span>
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs text-slate-300">
+      <div class="p-3 bg-slate-950/50 rounded-xl border border-slate-800">
+        <div class="font-bold text-emerald-400 mb-1" id="g1-t">1. 坡度密陡疏緩</div>
+        <p id="g1-d">等高線間距越密，代表地勢坡度越陡峭；等高線間距越開闊，代表平緩台地或鞍部開闊處。</p>
+      </div>
+      <div class="p-3 bg-slate-950/50 rounded-xl border border-slate-800">
+        <div class="font-bold text-sky-400 mb-1" id="g2-t">2. 凸高為谷・凸低為脊</div>
+        <p id="g2-d">等高線往高處彎凸（V形指向山頂）代表溪谷/沖溝；往低處彎凸（U/V形指向山腳）代表稜線/山脊。</p>
+      </div>
+      <div class="p-3 bg-slate-950/50 rounded-xl border border-slate-800">
+        <div class="font-bold text-amber-400 mb-1" id="g3-t">3. 鞍部與雙峰特徵</div>
+        <p id="g3-d">兩個閉合山頭高圈之間較平緩凹陷的啞口即為鞍部（Col/Saddle）。站在此處左右高、前後低。</p>
+      </div>
+      <div class="p-3 bg-slate-950/50 rounded-xl border border-slate-800">
+        <div class="font-bold text-purple-400 mb-1" id="g4-t">4. 視角方位校準</div>
+        <p id="g4-d">在地圖上確認北方（N），依題目視角方向轉動地圖，使「視線正前方」與眼前山形起伏完全同向。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Script Logic -->
+  <script>
+    // --- i18n Dictionary ---
+    const i18n = {
+      zh: {
+        title: "Where Are You? 等高線地形判讀實戰訓練",
+        subtitle: "第一人稱 3D 視角與 2D 等高線地圖對照・野外定向與登山識圖技能訓練",
+        score: "得分",
+        streak: "連續答對",
+        viewTitle: "3D 現地視野 (FIRST-PERSON VIEW)",
+        facing: (dir) => `朝向 ${dir} (FACING ${dir})`,
+        panTip: "固定廣角全景（一覽正前方地勢起伏，無須手動調整）",
+        mapTitle: "等高線地形圖 (CONTOUR MAP)",
+        interval: "等高距 (Interval): 20m",
+        legIndex: "計曲線 (100m)",
+        legInter: "首曲線 (20m)",
+        qPrompt: "你在地圖上的哪一個位置？",
+        choiceText: (c) => `位置 ${c}`,
+        expTitle: "地形判別要領解析",
+        hintBtn: "顯示提示 (視野輔助)",
+        nextBtn: "下一題 (隨機生成)",
+        cluePrompt: "判讀特徵：",
+        correct: "恭喜答對！正確識別站立點與地形！🎯",
+        wrong: "答錯了！請留意周圍山峰高度與凹陷鞍部位置。",
+        gHeader: "等高線快速辨識口訣與登山現地對照指南",
+        g1T: "1. 坡度密陡疏緩",
+        g1D: "等高線間距越密，代表地勢坡度越陡峭；等高線間距越開闊，代表平緩台地或鞍部開闊處。",
+        g2T: "2. 凸高為谷・凸低為脊",
+        g2D: "等高線往高處彎凸（V形指向山頂）代表溪谷/沖溝；往低處彎凸（U/V形指向山腳）代表稜線/山脊。",
+        g3T: "3. 鞍部與雙峰特徵",
+        g3D: "兩個閉合山頭高圈之間較平緩凹陷的啞口即為鞍部（Col/Saddle）。站在此處左右高、前後低。",
+        g4T: "4. 視角方位校準",
+        g4D: "在地圖上確認北方（N），依題目視角方向轉動地圖，使「視線正前方」與眼前山形起伏完全同向。"
+      },
+      en: {
+        title: "Where Are You? Topographic Terrain Identification",
+        subtitle: "Match 3D First-Person View with 2D Contour Maps・Land Navigation Training",
+        score: "Score",
+        streak: "Streak",
+        viewTitle: "3D FIRST-PERSON VIEW",
+        facing: (dir) => `FACING ${dir}`,
+        panTip: "Fixed Panoramic Vista (Immediate wide landscape, no adjustment needed)",
+        mapTitle: "CONTOUR MAP",
+        interval: "Interval: 20m",
+        legIndex: "Index Contour (100m)",
+        legInter: "Intermediate (20m)",
+        qPrompt: "Where are you on the map?",
+        choiceText: (c) => `Point ${c}`,
+        expTitle: "Terrain Reading Analysis",
+        hintBtn: "Show Hint (FOV Cone)",
+        nextBtn: "Next Question (Random)",
+        cluePrompt: "Clue:",
+        correct: "Correct! Outstanding terrain association! 🎯",
+        wrong: "Incorrect! Note the peaks and saddle positions.",
+        gHeader: "Essential Land Navigation & Contour Reading Rules",
+        g1T: "1. Contour Spacing & Slope",
+        g1D: "Close contour lines indicate steep cliffs/slopes; widely spaced lines indicate gentle plains or saddles.",
+        g2T: "2. V's Point Upstream / Ridges Point Down",
+        g2D: "Contour V-shapes pointing towards higher elevation indicate valleys/gullies; pointing downhill indicate ridges.",
+        g3T: "3. Saddles & Dual Peaks",
+        g3D: "A dip between two summits is a saddle (col). Standing here, you have slopes rising on two sides and falling on two sides.",
+        g4T: "4. Map Orientation",
+        g4D: "Align map with compass North. Rotate perspective so your viewing direction matches the 3D horizon features."
+      }
+    };
+
+    let currentLang = 'zh';
+    let currentTheme = 'dark';
+    let score = 0;
+    let streak = 0;
+    let showHintCone = false;
+    let answered = false;
+
+    // --- Procedural Terrain Generator ---
+    const GRID_SIZE = 64; // Heightmap grid 64x64
+    const MAP_DIM = 240;  // Real world size (meters)
+    let heightMap = [];
+    let currentQuestion = null;
+
+    function generateRandomTerrain() {
+      heightMap = new Float32Array(GRID_SIZE * GRID_SIZE);
+
+      // Generate 3 to 4 mountain peaks with controlled positions
+      const numPeaks = 3;
+      const peaks = [
+        // Two distinct peaks in the upper half or sides to create realistic saddles/valleys
+        { x: 0.28 + (Math.random() - 0.5) * 0.1, y: 0.35 + (Math.random() - 0.5) * 0.1, radius: 0.18 + Math.random() * 0.06, weight: 1.0 },
+        { x: 0.72 + (Math.random() - 0.5) * 0.1, y: 0.40 + (Math.random() - 0.5) * 0.1, radius: 0.20 + Math.random() * 0.06, weight: 0.9 },
+        { x: 0.50 + (Math.random() - 0.5) * 0.2, y: 0.80 + (Math.random() - 0.5) * 0.1, radius: 0.22 + Math.random() * 0.06, weight: 0.85 }
+      ];
+
+      // Temporary raw calculation
+      const raw = new Float32Array(GRID_SIZE * GRID_SIZE);
+      let rawMin = Infinity, rawMax = -Infinity;
+
+      for (let j = 0; j < GRID_SIZE; j++) {
+        for (let i = 0; i < GRID_SIZE; i++) {
+          const u = i / (GRID_SIZE - 1);
+          const v = j / (GRID_SIZE - 1);
+          let h = 0;
+
+          for (const p of peaks) {
+            const dx = u - p.x;
+            const dy = v - p.y;
+            const distSq = dx * dx + dy * dy;
+            h += p.weight * Math.exp(-distSq / (2 * p.radius * p.radius));
+          }
+
+          // Undulating ridge details
+          h += Math.sin(u * 6.28) * 0.12 + Math.cos(v * 6.28) * 0.12;
+          h += Math.sin((u + v) * 12.0) * 0.05;
+
+          const idx = j * GRID_SIZE + i;
+          raw[idx] = h;
+          if (h < rawMin) rawMin = h;
+          if (h > rawMax) rawMax = h;
+        }
+      }
+
+      // Strictly normalize terrain heights between 90m (valleys) and 250m (summits)
+      const targetMin = 90;
+      const targetMax = 250;
+      for (let k = 0; k < raw.length; k++) {
+        const norm = (raw[k] - rawMin) / (rawMax - rawMin);
+        heightMap[k] = targetMin + norm * (targetMax - targetMin);
+      }
+
+      return { minH: targetMin, maxH: targetMax, peaks };
+    }
+
+    function getElevation(normX, normY) {
+      const gx = Math.max(0, Math.min(GRID_SIZE - 1, normX * (GRID_SIZE - 1)));
+      const gy = Math.max(0, Math.min(GRID_SIZE - 1, normY * (GRID_SIZE - 1)));
+      const x0 = Math.floor(gx), x1 = Math.min(GRID_SIZE - 1, x0 + 1);
+      const y0 = Math.floor(gy), y1 = Math.min(GRID_SIZE - 1, y0 + 1);
+      const fx = gx - x0, fy = gy - y0;
+
+      const h00 = heightMap[y0 * GRID_SIZE + x0];
+      const h10 = heightMap[y0 * GRID_SIZE + x1];
+      const h01 = heightMap[y1 * GRID_SIZE + x0];
+      const h11 = heightMap[y1 * GRID_SIZE + x1];
+
+      return (1 - fx) * (1 - fy) * h00 + fx * (1 - fy) * h10 + (1 - fx) * fy * h01 + fx * fy * h11;
+    }
+
+    // --- Question Synthesis ---
+    // Pick directions: North (0 deg), East (90 deg), South (180 deg), West (270 deg)
+    const DIRECTIONS = [
+      { name: 'NORTH', angle: 0, textZh: '北方', textEn: 'NORTH' },
+      { name: 'EAST',  angle: 90, textZh: '東方', textEn: 'EAST' },
+      { name: 'SOUTH', angle: 180, textZh: '南方', textEn: 'SOUTH' },
+      { name: 'WEST',  angle: 270, textZh: '西方', textEn: 'WEST' }
+    ];
+
+    function createNewQuestion() {
+      answered = false;
+      showHintCone = false;
+      document.getElementById('explanation-box').classList.add('hidden');
+      document.getElementById('feedback-badge').classList.add('hidden');
+      document.querySelectorAll('.choice-btn').forEach(b => {
+        b.className = "choice-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-base transition flex items-center justify-center gap-2";
+      });
+
+      const terrain = generateRandomTerrain();
+      const dirObj = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+
+      // Pick observation point in good mid-ground valley or saddle (0.35 to 0.65)
+      // so the viewer has mountains in view rather than standing right on the edge
+      const targetPoint = {
+        u: 0.35 + Math.random() * 0.30,
+        v: 0.40 + Math.random() * 0.25,
+        isTarget: true
+      };
+
+      // Generate 2 decoys sufficiently far apart
+      const decoys = [];
+      let attempts = 0;
+      while (decoys.length < 2 && attempts < 50) {
+        attempts++;
+        const du = 0.22 + Math.random() * 0.56;
+        const dv = 0.22 + Math.random() * 0.56;
+        const distToTarget = Math.hypot(du - targetPoint.u, dv - targetPoint.v);
+        const distToDecoys = decoys.map(d => Math.hypot(du - d.u, dv - d.v));
+        if (distToTarget > 0.20 && (distToDecoys.length === 0 || Math.min(...distToDecoys) > 0.20)) {
+          decoys.push({ u: du, v: dv, isTarget: false });
+        }
+      }
+
+      // Shuffle options A, B, C
+      const allPoints = [targetPoint, ...decoys].sort(() => Math.random() - 0.5);
+      const letters = ['A', 'B', 'C'];
+      let correctChoice = 'A';
+
+      allPoints.forEach((p, idx) => {
+        p.choice = letters[idx];
+        if (p.isTarget) correctChoice = letters[idx];
+      });
+
+      currentQuestion = {
+        direction: dirObj,
+        target: targetPoint,
+        options: allPoints,
+        correctChoice: correctChoice,
+        terrain: terrain
+      };
+
+      // Update UI Header Badge
+      const fb = document.getElementById('facing-badge');
+      fb.innerText = currentLang === 'zh' ? `朝向 ${dirObj.textZh} (${dirObj.name})` : `FACING ${dirObj.name}`;
+
+      // Update 3D Scene
+      updateThreeTerrain();
+      setupCameraAt(targetPoint.u, targetPoint.v, dirObj.angle);
+
+      // Render 2D Contour Map
+      renderContourMap();
+    }
+
+    // --- Three.js Setup & Rendering ---
+    let scene, camera, renderer, terrainMesh;
+    let cameraYaw = 0;
+    let baseYaw = 0;
+    let isDragging = false;
+    let prevMouseX = 0;
+
+    function initThree() {
+      const container = document.getElementById('three-container');
+      const canvas = document.getElementById('three-canvas');
+
+      scene = new THREE.Scene();
+      // Realistic overcast mountain sky matching reference image
+      scene.background = new THREE.Color(0x3e4f65);
+      scene.fog = new THREE.Fog(0x3e4f65, 30, 220);
+
+      camera = new THREE.PerspectiveCamera(80, container.clientWidth / container.clientHeight, 0.5, 500);
+
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Natural mountain lighting
+      const hemiLight = new THREE.HemisphereLight(0xd9e6f2, 0x2a3b25, 0.9);
+      scene.add(hemiLight);
+
+      const dirLight = new THREE.DirectionalLight(0xfff3e0, 1.2);
+      dirLight.position.set(80, 140, 60);
+      scene.add(dirLight);
+
+      window.addEventListener('resize', onWindowResize);
+
+      animate();
+    }
+
+    function onWindowResize() {
+      const container = document.getElementById('three-container');
+      if (!container || !renderer || !camera) return;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    function updateThreeTerrain() {
+      if (terrainMesh) scene.remove(terrainMesh);
+
+      const geom = new THREE.PlaneGeometry(MAP_DIM, MAP_DIM, GRID_SIZE - 1, GRID_SIZE - 1);
+      geom.rotateX(-Math.PI / 2); // Lay flat on X-Z plane
+
+      const pos = geom.attributes.position;
+      const colors = [];
+
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        const u = (x + MAP_DIM / 2) / MAP_DIM;
+        const v = (z + MAP_DIM / 2) / MAP_DIM;
+        const h = getElevation(u, v);
+        pos.setY(i, h);
+
+        // Natural mountain color gradient matching user's reference:
+        // Green grassy valley -> yellow-green hillside -> warm earth saddle -> rock peak
+        const normH = Math.max(0, Math.min(1, (h - 90) / 160));
+        let r, g, b;
+        if (normH < 0.4) {
+          // Lush valley grass: rgb(55, 85, 38) to rgb(85, 115, 45)
+          const t = normH / 0.4;
+          r = (55 + t * 30) / 255;
+          g = (85 + t * 30) / 255;
+          b = (38 + t * 7) / 255;
+        } else if (normH < 0.75) {
+          // Hillside / Saddle: rgb(85, 115, 45) to rgb(145, 128, 65)
+          const t = (normH - 0.4) / 0.35;
+          r = (85 + t * 60) / 255;
+          g = (115 + t * 13) / 255;
+          b = (45 + t * 20) / 255;
+        } else {
+          // Rocky summit: rgb(145, 128, 65) to rgb(130, 125, 115)
+          const t = (normH - 0.75) / 0.25;
+          r = (145 - t * 15) / 255;
+          g = (128 - t * 3) / 255;
+          b = (65 + t * 50) / 255;
+        }
+        colors.push(r, g, b);
+      }
+
+      geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      pos.needsUpdate = true;
+      geom.computeVertexNormals();
+
+      const mat = new THREE.MeshLambertMaterial({
+        vertexColors: true,
+        wireframe: false
+      });
+
+      terrainMesh = new THREE.Mesh(geom, mat);
+      scene.add(terrainMesh);
+    }
+
+    function setupCameraAt(u, v, directionAngleDeg) {
+      // Map u, v [0..1] to world coordinates X, Z [-MAP_DIM/2 .. MAP_DIM/2]
+      const worldX = (u - 0.5) * MAP_DIM;
+      const worldZ = (v - 0.5) * MAP_DIM;
+      const groundH = getElevation(u, v);
+      // Stand 6.5 meters above ground (natural ridge/hilltop observation height)
+      const eyeH = groundH + 6.5;
+
+      camera.position.set(worldX, eyeH, worldZ);
+
+      // Facing angles:
+      // North (0 deg): Looking towards -Z (up on map)
+      // East (90 deg): Looking towards +X (right on map)
+      // South (180 deg): Looking towards +Z (down on map)
+      // West (270 deg): Looking towards -X (left on map)
+      baseYaw = directionAngleDeg * (Math.PI / 180);
+      cameraYaw = baseYaw;
+      applyCameraRotation();
+    }
+
+    function applyCameraRotation() {
+      // Fixed panoramic vista: wide viewing ray
+      const lookDist = 75;
+      const targetX = camera.position.x + Math.sin(cameraYaw) * lookDist;
+      const targetZ = camera.position.z - Math.cos(cameraYaw) * lookDist;
+
+      // Sample terrain elevation ahead to place horizon at comfortable mid-screen
+      const frontU = Math.max(0, Math.min(1, (targetX + MAP_DIM / 2) / MAP_DIM));
+      const frontV = Math.max(0, Math.min(1, (targetZ + MAP_DIM / 2) / MAP_DIM));
+      const frontH = getElevation(frontU, frontV);
+
+      // Frame the view so 40% is sky and 60% is rolling terrain contours
+      const targetY = (camera.position.y * 0.35 + frontH * 0.65) + 3.0;
+      camera.lookAt(targetX, targetY, targetZ);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+      }
+    }
+
+    // --- 2D Contour Map Rendering (Canvas & Marching Squares) ---
+    function renderContourMap() {
+      const canvas = document.getElementById('map-canvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Background terrain relief shading
+      const imgData = ctx.createImageData(w, h);
+      for (let py = 0; py < h; py++) {
+        for (let px = 0; px < w; px++) {
+          const u = px / (w - 1);
+          const v = py / (h - 1);
+          const elev = getElevation(u, v);
+          const idx = (py * w + px) * 4;
+
+          // Shading intensity
+          const t = Math.max(0, Math.min(1, (elev - 80) / 160));
+          if (currentTheme === 'dark') {
+            imgData.data[idx]     = 15 + t * 45;
+            imgData.data[idx + 1] = 23 + t * 50;
+            imgData.data[idx + 2] = 42 + t * 65;
+            imgData.data[idx + 3] = 255;
+          } else {
+            imgData.data[idx]     = 235 - t * 40;
+            imgData.data[idx + 1] = 242 - t * 40;
+            imgData.data[idx + 2] = 250 - t * 35;
+            imgData.data[idx + 3] = 255;
+          }
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      // Draw Contour Lines (Iso-lines)
+      // Normalized between 90m and 250m.
+      // Intermediate: every 20m (100, 120, 140, 160, 180, 200, 220, 240)
+      // Index contours: 100m, 160m, 220m
+      const startElev = 100;
+      const endElev = 240;
+      const interval = 20;
+
+      for (let elev = startElev; elev <= endElev; elev += interval) {
+        const isIndex = (elev === 100 || elev === 160 || elev === 220);
+        ctx.beginPath();
+        ctx.lineWidth = isIndex ? 2.2 : 0.9;
+        ctx.strokeStyle = isIndex
+          ? (currentTheme === 'dark' ? '#f1f5f9' : '#1e293b')
+          : (currentTheme === 'dark' ? 'rgba(148, 163, 184, 0.55)' : 'rgba(100, 116, 139, 0.55)');
+
+        // Marching squares over GRID_SIZE
+        drawContourLevel(ctx, elev, w, h);
+        ctx.stroke();
+
+        // Label index contours
+        if (isIndex) {
+          drawContourLabels(ctx, elev, w, h);
+        }
+      }
+
+      // Draw FOV Cone if hint is toggled or answered
+      if (showHintCone || answered) {
+        drawFovCone(ctx, currentQuestion.target, currentQuestion.direction.angle, w, h);
+      }
+
+      // Draw Choice Badges (A, B, C)
+      currentQuestion.options.forEach(opt => {
+        drawOptionBadge(ctx, opt, w, h);
+      });
+    }
+
+    function drawContourLevel(ctx, level, canvasW, canvasH) {
+      const stepX = canvasW / (GRID_SIZE - 1);
+      const stepY = canvasH / (GRID_SIZE - 1);
+
+      for (let j = 0; j < GRID_SIZE - 1; j++) {
+        for (let i = 0; i < GRID_SIZE - 1; i++) {
+          const v0 = heightMap[j * GRID_SIZE + i];
+          const v1 = heightMap[j * GRID_SIZE + (i + 1)];
+          const v2 = heightMap[(j + 1) * GRID_SIZE + (i + 1)];
+          const v3 = heightMap[(j + 1) * GRID_SIZE + i];
+
+          let caseIndex = 0;
+          if (v0 >= level) caseIndex |= 1;
+          if (v1 >= level) caseIndex |= 2;
+          if (v2 >= level) caseIndex |= 4;
+          if (v3 >= level) caseIndex |= 8;
+
+          if (caseIndex === 0 || caseIndex === 15) continue;
+
+          const x = i * stepX;
+          const y = j * stepY;
+
+          // Edge midpoints interpolated
+          const top    = { x: x + stepX * getT(v0, v1, level), y: y };
+          const right  = { x: x + stepX, y: y + stepY * getT(v1, v2, level) };
+          const bottom = { x: x + stepX * getT(v3, v2, level), y: y + stepY };
+          const left   = { x: x, y: y + stepY * getT(v0, v3, level) };
+
+          function line(p1, p2) {
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+          }
+
+          switch (caseIndex) {
+            case 1:  case 14: line(left, top); break;
+            case 2:  case 13: line(top, right); break;
+            case 3:  case 12: line(left, right); break;
+            case 4:  case 11: line(right, bottom); break;
+            case 5: line(left, top); line(right, bottom); break;
+            case 6:  case 9:  line(top, bottom); break;
+            case 7:  case 8:  line(left, bottom); break;
+            case 10: line(top, right); line(left, bottom); break;
+          }
+        }
+      }
+    }
+
+    function getT(vA, vB, level) {
+      if (Math.abs(vB - vA) < 0.001) return 0.5;
+      return Math.max(0, Math.min(1, (level - vA) / (vB - vA)));
+    }
+
+    function drawContourLabels(ctx, level, canvasW, canvasH) {
+      ctx.save();
+      ctx.fillStyle = currentTheme === 'dark' ? '#cbd5e1' : '#334155';
+      ctx.font = 'bold 9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Find an edge cut to place label
+      const stepX = canvasW / (GRID_SIZE - 1);
+      const stepY = canvasH / (GRID_SIZE - 1);
+      for (let j = 6; j < GRID_SIZE - 6; j += 14) {
+        for (let i = 6; i < GRID_SIZE - 6; i += 14) {
+          const v = heightMap[j * GRID_SIZE + i];
+          if (Math.abs(v - level) < 8) {
+            ctx.fillStyle = currentTheme === 'dark' ? '#0f172a' : '#f8fafc';
+            ctx.fillRect(i * stepX - 12, j * stepY - 6, 24, 12);
+            ctx.fillStyle = currentTheme === 'dark' ? '#38bdf8' : '#0284c7';
+            ctx.fillText(`${level}m`, i * stepX, j * stepY);
+            ctx.restore();
+            return;
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawFovCone(ctx, pt, angleDeg, w, h) {
+      const cx = pt.u * w;
+      const cy = pt.v * h;
+
+      // In 2D map:
+      // North (0 deg): towards top (-Y)
+      // East (90 deg): towards right (+X)
+      // South (180 deg): towards bottom (+Y)
+      // West (270 deg): towards left (-X)
+      const rad = (angleDeg - 90) * (Math.PI / 180);
+      const fovSpan = 65 * (Math.PI / 180);
+      const coneLength = 80;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, coneLength, rad - fovSpan / 2, rad + fovSpan / 2);
+      ctx.closePath();
+
+      const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, coneLength);
+      grad.addColorStop(0, 'rgba(56, 189, 248, 0.5)');
+      grad.addColorStop(1, 'rgba(56, 189, 248, 0.02)');
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Border lines
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    function drawOptionBadge(ctx, opt, w, h) {
+      const px = opt.u * w;
+      const py = opt.v * h;
+
+      ctx.save();
+      // Outer glow
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 6;
+
+      // Badge Circle
+      ctx.beginPath();
+      ctx.arc(px, py, 14, 0, Math.PI * 2);
+      if (answered) {
+        if (opt.isTarget) {
+          ctx.fillStyle = '#10b981'; // Green for correct
+        } else {
+          ctx.fillStyle = '#475569'; // Muted grey
+        }
+      } else {
+        ctx.fillStyle = opt.choice === 'A' ? '#0284c7' : (opt.choice === 'B' ? '#059669' : '#d97706');
+      }
+      ctx.fill();
+
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      // Text inside badge
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(opt.choice, px, py);
+
+      ctx.restore();
+    }
+
+    // --- Interactive Choices & Answers ---
+    function handleChoice(selectedChoice) {
+      if (answered) return;
+      answered = true;
+
+      const isCorrect = (selectedChoice === currentQuestion.correctChoice);
+      const badge = document.getElementById('feedback-badge');
+      const expBox = document.getElementById('explanation-box');
+      const expContent = document.getElementById('exp-content');
+
+      badge.classList.remove('hidden');
+      expBox.classList.remove('hidden');
+
+      if (isCorrect) {
+        score += 10;
+        streak += 1;
+        badge.className = "text-xs font-bold px-3 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500";
+        badge.innerText = currentLang === 'zh' ? "答對了！+10 分 🎯" : "CORRECT! +10 🎯";
+      } else {
+        streak = 0;
+        badge.className = "text-xs font-bold px-3 py-1 rounded bg-rose-500/20 text-rose-400 border border-rose-500";
+        badge.innerText = currentLang === 'zh' ? `答錯了！正解為 ${currentQuestion.correctChoice} ❌` : `WRONG! Correct was ${currentQuestion.correctChoice} ❌`;
+      }
+
+      document.getElementById('score-val').innerText = score;
+      document.getElementById('streak-val').innerText = `${streak} 🔥`;
+
+      // Highlight buttons
+      document.querySelectorAll('.choice-btn').forEach(btn => {
+        const c = btn.getAttribute('data-choice');
+        if (c === currentQuestion.correctChoice) {
+          btn.className = "choice-btn py-3 rounded-xl border border-emerald-500 bg-emerald-950/80 text-emerald-300 font-bold text-base transition flex items-center justify-center gap-2 ring-2 ring-emerald-500/50";
+        } else if (c === selectedChoice && !isCorrect) {
+          btn.className = "choice-btn py-3 rounded-xl border border-rose-500 bg-rose-950/80 text-rose-300 font-bold text-base transition flex items-center justify-center gap-2";
+        } else {
+          btn.className = "choice-btn py-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-500 font-bold text-base transition flex items-center justify-center gap-2 opacity-60";
+        }
+      });
+
+      // Rationale text
+      const elev = Math.round(getElevation(currentQuestion.target.u, currentQuestion.target.v));
+      const dirText = currentLang === 'zh' ? currentQuestion.direction.textZh : currentQuestion.direction.name;
+      if (currentLang === 'zh') {
+        expContent.innerHTML = `
+          你正站在海拔約 <strong>${elev}m</strong> 的位置，面朝 <strong>${dirText}</strong>。<br>
+          請查看右圖中藍色扇形視角（FOV Cone）：當你面朝該方向時，左右兩側的等高線向上收縮形成山嶺峰頂，而正前方則為等高線開闊下凹的低處。這與 3D 視角中正前方的開闊開口完全吻合！
+        `;
+      } else {
+        expContent.innerHTML = `
+          You are standing at an elevation of approx <strong>${elev}m</strong>, facing <strong>${dirText}</strong>.<br>
+          Check the blue FOV cone on the map: looking in this direction matches the 3D horizon with rising peaks on your flanks and a saddle/draw directly in front!
+        `;
+      }
+
+      // Re-render map with FOV cone revealed
+      renderContourMap();
+    }
+
+    // --- Language & Theme Handlers ---
+    function toggleLanguage() {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'EN' : '中文';
+      applyLanguage();
+      renderContourMap();
+    }
+
+    function applyLanguage() {
+      const t = i18n[currentLang];
+      document.getElementById('ui-title').innerText = t.title;
+      document.getElementById('ui-subtitle').innerText = t.subtitle;
+      document.getElementById('ui-score-label').innerText = t.score;
+      document.getElementById('ui-streak-label').innerText = t.streak;
+      document.getElementById('ui-view-title').innerText = t.viewTitle;
+      document.getElementById('ui-pan-tip').innerText = t.panTip;
+      document.getElementById('ui-map-title').innerText = t.mapTitle;
+      document.getElementById('leg-index').innerText = t.legIndex;
+      document.getElementById('leg-inter').innerText = t.legInter;
+      document.getElementById('ui-question-prompt').innerText = t.qPrompt;
+      document.getElementById('exp-title').innerText = t.expTitle;
+      document.getElementById('ui-hint-btn').innerText = t.hintBtn;
+      document.getElementById('ui-next-text').innerText = t.nextBtn;
+
+      // Guide cards
+      document.getElementById('guide-header').innerText = t.gHeader;
+      document.getElementById('g1-t').innerText = t.g1T;
+      document.getElementById('g1-d').innerText = t.g1D;
+      document.getElementById('g2-t').innerText = t.g2T;
+      document.getElementById('g2-d').innerText = t.g2D;
+      document.getElementById('g3-t').innerText = t.g3T;
+      document.getElementById('g3-d').innerText = t.g3D;
+      document.getElementById('g4-t').innerText = t.g4T;
+      document.getElementById('g4-d').innerText = t.g4D;
+
+      if (currentQuestion) {
+        const dir = currentQuestion.direction;
+        document.getElementById('facing-badge').innerText = currentLang === 'zh' ? `朝向 ${dir.textZh} (${dir.name})` : `FACING ${dir.name}`;
+      }
+    }
+
+    function toggleTheme() {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      renderContourMap();
+    }
+
+    // --- Wire Event Listeners ---
+    document.addEventListener('DOMContentLoaded', () => {
+      initThree();
+
+      document.getElementById('lang-btn').addEventListener('click', toggleLanguage);
+      document.getElementById('theme-btn').addEventListener('click', toggleTheme);
+
+      document.getElementById('next-btn').addEventListener('click', createNewQuestion);
+
+      document.getElementById('hint-btn').addEventListener('click', () => {
+        showHintCone = !showHintCone;
+        renderContourMap();
+      });
+
+      document.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const choice = btn.getAttribute('data-choice');
+          handleChoice(choice);
+        });
+      });
+
+      // Start first question
+      createNewQuestion();
+    });
+  </script>
+</body>
+</html>

@@ -1,23 +1,24 @@
-# 🧠 CogniStress Ultimate & Sudoku Master
-### 高壓認知決策 × 專注數獨工坊 — 神經抗衰與邏輯巔峰訓練系統
+# 🧠 CogniStress Ultimate, Sudoku & Topo Master
+### 高壓認知決策 × 專注數獨工坊 × 等高線地形判讀 — 全能神經抗衰與三維空間決策訓練系統
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-success?logo=github)](https://sinliongtoo.github.io/cogni-stress-trainer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Last Updated](https://img.shields.io/badge/Updated-2026--10--14-brightgreen.svg)](#)
+[![Last Updated](https://img.shields.io/badge/Updated-2026--10--15-brightgreen.svg)](#)
 [![Bilingual](https://img.shields.io/badge/Languages-EN%20%7C%20%E7%B9%81%E4%B8%AD-blueviolet.svg)](#中英雙語即時切換)
 [![Zero Dependency](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Vanilla%20JS)-purple.svg)](#技術架構)
 [![Web Audio API](https://img.shields.io/badge/Audio-Web%20Audio%20API-orange.svg)](#生體動態壓力機制)
 
 ---
 
-## 📌 緣起與雙核心架構 (System Architecture)
+## 📌 緣起與三大核心架構 (System Architecture)
 
-現代神經科學與認知心理學指出，維持大腦神經可塑性（Neuroplasticity）與防範認知退化（防失智），需要兩種互補的思維刺激：
+現代神經科學與認知心理學指出，維持大腦神經可塑性（Neuroplasticity）與防範認知退化（防失智），需要多元互補的思維刺激：
 
-1. **⚡ 高壓動態反應訓練（極限面試與應變決策）**：在極短時限與生理緊迫下（如外商 McKinsey、BCG、投行及科技巨頭評估中心），調動背外側前額葉皮質（DLPFC），克服杏仁核帶來的恐慌與確認偏誤。
-2. **🧩 靜態深度專注訓練（數獨排除與邏輯推理）**：在免於計時壓迫的沉浸環境中，透過嚴謹的數理刪去法、候選數推導與全域空間檢索，深度鍛鍊頂下小葉與海馬迴的工作記憶與空間關聯。
+1. **⚡ 高壓動態反應訓練（極限面試與應變決策）**：在極短時限與生理緊迫下，調動背外側前額葉皮質（DLPFC），克服杏仁核帶來的恐慌與確認偏誤。
+2. **🧩 靜態深度專注訓練（數獨排除與邏輯推理）**：在免於計時壓迫的沉浸環境中，透過嚴謹的數理刪去法、候選數推導與全域空間檢索，深度鍛鍊頂下小葉與海馬迴。
+3. **🧭 空間三維解構與現地對照（等高線地形判讀）**：將 3D 第一人稱廣角山景視野與 2D 等高線地圖瞬時對齊，強烈刺激頂枕葉與頂內溝的「三維心智空間旋轉與視知覺逆向推導（Terrain Association）」。
 
-本系統採用**雙核心獨立分流架構**，首頁頂部提供一鍵切換分頁，亦支援 URL Hash（`#stress` 與 `#sudoku`）直達，兩者在邏輯運算、鍵盤監聽與音效系統上**徹底分開、獨立運作**。
+本系統採用**三大核心獨立分流架構**，首頁頂部提供一鍵切換分頁，亦支援 URL Hash（`#stress`、`#sudoku` 與 `#topo`）直達，彼此在邏輯運算、鍵盤監聽與音效系統上**徹底分開、獨立運作**。
 
 ---
 
@@ -25,7 +26,7 @@
 
 全系統支援一鍵無縫切換 **繁體中文 (Traditional Chinese)** 與 **English (英文)**：
 * 頂部導航一鍵切換，偏好設定自動持久化於本機（LocalStorage）。
-* 涵蓋**全站介面、全部題型題幹、SVG 向量圖情境標記、選項文本、詳解覆盤與生理呼吸指引**。
+* 涵蓋**全站三大模組介面、全部題型題幹、SVG/3D 情境標記、選項文本、詳解覆盤與生理呼吸指引**。
 * 完美適配準備國際頂尖管顧（MBB）、華爾街投行與跨國科技巨頭全英語高壓面試。
 
 ---
@@ -37,6 +38,7 @@
 
 * ⚡ **高壓認知訓練模組**：[https://sinliongtoo.github.io/cogni-stress-trainer/#stress](https://sinliongtoo.github.io/cogni-stress-trainer/#stress)
 * 🧩 **專注數獨工坊模組**：[https://sinliongtoo.github.io/cogni-stress-trainer/#sudoku](https://sinliongtoo.github.io/cogni-stress-trainer/#sudoku)
+* 🧭 **等高線地形判讀模組**：[https://sinliongtoo.github.io/cogni-stress-trainer/#topo](https://sinliongtoo.github.io/cogni-stress-trainer/#topo)
 
 *(完全免安裝、零外部伺服器依賴、全站純前端離線可用，支援桌面全鍵盤快捷鍵與手機/平板觸控)*
 
@@ -98,6 +100,25 @@
   - <kbd>N</kbd>：切換鉛筆草稿模式
   - <kbd>H</kbd>：獲取提示
   - <kbd>Z</kbd>：復原上一步
+
+---
+
+## 🧭 模組三：等高線地形判讀工坊 (TopoMaster)
+
+源自國際野外定向越野（Orienteering）、高階飛行員地貌辨識與軍事陸地導航（Land Navigation）的「**3D 現地景觀 ⟷ 2D 等高線對照**」專業特訓：
+
+### 1. 核心機制與程序式 3D 渲染
+* **WebGL & Three.js 動態山脈生成**：程式隨機生成具備主峰、支稜、鞍部（Saddle / Col）與溪谷的起伏地形，海拔嚴格標準化於 90m 至 250m。
+* **Marching Squares 即時等高線繪製**：2D 地圖即時運算 20m 等高距（Interval），每 60m 粗線繪製計曲線與高程標註，精確對應三維立體地形。
+* **固定廣角全景視野（80° Panoramic Vista）**：出題時自動鎖定最佳瞭望高度，一覽正前方開口與兩側山嶺走向，免手動調整。
+* **視角錐形（FOV Cone）與解題覆盤**：答題或點擊提示時，地圖展開扇形視角，標註站立點海拔與視角對應邏輯。
+
+### 2. 電競級極速快捷鍵
+* <kbd>1</kbd> / <kbd>A</kbd>：選擇位置 A
+* <kbd>2</kbd> / <kbd>B</kbd>：選擇位置 B
+* <kbd>3</kbd> / <kbd>C</kbd>：選擇位置 C
+* <kbd>Space</kbd> / <kbd>Enter</kbd> / <kbd>N</kbd>：下一題（隨機生成全新地形）
+* <kbd>H</kbd>：開關視野扇形提示 (Hint)
 
 ---
 
