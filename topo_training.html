@@ -289,20 +289,56 @@
     const MAP_DIM = 240;  // Real world size (meters)
     let heightMap = [];
     let currentQuestion = null;
+    let currentScenario = null;
 
-    function generateRandomTerrain() {
+    function generateRandomTerrain(dirObj) {
       heightMap = new Float32Array(GRID_SIZE * GRID_SIZE);
 
-      // Generate 3 to 4 mountain peaks with controlled positions
-      const numPeaks = 3;
-      const peaks = [
-        // Two distinct peaks in the upper half or sides to create realistic saddles/valleys
-        { x: 0.28 + (Math.random() - 0.5) * 0.1, y: 0.35 + (Math.random() - 0.5) * 0.1, radius: 0.18 + Math.random() * 0.06, weight: 1.0 },
-        { x: 0.72 + (Math.random() - 0.5) * 0.1, y: 0.40 + (Math.random() - 0.5) * 0.1, radius: 0.20 + Math.random() * 0.06, weight: 0.9 },
-        { x: 0.50 + (Math.random() - 0.5) * 0.2, y: 0.80 + (Math.random() - 0.5) * 0.1, radius: 0.22 + Math.random() * 0.06, weight: 0.85 }
-      ];
+      // Forward direction in UV coordinates
+      // North: (0, -1), East: (1, 0), South: (0, 1), West: (-1, 0)
+      let fU = 0, fV = -1;
+      if (dirObj.name === 'EAST')  { fU = 1; fV = 0; }
+      else if (dirObj.name === 'SOUTH') { fU = 0; fV = 1; }
+      else if (dirObj.name === 'WEST')  { fU = -1; fV = 0; }
 
-      // Temporary raw calculation
+      // Lateral axis perpendicular to viewing direction
+      // Right vector R = (-fV, fU), Left vector L = (fV, -fU)
+      const rU = -fV, rV = fU;
+      const lU = fV,  lV = -fU;
+
+      // Saddle center near map center
+      const saddleU = 0.50 + (Math.random() - 0.5) * 0.04;
+      const saddleV = 0.50 + (Math.random() - 0.5) * 0.04;
+
+      // Randomize whether left peak is taller or right peak is taller
+      const isLeftHigher = Math.random() > 0.5;
+      const weightLeft = isLeftHigher ? (1.0 + Math.random() * 0.08) : (0.76 + Math.random() * 0.06);
+      const weightRight = isLeftHigher ? (0.76 + Math.random() * 0.06) : (1.0 + Math.random() * 0.08);
+
+      const peakDist = 0.23 + Math.random() * 0.03;
+      const peakAdvance = 0.05;
+
+      const peakLeft = {
+        x: Math.max(0.12, Math.min(0.88, saddleU + lU * peakDist + fU * peakAdvance)),
+        y: Math.max(0.12, Math.min(0.88, saddleV + lV * peakDist + fV * peakAdvance)),
+        radius: 0.19 + Math.random() * 0.03,
+        weight: weightLeft
+      };
+
+      const peakRight = {
+        x: Math.max(0.12, Math.min(0.88, saddleU + rU * peakDist + fU * peakAdvance)),
+        y: Math.max(0.12, Math.min(0.88, saddleV + rV * peakDist + fV * peakAdvance)),
+        radius: 0.19 + Math.random() * 0.03,
+        weight: weightRight
+      };
+
+      const saddleBridge = {
+        x: saddleU,
+        y: saddleV,
+        radius: 0.15,
+        weight: 0.42
+      };
+
       const raw = new Float32Array(GRID_SIZE * GRID_SIZE);
       let rawMin = Infinity, rawMax = -Infinity;
 
@@ -312,16 +348,13 @@
           const v = j / (GRID_SIZE - 1);
           let h = 0;
 
-          for (const p of peaks) {
+          for (const p of [peakLeft, peakRight, saddleBridge]) {
             const dx = u - p.x;
             const dy = v - p.y;
-            const distSq = dx * dx + dy * dy;
-            h += p.weight * Math.exp(-distSq / (2 * p.radius * p.radius));
+            h += p.weight * Math.exp(-(dx * dx + dy * dy) / (2 * p.radius * p.radius));
           }
 
-          // Undulating ridge details
-          h += Math.sin(u * 6.28) * 0.12 + Math.cos(v * 6.28) * 0.12;
-          h += Math.sin((u + v) * 12.0) * 0.05;
+          h += Math.sin(u * 8.0) * 0.03 + Math.cos(v * 8.0) * 0.03;
 
           const idx = j * GRID_SIZE + i;
           raw[idx] = h;
@@ -330,15 +363,20 @@
         }
       }
 
-      // Strictly normalize terrain heights between 90m (valleys) and 250m (summits)
+      // Strictly normalize elevations: Valleys = 90m, Summits = 245m
       const targetMin = 90;
-      const targetMax = 250;
+      const targetMax = 245;
       for (let k = 0; k < raw.length; k++) {
         const norm = (raw[k] - rawMin) / (rawMax - rawMin);
         heightMap[k] = targetMin + norm * (targetMax - targetMin);
       }
 
-      return { minH: targetMin, maxH: targetMax, peaks };
+      return {
+        targetMin, targetMax,
+        saddleU, saddleV,
+        fU, fV, rU, rV, lU, lV,
+        peakLeft, peakRight, isLeftHigher
+      };
     }
 
     function getElevation(normX, normY) {
@@ -374,33 +412,42 @@
         b.className = "choice-btn py-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 font-bold text-base transition flex items-center justify-center gap-2";
       });
 
-      const terrain = generateRandomTerrain();
       const dirObj = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+      const geomData = generateRandomTerrain(dirObj);
 
-      // Pick observation point in good mid-ground valley or saddle (0.35 to 0.65)
-      // so the viewer has mountains in view rather than standing right on the edge
+      const sU = geomData.saddleU;
+      const sV = geomData.saddleV;
+      const fU = geomData.fU;
+      const fV = geomData.fV;
+      const rU = geomData.rU;
+      const rV = geomData.rV;
+
+      // 1. True Point: standing in approach valley facing directly towards the saddle pass
       const targetPoint = {
-        u: 0.35 + Math.random() * 0.30,
-        v: 0.40 + Math.random() * 0.25,
-        isTarget: true
+        u: Math.max(0.12, Math.min(0.88, sU - fU * (0.24 + Math.random() * 0.04))),
+        v: Math.max(0.12, Math.min(0.88, sV - fV * (0.24 + Math.random() * 0.04))),
+        isTarget: true,
+        type: 'saddle_approach'
       };
 
-      // Generate 2 decoys sufficiently far apart
-      const decoys = [];
-      let attempts = 0;
-      while (decoys.length < 2 && attempts < 50) {
-        attempts++;
-        const du = 0.22 + Math.random() * 0.56;
-        const dv = 0.22 + Math.random() * 0.56;
-        const distToTarget = Math.hypot(du - targetPoint.u, dv - targetPoint.v);
-        const distToDecoys = decoys.map(d => Math.hypot(du - d.u, dv - d.v));
-        if (distToTarget > 0.20 && (distToDecoys.length === 0 || Math.min(...distToDecoys) > 0.20)) {
-          decoys.push({ u: du, v: dv, isTarget: false });
-        }
-      }
+      // 2. Decoy 1: Back slope (behind mountain ridge, facing away downhill into flat plains)
+      const decoy1 = {
+        u: Math.max(0.12, Math.min(0.88, sU + fU * (0.28 + Math.random() * 0.06))),
+        v: Math.max(0.12, Math.min(0.88, sV + fV * (0.28 + Math.random() * 0.06))),
+        isTarget: false,
+        type: 'back_slope'
+      };
+
+      // 3. Decoy 2: Side flank (outer shoulder of peakRight, facing forward blocked by single slope)
+      const decoy2 = {
+        u: Math.max(0.12, Math.min(0.88, geomData.peakRight.x + rU * 0.16)),
+        v: Math.max(0.12, Math.min(0.88, geomData.peakRight.y + rV * 0.16)),
+        isTarget: false,
+        type: 'side_flank'
+      };
 
       // Shuffle options A, B, C
-      const allPoints = [targetPoint, ...decoys].sort(() => Math.random() - 0.5);
+      const allPoints = [targetPoint, decoy1, decoy2].sort(() => Math.random() - 0.5);
       const letters = ['A', 'B', 'C'];
       let correctChoice = 'A';
 
@@ -409,21 +456,44 @@
         if (p.isTarget) correctChoice = letters[idx];
       });
 
+      const leftH = Math.round(getElevation(geomData.peakLeft.x, geomData.peakLeft.y));
+      const rightH = Math.round(getElevation(geomData.peakRight.x, geomData.peakRight.y));
+      const saddleH = Math.round(getElevation(sU, sV));
+      const standH = Math.round(getElevation(targetPoint.u, targetPoint.v));
+
+      currentScenario = {
+        dirObj: dirObj,
+        isLeftHigher: geomData.isLeftHigher,
+        leftH: leftH,
+        rightH: rightH,
+        saddleH: saddleH,
+        standH: standH,
+        targetPoint: targetPoint
+      };
+
       currentQuestion = {
         direction: dirObj,
         target: targetPoint,
         options: allPoints,
-        correctChoice: correctChoice,
-        terrain: terrain
+        correctChoice: correctChoice
       };
 
       // Update UI Header Badge
       const fb = document.getElementById('facing-badge');
       fb.innerText = currentLang === 'zh' ? `朝向 ${dirObj.textZh} (${dirObj.name})` : `FACING ${dirObj.name}`;
 
+      const clueEl = document.getElementById('terrain-clue-text');
+      if (clueEl) {
+        const higherSideZh = geomData.isLeftHigher ? '左側主峰較高' : '右側主峰較高';
+        const higherSideEn = geomData.isLeftHigher ? 'Left peak is taller' : 'Right peak is taller';
+        clueEl.innerText = currentLang === 'zh'
+          ? `正前方為雙峰鞍部啞口，${higherSideZh}（左峰約 ${leftH}m、右峰約 ${rightH}m）。`
+          : `Facing a col/saddle between twin peaks; ${higherSideEn} (~${leftH}m vs ~${rightH}m).`;
+      }
+
       // Update 3D Scene
       updateThreeTerrain();
-      setupCameraAt(targetPoint.u, targetPoint.v, dirObj.angle);
+      setupCameraAt(targetPoint.u, targetPoint.v, dirObj.angle, sU, sV);
 
       // Render 2D Contour Map
       renderContourMap();
@@ -528,39 +598,34 @@
       scene.add(terrainMesh);
     }
 
-    function setupCameraAt(u, v, directionAngleDeg) {
+    function setupCameraAt(u, v, directionAngleDeg, sU, sV) {
       // Map u, v [0..1] to world coordinates X, Z [-MAP_DIM/2 .. MAP_DIM/2]
       const worldX = (u - 0.5) * MAP_DIM;
       const worldZ = (v - 0.5) * MAP_DIM;
       const groundH = getElevation(u, v);
-      // Stand 6.5 meters above ground (natural ridge/hilltop observation height)
-      const eyeH = groundH + 6.5;
+      const eyeH = groundH + 4.5;
 
       camera.position.set(worldX, eyeH, worldZ);
 
-      // Facing angles:
-      // North (0 deg): Looking towards -Z (up on map)
-      // East (90 deg): Looking towards +X (right on map)
-      // South (180 deg): Looking towards +Z (down on map)
-      // West (270 deg): Looking towards -X (left on map)
       baseYaw = directionAngleDeg * (Math.PI / 180);
       cameraYaw = baseYaw;
-      applyCameraRotation();
-    }
 
-    function applyCameraRotation() {
-      // Fixed panoramic vista: wide viewing ray
-      const lookDist = 75;
-      const targetX = camera.position.x + Math.sin(cameraYaw) * lookDist;
-      const targetZ = camera.position.z - Math.cos(cameraYaw) * lookDist;
+      let targetX, targetY, targetZ;
+      if (sU !== undefined && sV !== undefined) {
+        targetX = (sU - 0.5) * MAP_DIM;
+        targetZ = (sV - 0.5) * MAP_DIM;
+        const saddleH = getElevation(sU, sV);
+        targetY = saddleH + 2.5;
+      } else {
+        const lookDist = 75;
+        targetX = camera.position.x + Math.sin(cameraYaw) * lookDist;
+        targetZ = camera.position.z - Math.cos(cameraYaw) * lookDist;
+        const frontU = Math.max(0, Math.min(1, (targetX + MAP_DIM / 2) / MAP_DIM));
+        const frontV = Math.max(0, Math.min(1, (targetZ + MAP_DIM / 2) / MAP_DIM));
+        const frontH = getElevation(frontU, frontV);
+        targetY = (eyeH * 0.35 + frontH * 0.65) + 2.5;
+      }
 
-      // Sample terrain elevation ahead to place horizon at comfortable mid-screen
-      const frontU = Math.max(0, Math.min(1, (targetX + MAP_DIM / 2) / MAP_DIM));
-      const frontV = Math.max(0, Math.min(1, (targetZ + MAP_DIM / 2) / MAP_DIM));
-      const frontH = getElevation(frontU, frontV);
-
-      // Frame the view so 40% is sky and 60% is rolling terrain contours
-      const targetY = (camera.position.y * 0.35 + frontH * 0.65) + 3.0;
       camera.lookAt(targetX, targetY, targetZ);
     }
 
@@ -833,17 +898,44 @@
       });
 
       // Rationale text
-      const elev = Math.round(getElevation(currentQuestion.target.u, currentQuestion.target.v));
+      const scenario = currentScenario;
+      const targetOpt = currentQuestion.options.find(o => o.isTarget);
+      const decoy1 = currentQuestion.options.find(o => o.type === 'back_slope');
+      const decoy2 = currentQuestion.options.find(o => o.type === 'side_flank');
+      const higherSideZh = scenario ? (scenario.isLeftHigher ? '左側主峰較高' : '右側主峰較高') : '';
+      const higherSideEn = scenario ? (scenario.isLeftHigher ? 'Left peak is taller' : 'Right peak is taller') : '';
+      const elev = scenario ? scenario.standH : Math.round(getElevation(currentQuestion.target.u, currentQuestion.target.v));
       const dirText = currentLang === 'zh' ? currentQuestion.direction.textZh : currentQuestion.direction.name;
+
       if (currentLang === 'zh') {
         expContent.innerHTML = `
-          你正站在海拔約 <strong>${elev}m</strong> 的位置，面朝 <strong>${dirText}</strong>。<br>
-          請查看右圖中藍色扇形視角（FOV Cone）：當你面朝該方向時，左右兩側的等高線向上收縮形成山嶺峰頂，而正前方則為等高線開闊下凹的低處。這與 3D 視角中正前方的開闊開口完全吻合！
+          <div class="space-y-2">
+            <div>
+              <span class="text-emerald-400 font-bold">🎯 為什麼正解是 ${targetOpt ? targetOpt.choice : currentQuestion.correctChoice}：</span><br>
+              你正站在海拔約 <strong>${elev}m</strong> 處，朝 <strong>${dirText}</strong> 正對雙峰間的鞍部啞口（約 ${scenario ? scenario.saddleH : 140}m）。
+              ${higherSideZh}（左峰約 ${scenario ? scenario.leftH : 240}m、右峰約 ${scenario ? scenario.rightH : 195}m），完全符合 3D 現地視角中左右山峰稜線與 2D 等高線閉合圈數！
+            </div>
+            <div class="text-xs text-slate-300 pt-1.5 border-t border-slate-700/60 leading-relaxed">
+              <span class="text-amber-400 font-bold">❌ 排除其他干擾點的關鍵：</span><br>
+              • <strong>點 ${decoy1 ? decoy1.choice : '干擾點 1'}（山稜後方背坡）</strong>：位於雙峰背坡，朝 ${dirText} 望去地勢一路往下延伸至低處平原，正前方絕無雙峰包夾景觀。<br>
+              • <strong>點 ${decoy2 ? decoy2.choice : '干擾點 2'}（外側單邊側翼）</strong>：位於山體外緣側坡，朝 ${dirText} 望去僅受單一山坡遮擋，視野中不可能同時出現中央下凹啞口與對稱雙峰。
+            </div>
+          </div>
         `;
       } else {
         expContent.innerHTML = `
-          You are standing at an elevation of approx <strong>${elev}m</strong>, facing <strong>${dirText}</strong>.<br>
-          Check the blue FOV cone on the map: looking in this direction matches the 3D horizon with rising peaks on your flanks and a saddle/draw directly in front!
+          <div class="space-y-2">
+            <div>
+              <span class="text-emerald-400 font-bold">🎯 Why Option ${targetOpt ? targetOpt.choice : currentQuestion.correctChoice} is Correct:</span><br>
+              Standing at approx <strong>${elev}m</strong> facing <strong>${dirText}</strong> directly into the saddle pass (~${scenario ? scenario.saddleH : 140}m). 
+              ${higherSideEn} (${scenario ? scenario.leftH : 240}m vs ${scenario ? scenario.rightH : 195}m), which matches the 3D horizon peaks and 2D contour rings perfectly.
+            </div>
+            <div class="text-xs text-slate-300 pt-1.5 border-t border-slate-700/60 leading-relaxed">
+              <span class="text-amber-400 font-bold">❌ Why decoys are eliminated:</span><br>
+              • <strong>Point ${decoy1 ? decoy1.choice : 'Decoy 1'} (Back Slope / Downhill)</strong>: Located on the reverse slope facing downward into the open flatland—facing ${dirText} looks downhill with no peaks ahead.<br>
+              • <strong>Point ${decoy2 ? decoy2.choice : 'Decoy 2'} (Outer Side Flank)</strong>: Located on the outer shoulder of the mountain—facing ${dirText} faces a single slope wall with no central saddle pass.
+            </div>
+          </div>
         `;
       }
 
@@ -885,6 +977,17 @@
       document.getElementById('g3-d').innerText = t.g3D;
       document.getElementById('g4-t').innerText = t.g4T;
       document.getElementById('g4-d').innerText = t.g4D;
+
+      if (currentScenario) {
+        const higherSideZh = currentScenario.isLeftHigher ? '左側主峰較高' : '右側主峰較高';
+        const higherSideEn = currentScenario.isLeftHigher ? 'Left peak is taller' : 'Right peak is taller';
+        const clueEl = document.getElementById('terrain-clue-text');
+        if (clueEl) {
+          clueEl.innerText = currentLang === 'zh'
+            ? `正前方為雙峰鞍部啞口，${higherSideZh}（左峰約 ${currentScenario.leftH}m、右峰約 ${currentScenario.rightH}m）。`
+            : `Facing a col/saddle between twin peaks; ${higherSideEn} (~${currentScenario.leftH}m vs ~${currentScenario.rightH}m).`;
+        }
+      }
 
       if (currentQuestion) {
         const dir = currentQuestion.direction;
