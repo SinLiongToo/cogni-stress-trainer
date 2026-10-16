@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CogniStress, Sudoku &amp; Topo Master - 高壓決策・專注數獨・等高線地形判讀三合一系統</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
-  <!-- Three.js for 3D Topographic Terrain -->
+  <!-- Three.js and OrbitControls for 3D Topographic Terrain & Google Earth Mode -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <style>
     @keyframes pulse-stress {
       0%, 100% { box-shadow: inset 0 0 25px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); }
@@ -739,22 +740,35 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         
         <!-- Left: 3D First-Person Panoramic View -->
+        <!-- Left: 3D First-Person Panoramic & Google Earth Orbit View -->
         <div class="flex flex-col bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
           <div class="px-4 py-3 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
               <span class="text-xs font-semibold tracking-wider text-slate-300 uppercase" id="topoViewTitle">3D 現地視野 (FIRST-PERSON VIEW)</span>
             </div>
-            <div class="px-2.5 py-0.5 rounded bg-sky-950/90 border border-sky-600/50 text-sky-300 font-mono text-xs font-bold tracking-widest" id="topoFacingBadge">
-              FACING NORTH
+            <div class="flex items-center gap-2">
+              <button id="topoOrbitToggleBtn" onclick="toggleTopoOrbitView()" class="hidden px-2.5 py-1 rounded bg-sky-600/30 hover:bg-sky-600 border border-sky-400 text-sky-200 text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95">
+                <span>🌍</span> <span id="topoOrbitBtnText">3D 上帝視角 (Google Earth)</span>
+              </button>
+              <div class="px-2.5 py-0.5 rounded bg-sky-950/90 border border-sky-600/50 text-sky-300 font-mono text-xs font-bold tracking-widest" id="topoFacingBadge">
+                FACING NORTH
+              </div>
             </div>
           </div>
 
           <!-- 3D Canvas -->
           <div id="topoThreeContainer" class="relative w-full aspect-[4/3] bg-slate-950">
             <canvas id="topoThreeCanvas" class="w-full h-full block"></canvas>
-            <div class="absolute bottom-2 left-2 pointer-events-none bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-md text-[11px] text-sky-300 border border-sky-800/40 flex items-center gap-1.5">
-              <span>📷</span> <span id="topoPanTip">固定廣角全景（一覽正前方地勢起伏，無須手動調整）</span>
+            <div id="topoPanTipBox" class="absolute bottom-2 left-2 pointer-events-none bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-md text-[11px] text-sky-300 border border-sky-800/40 flex items-center gap-1.5 transition-all">
+              <span id="topoPanTipIcon">📷</span> <span id="topoPanTip">固定廣角全景（一覽正前方地勢起伏，無須手動調整）</span>
+            </div>
+            <!-- Orbit Help Overlay when in Orbit Mode -->
+            <div id="topoOrbitHelpOverlay" class="hidden absolute top-3 right-3 pointer-events-none bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-xl border border-sky-500/40 text-[11px] text-slate-200 shadow-xl space-y-1">
+              <div class="text-sky-400 font-bold text-xs flex items-center gap-1"><span>🌐</span> Google Earth 3D 軌道模式</div>
+              <div>🖱️ <strong>滑鼠左鍵 / 單指</strong>：360° 自由環繞旋轉</div>
+              <div>🔍 <strong>滾輪 / 雙指捏合</strong>：視角放大縮小</div>
+              <div>✋ <strong>滑鼠右鍵 / 雙指拖曳</strong>：平移視角中心</div>
             </div>
           </div>
 
@@ -5028,6 +5042,11 @@
       scene: null,
       camera: null,
       renderer: null,
+      controls: null,
+      viewMode: 'first_person', // 'first_person' or 'orbit'
+      markersGroup: null,
+      eyePosition: { x: 0, y: 0, z: 0 },
+      lookTarget: { x: 0, y: 0, z: 0 },
       terrainMesh: null,
       cameraYaw: 0,
       baseYaw: 0
@@ -5173,10 +5192,26 @@
       dirLight.position.set(80, 140, 60);
       topoState.scene.add(dirLight);
 
+      topoState.markersGroup = new THREE.Group();
+      topoState.scene.add(topoState.markersGroup);
+
+      if (typeof THREE.OrbitControls !== 'undefined') {
+        topoState.controls = new THREE.OrbitControls(topoState.camera, topoState.renderer.domElement);
+        topoState.controls.enableDamping = true;
+        topoState.controls.dampingFactor = 0.08;
+        topoState.controls.maxPolarAngle = Math.PI / 2 - 0.05;
+        topoState.controls.minDistance = 25;
+        topoState.controls.maxDistance = 450;
+        topoState.controls.enabled = false;
+      }
+
       window.addEventListener('resize', onTopoResize);
 
       function animateTopo() {
         requestAnimationFrame(animateTopo);
+        if (topoState.controls && topoState.controls.enabled) {
+          topoState.controls.update();
+        }
         if (topoState.renderer && topoState.scene && topoState.camera && currentMainTab === 'topo') {
           topoState.renderer.render(topoState.scene, topoState.camera);
         }
@@ -5195,9 +5230,198 @@
       topoState.renderer.setSize(container.clientWidth, container.clientHeight);
     }
 
+    function create3DMarkerSprite(text, isTarget) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+
+      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur = 10;
+
+      ctx.beginPath();
+      ctx.arc(64, 64, 50, 0, Math.PI * 2);
+      ctx.fillStyle = isTarget ? '#10b981' : (text === 'A' ? '#0284c7' : (text === 'B' ? '#059669' : '#d97706'));
+      ctx.fill();
+
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 54px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, 64, 64);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      const mat = new THREE.SpriteMaterial({ map: texture, depthTest: false });
+      const sprite = new THREE.Sprite(mat);
+      sprite.scale.set(16, 16, 1);
+      return sprite;
+    }
+
+    function create3DPin(opt, isTarget) {
+      const group = new THREE.Group();
+      const dim = topoState.mapDim;
+      const worldX = (opt.u - 0.5) * dim;
+      const worldZ = (opt.v - 0.5) * dim;
+      const groundH = getTopoElevation(opt.u, opt.v);
+
+      const poleH = 22;
+      const poleGeom = new THREE.CylinderGeometry(0.6, 0.6, poleH, 8);
+      const poleMat = new THREE.MeshBasicMaterial({ color: isTarget ? 0x34d399 : 0x94a3b8 });
+      const pole = new THREE.Mesh(poleGeom, poleMat);
+      pole.position.set(worldX, groundH + poleH / 2, worldZ);
+      group.add(pole);
+
+      const ringGeom = new THREE.RingGeometry(1.5, 4.5, 16);
+      ringGeom.rotateX(-Math.PI / 2);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: isTarget ? 0x10b981 : 0x64748b,
+        side: THREE.DoubleSide
+      });
+      const ring = new THREE.Mesh(ringGeom, ringMat);
+      ring.position.set(worldX, groundH + 0.3, worldZ);
+      group.add(ring);
+
+      const sprite = create3DMarkerSprite(opt.choice, isTarget);
+      sprite.position.set(worldX, groundH + poleH + 8, worldZ);
+      group.add(sprite);
+
+      return group;
+    }
+
+    function create3DFovMesh(targetOpt, angleDeg) {
+      const dim = topoState.mapDim;
+      const cx = (targetOpt.u - 0.5) * dim;
+      const cz = (targetOpt.v - 0.5) * dim;
+      const baseH = getTopoElevation(targetOpt.u, targetOpt.v) + 1.5;
+
+      const length = 90;
+      const segments = 24;
+      const geom = new THREE.BufferGeometry();
+      const vertices = [];
+
+      vertices.push(cx, baseH, cz);
+
+      for (let i = 0; i <= segments; i++) {
+        const theta = (angleDeg - 40 + (i / segments) * 80) * (Math.PI / 180);
+        const px = cx + Math.sin(theta) * length;
+        const pz = cz - Math.cos(theta) * length;
+        const pu = Math.max(0, Math.min(1, (px + dim / 2) / dim));
+        const pv = Math.max(0, Math.min(1, (pz + dim / 2) / dim));
+        const py = getTopoElevation(pu, pv) + 1.5;
+        vertices.push(px, py, pz);
+      }
+
+      const indices = [];
+      for (let i = 1; i <= segments; i++) {
+        indices.push(0, i, i + 1);
+      }
+      geom.setIndex(indices);
+      geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geom.computeVertexNormals();
+
+      const mat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.35,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+
+      return new THREE.Mesh(geom, mat);
+    }
+
+    function toggleTopoOrbitView() {
+      if (!topoState.camera || !topoState.currentQuestion) return;
+      const isEn = appState.lang === 'en';
+      const btnText = document.getElementById('topoOrbitBtnText');
+      const tipBox = document.getElementById('topoPanTip');
+      const tipIcon = document.getElementById('topoPanTipIcon');
+      const helpOverlay = document.getElementById('topoOrbitHelpOverlay');
+      const viewTitle = document.getElementById('topoViewTitle');
+
+      if (topoState.viewMode === 'first_person') {
+        topoState.viewMode = 'orbit';
+        if (topoState.controls) topoState.controls.enabled = true;
+        if (topoState.markersGroup) topoState.markersGroup.visible = true;
+
+        if (btnText) btnText.innerText = isEn ? 'Ground 1st-Person' : '切回現地第一人稱';
+        if (viewTitle) viewTitle.innerText = isEn ? '3D ORBIT VIEW (GOOGLE EARTH MODE)' : '3D 全景軌道檢視 (GOOGLE EARTH 模式)';
+        if (tipBox) tipBox.innerText = isEn ? '360° Free Orbit & Zoom (Inspect A, B, C Pins in 3D)' : '360° 自由旋轉縮放・檢視 A、B、C 立體地標與視野光錐';
+        if (tipIcon) tipIcon.innerText = '🌍';
+        if (helpOverlay) helpOverlay.classList.remove('hidden');
+
+        if (topoState.controls) {
+          topoState.controls.target.set(0, 45, 0);
+        }
+
+        const t = topoState.currentQuestion.target;
+        const dim = topoState.mapDim;
+        const targetWorldX = (t.u - 0.5) * dim;
+        const targetWorldZ = (t.v - 0.5) * dim;
+
+        topoState.camera.position.set(
+          targetWorldX * 0.4,
+          155,
+          targetWorldZ + (targetWorldZ >= 0 ? 120 : -120)
+        );
+        topoState.camera.lookAt(0, 45, 0);
+        if (topoState.controls) topoState.controls.update();
+
+      } else {
+        topoState.viewMode = 'first_person';
+        if (topoState.controls) topoState.controls.enabled = false;
+        if (topoState.markersGroup) topoState.markersGroup.visible = false;
+
+        if (btnText) btnText.innerText = isEn ? '3D Orbit View (Google Earth)' : '3D 上帝視角 (Google Earth)';
+        if (viewTitle) viewTitle.innerText = isEn ? '3D FIRST-PERSON VIEW' : '3D 現地視野 (FIRST-PERSON VIEW)';
+        if (tipBox) tipBox.innerText = isEn ? 'Fixed Panoramic Vista (Wide landscape, no adjustment needed)' : '固定廣角全景（一覽正前方地勢起伏，無須手動調整）';
+        if (tipIcon) tipIcon.innerText = '📷';
+        if (helpOverlay) helpOverlay.classList.add('hidden');
+
+        topoState.camera.position.set(
+          topoState.eyePosition.x,
+          topoState.eyePosition.y,
+          topoState.eyePosition.z
+        );
+        topoState.camera.lookAt(
+          topoState.lookTarget.x,
+          topoState.lookTarget.y,
+          topoState.lookTarget.z
+        );
+      }
+    }
+
     function createNextTopoQuestion() {
       topoState.answered = false;
       topoState.showHintCone = false;
+      topoState.viewMode = 'first_person';
+
+      if (topoState.controls) topoState.controls.enabled = false;
+      if (topoState.markersGroup) {
+        while (topoState.markersGroup.children.length > 0) {
+          topoState.markersGroup.remove(topoState.markersGroup.children[0]);
+        }
+        topoState.markersGroup.visible = false;
+      }
+
+      const orbitBtn = document.getElementById('topoOrbitToggleBtn');
+      if (orbitBtn) orbitBtn.classList.add('hidden');
+      const helpOverlay = document.getElementById('topoOrbitHelpOverlay');
+      if (helpOverlay) helpOverlay.classList.add('hidden');
+      const tipBox = document.getElementById('topoPanTip');
+      const tipIcon = document.getElementById('topoPanTipIcon');
+      const isEn = appState.lang === 'en';
+      if (tipBox) tipBox.innerText = isEn ? 'Fixed Panoramic Vista (Wide landscape, no adjustment needed)' : '固定廣角全景（一覽正前方地勢起伏，無須手動調整）';
+      if (tipIcon) tipIcon.innerText = '📷';
+      const viewTitle = document.getElementById('topoViewTitle');
+      if (viewTitle) viewTitle.innerText = isEn ? '3D FIRST-PERSON VIEW' : '3D 現地視野 (FIRST-PERSON VIEW)';
+      const btnText = document.getElementById('topoOrbitBtnText');
+      if (btnText) btnText.innerText = isEn ? '3D Orbit View (Google Earth)' : '3D 上帝視角 (Google Earth)';
 
       const expBox = document.getElementById('topoExplanationBox');
       const fbBadge = document.getElementById('topoFeedbackBadge');
@@ -5274,7 +5498,6 @@
         correctChoice: correctChoice
       };
 
-      const isEn = appState.lang === 'en';
       const facingBadge = document.getElementById('topoFacingBadge');
       if (facingBadge) {
         facingBadge.innerText = isEn ? `FACING ${dirObj.name}` : `朝向 ${dirObj.textZh} (${dirObj.name})`;
@@ -5374,6 +5597,9 @@
         const frontH = getTopoElevation(frontU, frontV);
         targetY = (eyeH * 0.35 + frontH * 0.65) + 2.5;
       }
+
+      topoState.eyePosition = { x: worldX, y: eyeH, z: worldZ };
+      topoState.lookTarget = { x: targetX, y: targetY, z: targetZ };
 
       topoState.camera.lookAt(targetX, targetY, targetZ);
     }
@@ -5618,7 +5844,32 @@
       const elev = scenario ? scenario.standH : Math.round(getTopoElevation(topoState.currentQuestion.target.u, topoState.currentQuestion.target.v));
       const dirText = isEn ? topoState.currentQuestion.direction.name : topoState.currentQuestion.direction.textZh;
 
+      // Reveal the Orbit Toggle button in 3D header
+      const orbitBtn = document.getElementById('topoOrbitToggleBtn');
+      if (orbitBtn) orbitBtn.classList.remove('hidden');
+
+      // Populate 3D markers and FOV cone in scene
+      if (topoState.markersGroup) {
+        while (topoState.markersGroup.children.length > 0) {
+          topoState.markersGroup.remove(topoState.markersGroup.children[0]);
+        }
+        topoState.currentQuestion.options.forEach(opt => {
+          const pin = create3DPin(opt, opt.isTarget);
+          topoState.markersGroup.add(pin);
+        });
+        const fovMesh = create3DFovMesh(topoState.currentQuestion.target, topoState.currentQuestion.direction.angle);
+        topoState.markersGroup.add(fovMesh);
+        topoState.markersGroup.visible = (topoState.viewMode === 'orbit');
+      }
+
       if (expContent) {
+        const orbitCtaBtn = `
+          <div class="pt-2">
+            <button onclick="toggleTopoOrbitView()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow transition active:scale-95">
+              <span>🌍</span> <span>${isEn ? 'Inspect in Google Earth 3D Orbit Mode' : '開啟 3D 上帝視角 (Google Earth 模式) 環繞檢視'}</span>
+            </button>
+          </div>
+        `;
         if (isEn) {
           expContent.innerHTML = `
             <div class="space-y-2">
@@ -5632,6 +5883,7 @@
                 • <strong>Point ${decoy1 ? decoy1.choice : 'Decoy 1'} (Back Slope / Downhill)</strong>: Located on the reverse slope facing downward into the open flatland—facing ${dirText} looks downhill with no peaks ahead.<br>
                 • <strong>Point ${decoy2 ? decoy2.choice : 'Decoy 2'} (Outer Side Flank)</strong>: Located on the outer shoulder of the mountain—facing ${dirText} faces a single slope wall with no central saddle pass.
               </div>
+              ${orbitCtaBtn}
             </div>
           `;
         } else {
@@ -5647,6 +5899,7 @@
                 • <strong>點 ${decoy1 ? decoy1.choice : '干擾點 1'}（山稜後方背坡）</strong>：位於雙峰背坡，朝 ${dirText} 望去地勢一路往下延伸至低處平原，正前方絕無雙峰包夾景觀。<br>
                 • <strong>點 ${decoy2 ? decoy2.choice : '干擾點 2'}（外側單邊側翼）</strong>：位於山體外緣側坡，朝 ${dirText} 望去僅受單一山坡遮擋，視野中不可能同時出現中央下凹啞口與對稱雙峰。
               </div>
+              ${orbitCtaBtn}
             </div>
           `;
         }
@@ -5674,6 +5927,8 @@
         createNextTopoQuestion();
       } else if (key === 'H') {
         toggleTopoHint();
+      } else if (key === 'O') {
+        toggleTopoOrbitView();
       }
     });
 
@@ -5724,6 +5979,13 @@
         const dir = topoState.currentQuestion.direction;
         const fb = document.getElementById('topoFacingBadge');
         if (fb) fb.innerText = isEn ? `FACING ${dir.name}` : `朝向 ${dir.textZh} (${dir.name})`;
+      }
+
+      const orbitBtnText = document.getElementById('topoOrbitBtnText');
+      if (orbitBtnText) {
+        orbitBtnText.innerText = topoState.viewMode === 'orbit'
+          ? (isEn ? 'Ground 1st-Person' : '切回現地第一人稱')
+          : (isEn ? '3D Orbit View (Google Earth)' : '3D 上帝視角 (Google Earth)');
       }
     }
 
